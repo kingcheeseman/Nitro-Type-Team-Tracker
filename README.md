@@ -23,8 +23,14 @@ not what's deployed.
   demand) and commits the output to `site/`.
 - `.github/workflows/pages.yml` — publishes `site/` to GitHub Pages whenever
   it changes.
-- No ingestion job yet (that's Step 3) — so the site will legitimately show
-  "no teams yet" until then. That's expected, not a bug.
+- `src/ingest.js` — Step 3: pulls one real team from Nitro Type's public
+  `GET /api/v2/teams/<tag>` endpoint and upserts it into `teams`, `racers`
+  and `racer_stats` (a new stats snapshot per racer per run, so history
+  builds up over time instead of being overwritten). Run it with
+  `node src/ingest.js <TAG>` (e.g. `node src/ingest.js IMT`).
+- Not wired into a schedule yet — right now ingestion is a manual step you
+  run yourself for whichever test teams you pick (Step 6). Nothing calls
+  it automatically until that's decided.
 
 ## Local setup
 
@@ -35,7 +41,8 @@ not what's deployed.
 3. Run the schema against your database once:
    `psql "$DATABASE_URL" -f schema.sql`
    (or paste `schema.sql`'s contents into the Supabase SQL editor)
-4. `npm run build` — writes static pages into `site/` you can open directly,
+4. `node src/ingest.js <TAG>` to pull a real team in (e.g. `node src/ingest.js IMT`).
+5. `npm run build` — writes static pages into `site/` you can open directly,
    or `npm start` to serve the live version at `http://localhost:3000`.
 
 ## Deploying
