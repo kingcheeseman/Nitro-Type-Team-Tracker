@@ -1,0 +1,40 @@
+name: Ingest teams
+
+# Manual for now (Step 3/6): run this from the Actions tab (or `gh workflow
+# run`) with a space-separated list of team tags to pull in. Not on a
+# schedule yet — that's a later decision once a steady set of teams exists.
+
+on:
+  workflow_dispatch:
+    inputs:
+      tags:
+        description: "Space-separated team tags to ingest"
+        required: true
+        default: "IMT"
+
+permissions:
+  contents: read
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: npm install
+      - name: Ingest each tag
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          set -e
+          status=0
+          for tag in ${{ inputs.tags }}; do
+            echo "::group::Ingesting $tag"
+            node src/ingest.js "$tag" || status=1
+            echo "::endgroup::"
+          done
+          exit $status
