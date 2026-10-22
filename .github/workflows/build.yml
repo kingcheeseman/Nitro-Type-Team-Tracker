@@ -1,0 +1,46 @@
+name: Build site
+
+on:
+  schedule:
+    # Every 30 minutes. v0 has no ingestion job yet, so this just regenerates
+    # whatever's in the database — widen or narrow once there's real sync traffic.
+    - cron: '*/30 * * * *'
+  workflow_dispatch: {}  # lets you trigger manually from the Actions tab
+
+concurrency:
+  group: build-site
+  cancel-in-progress: false
+
+permissions:
+  contents: write  # needed so the job can commit site/ back to the repo
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build static site
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: node src/build.js
+
+      - name: Commit generated site
+        run: |
+          git config user.name "nitro-tracker-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add site/
+          if git diff --staged --quiet; then
+            echo "No changes."
+          else
+            git commit -m "build: regenerate site $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            git push
+          fi

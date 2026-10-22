@@ -6,6 +6,7 @@
   "type": "commonjs",
   "main": "src/server.js",
   "scripts": {
+    "build": "node src/build.js",
     "start": "node src/server.js",
     "dev": "node src/server.js"
   },
