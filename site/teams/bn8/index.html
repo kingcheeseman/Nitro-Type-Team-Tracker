@@ -1,27 +1,684 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>[BN8] team</title>
+  <title>[BN8] BENEVOLENCE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
-    body { font-family: system-ui, sans-serif; max-width: 840px; margin: 2rem auto; padding: 0 1rem; color: #1a1a1a; }
-    table { border-collapse: collapse; width: 100%; margin-top: 1rem; }
-    th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid #ddd; }
-    th { background: #f4f4f4; }
-    a { color: #2563eb; }
-    .meta { color: #666; font-size: 0.9rem; }
-  </style>
+  :root {
+    --bg: #0e1117;
+    --panel: #151a23;
+    --panel-2: #1b2230;
+    --border: #2a3140;
+    --text: #f3f5f9;
+    --muted: #aab2c0;
+    --accent: #3da1ff;
+    --good: #3ddc84;
+    --ok: #e8c547;
+    --low: #ff6b6b;
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Manrope", -apple-system, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  header.site {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--panel);
+  }
+  header.site .mark {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: linear-gradient(135deg, #3da1ff, #8a5cff);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 14px; color: #0b1220;
+    flex: none;
+  }
+  header.site .name { font-weight: 800; font-size: 17px; letter-spacing: 0.2px; }
+  header.site .tagline { color: var(--muted); font-size: 13px; margin-left: 4px; }
+
+  main { max-width: 1040px; margin: 0 auto; padding: 28px 20px 60px; }
+
+  .crumb { color: var(--muted); font-size: 13px; margin-bottom: 18px; }
+
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  h1 .tag-badge { padding: 2px 9px; border-radius: 6px; font-size: 14px; font-weight: 800; margin-right: 8px; }
+
+  .meta-row {
+    display: flex; gap: 22px; flex-wrap: wrap;
+    color: var(--muted); font-size: 13px; margin: 10px 0 22px;
+  }
+  .meta-row strong { color: var(--text); }
+
+  .hero {
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    margin-bottom: 22px;
+    color: #fff;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+  }
+  .hero .tag { font-size: 13px; opacity: 0.85; font-weight: 700; letter-spacing: 0.4px; }
+  .hero .name { font-size: 26px; font-weight: 800; margin-top: 2px; }
+  .hero .sub { margin-top: 10px; font-size: 13px; opacity: 0.9; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 14px;
+  }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: border-color 0.15s ease;
+  }
+  .card:hover { border-color: var(--accent); }
+  .card .top { display: flex; align-items: center; gap: 10px; }
+  .card .badge {
+    width: 38px; height: 38px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 12px; color: #0b1220;
+    flex: none;
+  }
+  .card .tag { font-weight: 800; font-size: 14px; }
+  .card .display-name { color: var(--muted); font-size: 13px; }
+  .card .footer { margin-top: auto; font-size: 11.5px; color: var(--muted); }
+  .card a.cover { position: static; }
+  .card a.view { align-self: flex-start; font-size: 12.5px; font-weight: 700; }
+
+  .empty {
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    color: var(--muted);
+    text-align: center;
+    font-size: 14px;
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--panel);
+  }
+  table { width: 100%; border-collapse: collapse; min-width: 560px; }
+  thead th {
+    text-align: left;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    font-weight: 700;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    background: var(--panel-2);
+    position: sticky; top: 0;
+  }
+  tbody td {
+    padding: 11px 14px;
+    font-size: 13.5px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:nth-child(even) { background: rgba(255,255,255,0.015); }
+  tbody tr:hover { background: rgba(61,161,255,0.06); }
+  td.racer { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+  .avatar {
+    width: 26px; height: 26px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 800; color: #0b1220;
+    flex: none;
+  }
+
+  .pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .pill.good { background: rgba(61,220,132,0.15); color: var(--good); }
+  .pill.ok   { background: rgba(232,197,71,0.15); color: var(--ok); }
+  .pill.low  { background: rgba(255,107,107,0.15); color: var(--low); }
+  .pill.na   { background: rgba(170,178,192,0.12); color: var(--muted); }
+
+  footer.site {
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    padding: 30px 20px 50px;
+  }
+
+  @media (max-width: 560px) {
+    main { padding: 20px 14px 50px; }
+    .hero .name { font-size: 21px; }
+  }
+</style>
 </head>
 <body>
 
-    <p><a href="../../">← all teams</a></p>
-    <h1>[BN8] BENEVOLENCE</h1>
-    <p class="meta">Last synced: Thu Oct 22 2026 20:16:42 GMT+0000 (Coordinated Universal Time)</p>
-    <table>
-      <tr><th>Racer</th><th>Avg speed</th><th>Top speed</th><th>Races</th><th>Accuracy</th></tr>
-      <tr><td>0bdd468c1f35e491e3e64822e1ac5e86</td><td>38</td><td>80</td><td>3070</td><td>91.69</td></tr><tr><td>25064416ca91a07944b47e6294eab21a</td><td>58</td><td>79</td><td>3650</td><td>91.3</td></tr><tr><td>2f833eb15d96d574229f2ac6becc8e7e</td><td>86</td><td>117</td><td>4144</td><td>98.17</td></tr><tr><td>4dc1f8092f9f1af881693b2dbb4efed1</td><td>75</td><td>89</td><td>1875</td><td>94.83</td></tr><tr><td>607b3e3792203d7a2db542e8997c6f2a</td><td>80</td><td>104</td><td>14492</td><td>96.34</td></tr><tr><td>7a3df5ba86b324e3620eff5e1df9f2d9</td><td>42</td><td>121</td><td>2372</td><td>90.74</td></tr><tr><td>8047c5a58b39cb5c4da393c81f54a80b</td><td>48</td><td>98</td><td>2490</td><td>89.38</td></tr><tr><td>821e831f9de2dc805ffde610d72ae404</td><td>49</td><td>64</td><td>6893</td><td>97.36</td></tr><tr><td>abyss16</td><td>91</td><td>186</td><td>26953</td><td>89.76</td></tr><tr><td>ad216866873bbfbd5bc3e632a6203e5a</td><td>67</td><td>98</td><td>2577</td><td>92.8</td></tr><tr><td>angelina29000</td><td>71</td><td>99</td><td>5618</td><td>95.61</td></tr><tr><td>atruetypingaddict</td><td>118</td><td>172</td><td>9939</td><td>98.18</td></tr><tr><td>b28a5c780a3479af1072c3b7252b2478</td><td>66</td><td>94</td><td>10951</td><td>90.97</td></tr><tr><td>b2ackhornet</td><td>91</td><td>184</td><td>2062</td><td>-</td></tr><tr><td>b9454b42ad92beb7467e8e896136451b</td><td>38</td><td>76</td><td>2568</td><td>85.58</td></tr><tr><td>bicentricfir10</td><td>96</td><td>124</td><td>17880</td><td>93.99</td></tr><tr><td>bicentricfir8</td><td>33</td><td>116</td><td>24707</td><td>95.46</td></tr><tr><td>brady_6k</td><td>107</td><td>139</td><td>16120</td><td>94.84</td></tr><tr><td>car_god2112</td><td>82</td><td>122</td><td>15223</td><td>93.13</td></tr><tr><td>catsrule2013</td><td>56</td><td>156</td><td>5353</td><td>93.08</td></tr><tr><td>chicken_munchr</td><td>96</td><td>200</td><td>9788</td><td>95.39</td></tr><tr><td>cl4yton12</td><td>65</td><td>140</td><td>5302</td><td>94.62</td></tr><tr><td>cryschan123</td><td>56</td><td>95</td><td>4841</td><td>96.37</td></tr><tr><td>davidk25</td><td>104</td><td>121</td><td>7826</td><td>95.01</td></tr><tr><td>distractionroadto5k</td><td>93</td><td>112</td><td>10024</td><td>93.61</td></tr><tr><td>ezrarules</td><td>120</td><td>129</td><td>4418</td><td>100</td></tr><tr><td>f36b43e2785900a33c3aabd1144ed06c</td><td>83</td><td>142</td><td>26551</td><td>91.13</td></tr><tr><td>f4555b89057e9f95bfd737c5bf33ade9</td><td>94</td><td>114</td><td>2692</td><td>95.41</td></tr><tr><td>greenwizardben</td><td>41</td><td>70</td><td>7513</td><td>85.07</td></tr><tr><td>hat4rofll4evrjuyh</td><td>130</td><td>178</td><td>41155</td><td>95.55</td></tr><tr><td>i_love_warroir_cats</td><td>85</td><td>121</td><td>8602</td><td>95.28</td></tr><tr><td>icecoffee245</td><td>76</td><td>103</td><td>1100</td><td>94.82</td></tr><tr><td>iwonyoulost19</td><td>92</td><td>154</td><td>4984</td><td>96.66</td></tr><tr><td>l3g3ndary_back4more</td><td>81</td><td>182</td><td>31083</td><td>95.69</td></tr><tr><td>llk_zeltron</td><td>119</td><td>139</td><td>7221</td><td>96.81</td></tr><tr><td>machikanetannhauser</td><td>121</td><td>141</td><td>2736</td><td>95.54</td></tr><tr><td>mack1e30</td><td>39</td><td>53</td><td>2468</td><td>93.21</td></tr><tr><td>mightyox</td><td>72</td><td>90</td><td>18537</td><td>96.39</td></tr><tr><td>mrfruitofficial</td><td>115</td><td>135</td><td>17750</td><td>94.46</td></tr><tr><td>mysterb</td><td>48</td><td>75</td><td>29853</td><td>99.19</td></tr><tr><td>noahcastillo12</td><td>37</td><td>93</td><td>6001</td><td>96.28</td></tr><tr><td>op_elemental</td><td>85</td><td>108</td><td>11000</td><td>95.96</td></tr><tr><td>sharp_king</td><td>45</td><td>91</td><td>7231</td><td>89.38</td></tr><tr><td>sherylw32</td><td>77</td><td>91</td><td>5296</td><td>94.72</td></tr><tr><td>tiotiotiotime</td><td>104</td><td>127</td><td>673</td><td>97.53</td></tr><tr><td>unhstk1</td><td>95</td><td>143</td><td>20625</td><td>95.76</td></tr><tr><td>warden108108</td><td>98</td><td>144</td><td>7987</td><td>92.86</td></tr><tr><td>wiamdream</td><td>69</td><td>140</td><td>2673</td><td>95.76</td></tr>
-    </table>
-<p class="meta">Generated 2026-10-22T20:22:10.104Z</p>
+    <header class="site">
+      <div class="mark">N</div>
+      <div class="name">Nitro Tracker</div>
+      <div class="tagline">multi-team stats</div>
+    </header>
+<main>
+<div class="crumb"><a href="../../">← all teams</a></div>
+
+    <div class="hero" style="background:linear-gradient(135deg, hsl(20 70% 42%), hsl(60 70% 30%))">
+      <div class="tag">TEAM</div>
+      <div class="name">[BN8] BENEVOLENCE</div>
+      <div class="sub">48 racers tracked · last synced 10/22/2026, 8:16:42 PM</div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Racer</th><th>Avg speed</th><th>Top speed</th><th>Races</th><th>Accuracy</th></tr>
+        </thead>
+        <tbody>
+          
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(4 85% 65%)">0</span>
+            0bdd468c1f35e491e3e64822e1ac5e86
+          </td>
+          <td>38</td>
+          <td>80</td>
+          <td>3070</td>
+          <td><span class="pill ok">91.69%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(312 85% 65%)">2</span>
+            25064416ca91a07944b47e6294eab21a
+          </td>
+          <td>58</td>
+          <td>79</td>
+          <td>3650</td>
+          <td><span class="pill ok">91.3%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(263 85% 65%)">2</span>
+            2f833eb15d96d574229f2ac6becc8e7e
+          </td>
+          <td>86</td>
+          <td>117</td>
+          <td>4144</td>
+          <td><span class="pill good">98.17%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(150 85% 65%)">4</span>
+            4dc1f8092f9f1af881693b2dbb4efed1
+          </td>
+          <td>75</td>
+          <td>89</td>
+          <td>1875</td>
+          <td><span class="pill ok">94.83%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(222 85% 65%)">6</span>
+            607b3e3792203d7a2db542e8997c6f2a
+          </td>
+          <td>80</td>
+          <td>104</td>
+          <td>14492</td>
+          <td><span class="pill good">96.34%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(240 85% 65%)">7</span>
+            7a3df5ba86b324e3620eff5e1df9f2d9
+          </td>
+          <td>42</td>
+          <td>121</td>
+          <td>2372</td>
+          <td><span class="pill ok">90.74%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(148 85% 65%)">8</span>
+            8047c5a58b39cb5c4da393c81f54a80b
+          </td>
+          <td>48</td>
+          <td>98</td>
+          <td>2490</td>
+          <td><span class="pill low">89.38%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(313 85% 65%)">8</span>
+            821e831f9de2dc805ffde610d72ae404
+          </td>
+          <td>49</td>
+          <td>64</td>
+          <td>6893</td>
+          <td><span class="pill good">97.36%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(269 85% 65%)">A</span>
+            abyss16
+          </td>
+          <td>91</td>
+          <td>186</td>
+          <td>26953</td>
+          <td><span class="pill low">89.76%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(6 85% 65%)">A</span>
+            ad216866873bbfbd5bc3e632a6203e5a
+          </td>
+          <td>67</td>
+          <td>98</td>
+          <td>2577</td>
+          <td><span class="pill ok">92.8%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(174 85% 65%)">A</span>
+            angelina29000
+          </td>
+          <td>71</td>
+          <td>99</td>
+          <td>5618</td>
+          <td><span class="pill good">95.61%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(55 85% 65%)">A</span>
+            atruetypingaddict
+          </td>
+          <td>118</td>
+          <td>172</td>
+          <td>9939</td>
+          <td><span class="pill good">98.18%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(238 85% 65%)">B</span>
+            b28a5c780a3479af1072c3b7252b2478
+          </td>
+          <td>66</td>
+          <td>94</td>
+          <td>10951</td>
+          <td><span class="pill ok">90.97%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(107 85% 65%)">B</span>
+            b2ackhornet
+          </td>
+          <td>91</td>
+          <td>184</td>
+          <td>2062</td>
+          <td><span class="pill na">—</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(142 85% 65%)">B</span>
+            b9454b42ad92beb7467e8e896136451b
+          </td>
+          <td>38</td>
+          <td>76</td>
+          <td>2568</td>
+          <td><span class="pill low">85.58%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(65 85% 65%)">B</span>
+            bicentricfir10
+          </td>
+          <td>96</td>
+          <td>124</td>
+          <td>17880</td>
+          <td><span class="pill ok">93.99%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(158 85% 65%)">B</span>
+            bicentricfir8
+          </td>
+          <td>33</td>
+          <td>116</td>
+          <td>24707</td>
+          <td><span class="pill good">95.46%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(270 85% 65%)">B</span>
+            brady_6k
+          </td>
+          <td>107</td>
+          <td>139</td>
+          <td>16120</td>
+          <td><span class="pill ok">94.84%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(153 85% 65%)">C</span>
+            car_god2112
+          </td>
+          <td>82</td>
+          <td>122</td>
+          <td>15223</td>
+          <td><span class="pill ok">93.13%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(33 85% 65%)">C</span>
+            catsrule2013
+          </td>
+          <td>56</td>
+          <td>156</td>
+          <td>5353</td>
+          <td><span class="pill ok">93.08%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(241 85% 65%)">C</span>
+            chicken_munchr
+          </td>
+          <td>96</td>
+          <td>200</td>
+          <td>9788</td>
+          <td><span class="pill good">95.39%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(134 85% 65%)">C</span>
+            cl4yton12
+          </td>
+          <td>65</td>
+          <td>140</td>
+          <td>5302</td>
+          <td><span class="pill ok">94.62%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(351 85% 65%)">C</span>
+            cryschan123
+          </td>
+          <td>56</td>
+          <td>95</td>
+          <td>4841</td>
+          <td><span class="pill good">96.37%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(354 85% 65%)">D</span>
+            davidk25
+          </td>
+          <td>104</td>
+          <td>121</td>
+          <td>7826</td>
+          <td><span class="pill good">95.01%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(147 85% 65%)">D</span>
+            distractionroadto5k
+          </td>
+          <td>93</td>
+          <td>112</td>
+          <td>10024</td>
+          <td><span class="pill ok">93.61%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(227 85% 65%)">E</span>
+            ezrarules
+          </td>
+          <td>120</td>
+          <td>129</td>
+          <td>4418</td>
+          <td><span class="pill good">100%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(293 85% 65%)">F</span>
+            f36b43e2785900a33c3aabd1144ed06c
+          </td>
+          <td>83</td>
+          <td>142</td>
+          <td>26551</td>
+          <td><span class="pill ok">91.13%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(328 85% 65%)">F</span>
+            f4555b89057e9f95bfd737c5bf33ade9
+          </td>
+          <td>94</td>
+          <td>114</td>
+          <td>2692</td>
+          <td><span class="pill good">95.41%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(213 85% 65%)">G</span>
+            greenwizardben
+          </td>
+          <td>41</td>
+          <td>70</td>
+          <td>7513</td>
+          <td><span class="pill low">85.07%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(47 85% 65%)">H</span>
+            hat4rofll4evrjuyh
+          </td>
+          <td>130</td>
+          <td>178</td>
+          <td>41155</td>
+          <td><span class="pill good">95.55%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(5 85% 65%)">I</span>
+            i_love_warroir_cats
+          </td>
+          <td>85</td>
+          <td>121</td>
+          <td>8602</td>
+          <td><span class="pill good">95.28%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(236 85% 65%)">I</span>
+            icecoffee245
+          </td>
+          <td>76</td>
+          <td>103</td>
+          <td>1100</td>
+          <td><span class="pill ok">94.82%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(94 85% 65%)">I</span>
+            iwonyoulost19
+          </td>
+          <td>92</td>
+          <td>154</td>
+          <td>4984</td>
+          <td><span class="pill good">96.66%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(194 85% 65%)">L</span>
+            l3g3ndary_back4more
+          </td>
+          <td>81</td>
+          <td>182</td>
+          <td>31083</td>
+          <td><span class="pill good">95.69%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(50 85% 65%)">L</span>
+            llk_zeltron
+          </td>
+          <td>119</td>
+          <td>139</td>
+          <td>7221</td>
+          <td><span class="pill good">96.81%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(94 85% 65%)">M</span>
+            machikanetannhauser
+          </td>
+          <td>121</td>
+          <td>141</td>
+          <td>2736</td>
+          <td><span class="pill good">95.54%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(213 85% 65%)">M</span>
+            mack1e30
+          </td>
+          <td>39</td>
+          <td>53</td>
+          <td>2468</td>
+          <td><span class="pill ok">93.21%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(19 85% 65%)">M</span>
+            mightyox
+          </td>
+          <td>72</td>
+          <td>90</td>
+          <td>18537</td>
+          <td><span class="pill good">96.39%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(210 85% 65%)">M</span>
+            mrfruitofficial
+          </td>
+          <td>115</td>
+          <td>135</td>
+          <td>17750</td>
+          <td><span class="pill ok">94.46%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(136 85% 65%)">M</span>
+            mysterb
+          </td>
+          <td>48</td>
+          <td>75</td>
+          <td>29853</td>
+          <td><span class="pill good">99.19%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(102 85% 65%)">N</span>
+            noahcastillo12
+          </td>
+          <td>37</td>
+          <td>93</td>
+          <td>6001</td>
+          <td><span class="pill good">96.28%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(345 85% 65%)">O</span>
+            op_elemental
+          </td>
+          <td>85</td>
+          <td>108</td>
+          <td>11000</td>
+          <td><span class="pill good">95.96%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(140 85% 65%)">S</span>
+            sharp_king
+          </td>
+          <td>45</td>
+          <td>91</td>
+          <td>7231</td>
+          <td><span class="pill low">89.38%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(9 85% 65%)">S</span>
+            sherylw32
+          </td>
+          <td>77</td>
+          <td>91</td>
+          <td>5296</td>
+          <td><span class="pill ok">94.72%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(143 85% 65%)">T</span>
+            tiotiotiotime
+          </td>
+          <td>104</td>
+          <td>127</td>
+          <td>673</td>
+          <td><span class="pill good">97.53%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(334 85% 65%)">U</span>
+            unhstk1
+          </td>
+          <td>95</td>
+          <td>143</td>
+          <td>20625</td>
+          <td><span class="pill good">95.76%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(165 85% 65%)">W</span>
+            warden108108
+          </td>
+          <td>98</td>
+          <td>144</td>
+          <td>7987</td>
+          <td><span class="pill ok">92.86%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(117 85% 65%)">W</span>
+            wiamdream
+          </td>
+          <td>69</td>
+          <td>140</td>
+          <td>2673</td>
+          <td><span class="pill good">95.76%</span></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+</main>
+<footer class="site">Generated 2026-10-22T20:32:56.779Z</footer>
 </body>
 </html>
