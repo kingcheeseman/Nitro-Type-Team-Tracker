@@ -1,0 +1,17 @@
+{
+  "name": "nitro-tracker-platform",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Multi-team Nitro Type tracker platform (v0 walking skeleton)",
+  "type": "commonjs",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node src/server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "pg": "^8.13.1",
+    "dotenv": "^16.4.5"
+  }
+}
