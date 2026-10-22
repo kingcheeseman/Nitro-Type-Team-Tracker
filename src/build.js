@@ -6,77 +6,106 @@ require("dotenv").config();
 const fs = require("fs");
 const path = require("path");
 const { pool } = require("./db");
+const {
+  escapeHtml,
+  teamGradient,
+  teamBadgeColor,
+  accuracyClass,
+  pageShell,
+} = require("./theme");
 
 const OUT_DIR = path.join(__dirname, "..", "site");
 
-function escapeHtml(str) {
-  return String(str ?? "").replace(/[&<>"']/g, (c) => ({
-    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
-  }[c]));
-}
+function buildTeamsIndex(teams) {
+  fs.mkdirSync(OUT_DIR, { recursive: true });
 
-function page(title, body) {
-  return `<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>${escapeHtml(title)}</title>
-  <style>
-    body { font-family: system-ui, sans-serif; max-width: 840px; margin: 2rem auto; padding: 0 1rem; color: #1a1a1a; }
-    table { border-collapse: collapse; width: 100%; margin-top: 1rem; }
-    th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid #ddd; }
-    th { background: #f4f4f4; }
-    a { color: #2563eb; }
-    .meta { color: #666; font-size: 0.9rem; }
-  </style>
-</head>
-<body>
-${body}
-<p class="meta">Generated ${new Date().toISOString()}</p>
-</body>
-</html>`;
-}
-
-async function buildTeamsIndex(teams) {
-  const dir = OUT_DIR;
-  fs.mkdirSync(dir, { recursive: true });
   const body = teams.length
-    ? `<h1>Tracked teams</h1><ul>${teams
-        .map(
-          (t) =>
-            `<li><a href="teams/${encodeURIComponent(t.tag.toLowerCase())}/">${escapeHtml(t.tag)}</a> — ${escapeHtml(t.display_name || "(unsynced)")}</li>`
-        )
-        .join("")}</ul>`
-    : `<h1>Tracked teams</h1><p>No teams yet — that's expected until the ingestion job (Step 3) adds some.</p>`;
-  fs.writeFileSync(path.join(dir, "index.html"), page("Nitro Tracker Platform", body));
+    ? `<h1>Tracked teams</h1>
+       <p class="meta-row">${teams.length} team${teams.length === 1 ? "" : "s"} tracked</p>
+       <div class="grid">
+         ${teams
+           .map((t) => {
+             const initial = (t.tag || "?").slice(0, 1).toUpperCase();
+             return `
+             <a class="card" href="teams/${encodeURIComponent(t.tag.toLowerCase())}/" style="text-decoration:none;color:inherit;">
+               <div class="top">
+                 <div class="badge" style="background:${teamGradient(t.tag)}">${escapeHtml(initial)}</div>
+                 <div>
+                   <div class="tag">[${escapeHtml(t.tag)}]</div>
+                   <div class="display-name">${escapeHtml(t.display_name || "(unsynced)")}</div>
+                 </div>
+               </div>
+               <div class="footer">${t.last_synced_at ? `Synced ${new Date(t.last_synced_at).toLocaleString()}` : "Not synced yet"}</div>
+             </a>`;
+           })
+           .join("")}
+       </div>`
+    : `<h1>Tracked teams</h1>
+       <div class="empty">No teams yet — that's expected until the ingestion job adds some.</div>`;
+
+  fs.writeFileSync(
+    path.join(OUT_DIR, "index.html"),
+    pageShell({ title: "Nitro Tracker Platform", body })
+  );
 }
 
-async function buildTeamPage(team, racers) {
+function buildTeamPage(team, racers) {
   const dir = path.join(OUT_DIR, "teams", team.tag.toLowerCase());
   fs.mkdirSync(dir, { recursive: true });
+
   const rows = racers
-    .map(
-      (r) =>
-        `<tr><td>${escapeHtml(r.username)}</td><td>${r.avg_speed ?? "-"}</td><td>${r.top_speed ?? "-"}</td><td>${r.races ?? "-"}</td><td>${r.accuracy ?? "-"}</td></tr>`
-    )
+    .map((r) => {
+      const initial = (r.username || "?").slice(0, 1).toUpperCase();
+      const accClass = accuracyClass(r.accuracy);
+      const accLabel = r.accuracy == null ? "—" : `${r.accuracy}%`;
+      return `
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:${teamBadgeColor(r.username || team.tag)}">${escapeHtml(initial)}</span>
+            ${escapeHtml(r.username)}
+          </td>
+          <td>${r.avg_speed ?? "-"}</td>
+          <td>${r.top_speed ?? "-"}</td>
+          <td>${r.races ?? "-"}</td>
+          <td><span class="pill ${accClass}">${accLabel}</span></td>
+        </tr>`;
+    })
     .join("");
+
   const body = `
-    <p><a href="../../">← all teams</a></p>
-    <h1>[${escapeHtml(team.tag)}] ${escapeHtml(team.display_name || "")}</h1>
-    <p class="meta">Last synced: ${team.last_synced_at || "never"}</p>
-    <table>
-      <tr><th>Racer</th><th>Avg speed</th><th>Top speed</th><th>Races</th><th>Accuracy</th></tr>
-      ${rows || "<tr><td colspan='5'>No racers synced yet.</td></tr>"}
-    </table>`;
-  fs.writeFileSync(path.join(dir, "index.html"), page(`[${team.tag}] team`, body));
+    <div class="hero" style="background:${teamGradient(team.tag)}">
+      <div class="tag">TEAM</div>
+      <div class="name">[${escapeHtml(team.tag)}] ${escapeHtml(team.display_name || "")}</div>
+      <div class="sub">${racers.length} racer${racers.length === 1 ? "" : "s"} tracked · last synced ${
+        team.last_synced_at ? new Date(team.last_synced_at).toLocaleString() : "never"
+      }</div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Racer</th><th>Avg speed</th><th>Top speed</th><th>Races</th><th>Accuracy</th></tr>
+        </thead>
+        <tbody>
+          ${rows || `<tr><td colspan="5" style="color:var(--muted);">No racers synced yet.</td></tr>`}
+        </tbody>
+      </table>
+    </div>`;
+
+  fs.writeFileSync(
+    path.join(dir, "index.html"),
+    pageShell({
+      title: `[${team.tag}] ${team.display_name || "team"}`,
+      body,
+      crumb: `<a href="../../">← all teams</a>`,
+    })
+  );
 }
 
 async function main() {
   const { rows: teams } = await pool.query(
     "select tag, display_name, last_synced_at from teams order by tag"
   );
-  await buildTeamsIndex(teams);
+  buildTeamsIndex(teams);
 
   for (const team of teams) {
     const { rows: racers } = await pool.query(
@@ -91,7 +120,7 @@ async function main() {
        order by r.username`,
       [team.tag]
     );
-    await buildTeamPage(team, racers);
+    buildTeamPage(team, racers);
   }
 
   console.log(`Built ${teams.length} team page(s) into ${OUT_DIR}`);
