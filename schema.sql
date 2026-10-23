@@ -135,3 +135,24 @@ create table if not exists seasons (
   end_stamp   timestamptz not null,
   synced_at   timestamptz not null default now()
 );
+
+-- Auto-detected team events: new members, and lifetime/team race
+-- milestones, written by src/ingest.js (see src/notifications.js) by
+-- diffing each sync's fresh numbers against the racer's previous sync -
+-- never user-entered, never backfilled from before a racer/team was first
+-- tracked. `dedup_key` + the unique constraint below is what makes an
+-- event fire exactly once (e.g. "this racer crossed 5,000 races for this
+-- team") even though ingest re-runs every sync.
+create table if not exists notifications (
+  id          bigserial primary key,
+  team_tag    text not null references teams(tag) on delete cascade,
+  kind        text not null, -- 'new_member' | 'lifetime_milestone' | 'team_milestone'
+  nt_user_id  bigint references racers(nt_user_id) on delete set null,
+  dedup_key   text not null,
+  headline    text not null,
+  created_at  timestamptz not null default now(),
+  unique (team_tag, dedup_key)
+);
+
+create index if not exists notifications_team_time
+  on notifications (team_tag, created_at desc);

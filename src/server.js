@@ -12,9 +12,25 @@ const {
   comingSoonBody,
   racerRosterRows,
   leaderboardsBody,
+  trackerBody,
+  eventsBody,
+  notificationsBody,
   pageShell,
 } = require("./theme");
-const { loadLeaderboardData } = require("./leaderboard-data");
+const { loadLeaderboardData, loadTeamTracker } = require("./leaderboard-data");
+const { queryNotifications } = require("./notifications");
+const { eventsForTeam } = require("./events-data");
+
+// Built, non-roster sections render their own content - async because (unlike
+// build.js, which pre-queries everything once per build) each request here
+// hits the database live, so Trackers/Notifications can reflect a sync that
+// just ran without waiting for the next scheduled rebuild.
+async function sectionContent(key, tag) {
+  if (key === "events") return eventsBody(tag, eventsForTeam(tag));
+  if (key === "trackers") return trackerBody(await loadTeamTracker(pool, tag));
+  if (key === "notifications") return notificationsBody(tag, await queryNotifications(pool, tag));
+  return null;
+}
 
 // Express routes use fixed absolute paths (unlike build.js's relative,
 // depth-aware ones), so the nav hrefs are the same on every page here.
@@ -205,14 +221,15 @@ app.get("/teams/:tag", async (req, res) => {
   }
 });
 
-// Sidebar sections that aren't built yet (anything but Roster) — same
+// Every sidebar section besides Roster - a built one renders real content
+// (live-queried, see sectionContent), an unbuilt one gets the same
 // "coming soon" placeholder the static site generates, so local preview
-// and the deployed site behave the same way when you click around.
+// and the deployed site always behave the same way.
 app.get("/teams/:tag/:section", async (req, res) => {
   const tag = req.params.tag.toUpperCase();
   const section = req.params.section;
   const item = [...NAV_ITEMS, ...MANAGE_NAV_ITEMS].find((it) => it.key === section);
-  if (!item || item.built) {
+  if (!item) {
     return res.status(404).send("Not found.");
   }
   try {
@@ -227,11 +244,12 @@ app.get("/teams/:tag/:section", async (req, res) => {
         <div class="tag">TEAM</div>
         <div class="name">[${escapeHtml(t.tag)}] ${escapeHtml(t.display_name || "")}</div>
       </div>`;
+    const built = item.built ? await sectionContent(item.key, tag) : null;
     const linkFor = (key) => (key === "roster" ? `/teams/${encodeURIComponent(tag)}` : `/teams/${encodeURIComponent(tag)}/${key}`);
     const body = `
       <div class="team-layout">
         ${teamSidebar(item.key, linkFor)}
-        <div class="team-content">${hero}${comingSoonBody(item.label)}</div>
+        <div class="team-content">${hero}${built ?? comingSoonBody(item.label)}</div>
       </div>`;
     res.type("html").send(
       pageShell({

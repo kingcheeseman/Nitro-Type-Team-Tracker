@@ -21,6 +21,7 @@
 // has no "accuracy" field, so we derive it from typed/errs.
 require("dotenv").config();
 const { pool } = require("./db");
+const { fetchPreviousTeamTag, recordNotifications } = require("./notifications");
 
 const API_BASE = "https://www.nitrotype.com/api/v2/teams/";
 
@@ -181,10 +182,12 @@ async function ingestTeam(tag) {
 
   let count = 0;
   for (const m of members || []) {
-    await upsertRacer(m, normalizedTag);
-    // Must read the previous races count BEFORE inserting this sync's new
-    // racer_stats row, or the "previous" row would just be this one.
+    // Must read these BEFORE upsertRacer/insertRacerStats overwrite them,
+    // or "previous" would just be this sync's own new values.
+    const previousTeamTag = await fetchPreviousTeamTag(m.userID);
     const previousRaces = await fetchPreviousRaces(m.userID);
+
+    await upsertRacer(m, normalizedTag);
     const accuracy = computeAccuracy(m.typed, m.errs);
     await insertRacerStats(m.userID, {
       avgSpeed: m.avgSpeed ?? null,
@@ -197,6 +200,15 @@ async function ingestTeam(tag) {
       accuracy,
       racesPlayed: m.racesPlayed ?? null,
       previousRaces,
+    });
+    const racesDelta =
+      previousRaces != null && m.racesPlayed != null ? m.racesPlayed - previousRaces : null;
+    await recordNotifications(normalizedTag, m, {
+      displayName: m.displayName || m.username,
+      racesPlayed: m.racesPlayed ?? null,
+      previousRaces,
+      previousTeamTag,
+      racesDelta: racesDelta != null && racesDelta > 0 ? racesDelta : 0,
     });
     count++;
   }

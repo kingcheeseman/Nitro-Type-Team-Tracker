@@ -17,9 +17,25 @@ const {
   comingSoonBody,
   racerRosterRows,
   leaderboardsBody,
+  trackerBody,
+  eventsBody,
+  notificationsBody,
   pageShell,
 } = require("./theme");
-const { loadLeaderboardData } = require("./leaderboard-data");
+const { loadLeaderboardData, loadTeamTracker } = require("./leaderboard-data");
+const { queryNotifications } = require("./notifications");
+const { eventsForTeam } = require("./events-data");
+
+// Built, non-roster sections render their own content from already-queried
+// data; a section not in this map still falls back to comingSoonBody.
+// Shared with server.js's per-request equivalent so static and live
+// preview never render a section differently.
+function sectionContent(key, sectionData) {
+  if (key === "events") return eventsBody(sectionData.tag, sectionData.events);
+  if (key === "trackers") return trackerBody(sectionData.tracker);
+  if (key === "notifications") return notificationsBody(sectionData.tag, sectionData.notifications);
+  return null;
+}
 
 const OUT_DIR = path.join(__dirname, "..", "site");
 
@@ -84,7 +100,7 @@ function buildTeamsIndex(teams) {
   );
 }
 
-function buildTeamPage(team, racers) {
+function buildTeamPage(team, racers, sectionData) {
   const dir = path.join(OUT_DIR, "teams", team.tag.toLowerCase());
   fs.mkdirSync(dir, { recursive: true });
 
@@ -143,19 +159,20 @@ function buildTeamPage(team, racers) {
     title: `[${team.tag}] ${team.display_name || "team"}`,
   });
 
-  // Everything in the sidebar besides Roster is a placeholder for now -
-  // generate a real (if thin) page for each one so the nav is honest
-  // about what it links to instead of pointing at a 404.
+  // Every sidebar section besides Roster gets its own generated page -
+  // real content for a built one (see sectionContent), an honest
+  // "coming soon" placeholder otherwise, so the nav never points at a 404.
   const heroForSections = hero; // same hero banner on every section page
   for (const item of [...NAV_ITEMS, ...MANAGE_NAV_ITEMS]) {
-    if (item.built) continue;
+    if (item.key === "roster") continue;
+    const built = item.built ? sectionContent(item.key, sectionData) : null;
     const sectionDir = path.join(dir, item.key);
     fs.mkdirSync(sectionDir, { recursive: true });
     writeTeamSectionPage({
       dir: sectionDir,
       depth: 1,
       activeKey: item.key,
-      content: heroForSections + comingSoonBody(item.label),
+      content: heroForSections + (built ?? comingSoonBody(item.label)),
       crumb: `<a href="../../../">← all teams</a>`,
       title: `[${team.tag}] ${item.label}`,
     });
@@ -231,7 +248,13 @@ async function main() {
        order by coalesce(r.display_name, r.username)`,
       [team.tag]
     );
-    buildTeamPage(team, racers);
+    const sectionData = {
+      tag: team.tag,
+      tracker: await loadTeamTracker(pool, team.tag),
+      notifications: await queryNotifications(pool, team.tag),
+      events: eventsForTeam(team.tag),
+    };
+    buildTeamPage(team, racers, sectionData);
   }
 
   const leaderboardData = await loadLeaderboardData(pool);

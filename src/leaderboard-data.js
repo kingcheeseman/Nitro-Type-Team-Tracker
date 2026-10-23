@@ -53,9 +53,19 @@ function rangeFilter(range, season, paramOffset) {
   };
 }
 
-async function queryRacerPoints(pool, range, season) {
+// teamTag (optional) scopes this to one team's own racers - used by the
+// per-team Tracker page (src/theme.js's trackerBody) so it can reuse the
+// exact same points ledger and rolling/season windows as the site-wide
+// leaderboard instead of a separate query path.
+async function queryRacerPoints(pool, range, season, teamTag) {
   const filter = rangeFilter(range, season, 0);
   if (!filter) return [];
+  let clause = filter.clause;
+  let params = filter.params;
+  if (teamTag) {
+    params = [...params, teamTag];
+    clause += ` and r.team_tag = $${params.length}`;
+  }
   const { rows } = await pool.query(
     `select r.username, r.display_name, r.team_tag, t.tag_color,
             sum(rp.points) as points,
@@ -68,14 +78,33 @@ async function queryRacerPoints(pool, range, season) {
        select * from racer_stats rs where rs.nt_user_id = r.nt_user_id
        order by captured_at desc limit 1
      ) s on true
-     where ${filter.clause}
+     where ${clause}
      group by r.username, r.display_name, r.team_tag, t.tag_color, s.avg_speed, s.top_speed, s.accuracy
      having sum(rp.points) > 0
      order by points desc
      limit 100`,
-    filter.params
+    params
   );
   return rows;
+}
+
+// Ranges shown on a team's own Tracker page - reuses the same keys/windows
+// as the site-wide leaderboard (see RANGE_INTERVALS/currentSeasonBounds
+// above) so "Season" here and "Seasonal" there never disagree.
+const TRACKER_RANGES = [
+  { key: "daily", label: "Daily" },
+  { key: "weekly", label: "Weekly" },
+  { key: "seasonal", label: "Season" },
+  { key: "alltime", label: "All-Time" },
+];
+
+async function loadTeamTracker(pool, tag) {
+  const season = await currentSeasonBounds(pool);
+  const byRange = {};
+  for (const range of TRACKER_RANGES) {
+    byRange[range.key] = await queryRacerPoints(pool, range.key, season, tag);
+  }
+  return { byRange, season };
 }
 
 // Team WPM/Accuracy are races-weighted averages over the window (each
@@ -127,8 +156,10 @@ async function loadLeaderboardData(pool) {
 module.exports = {
   RANGE_INTERVALS,
   BUILT_RANGES,
+  TRACKER_RANGES,
   currentSeasonBounds,
   queryRacerPoints,
   queryTeamPoints,
   loadLeaderboardData,
+  loadTeamTracker,
 };

@@ -129,11 +129,11 @@ function racerRosterRows(racers, team) {
 // clicking one of these is honest about not being built yet.
 const NAV_ITEMS = [
   { key: "roster", label: "Roster", icon: "\u{1F465}", built: true },
-  { key: "events", label: "Events", icon: "\u{1F4C5}", built: false },
+  { key: "events", label: "Events", icon: "\u{1F4C5}", built: true },
   { key: "activity", label: "Activity", icon: "\u{1F4C8}", built: false },
   { key: "tournaments", label: "Tournaments", icon: "\u{1F3C6}", built: false },
-  { key: "trackers", label: "Trackers", icon: "\u{1F4CC}", built: false },
-  { key: "notifications", label: "Notifications", icon: "\u{1F514}", built: false },
+  { key: "trackers", label: "Trackers", icon: "\u{1F4CC}", built: true },
+  { key: "notifications", label: "Notifications", icon: "\u{1F514}", built: true },
 ];
 const MANAGE_NAV_ITEMS = [
   { key: "admin", label: "Team Admin", icon: "⚙️", built: false },
@@ -166,12 +166,11 @@ function comingSoonBody(label) {
 }
 
 // Leaderboard time-range boards we show tabs for. Every one sums the
-// racer_points ledger over a rolling window (see leaderboard-data.js).
-// Seasonal is a 45-day rolling window, same mechanism as the others - NOT
-// Nitro Type's own real season boundary (currently ~6 weeks, but there's
-// no reliable public API exposing exact season start/end dates to track
-// that automatically). racersLeaderboardTable/teamsLeaderboardTable add
-// an explicit note on the Seasonal panel so that's never implied.
+// racer_points ledger over a window (see leaderboard-data.js): a rolling
+// "now() - interval" for most, but Seasonal uses Nitro Type's own real
+// season boundary (see src/season.js) rather than an invented duration.
+// racersLeaderboardTable/teamsLeaderboardTable add an explicit note on the
+// Seasonal panel naming that real season and its dates.
 const LEADERBOARD_RANGES = [
   { key: "hourly", label: "Hourly", built: true },
   { key: "daily", label: "Daily", built: true },
@@ -396,6 +395,219 @@ function leaderboardsBody(data, teamHref) {
     <p class="meta-row">Ranked across every team this tracker follows — not all of Nitro Type.</p>
     ${leaderboardControls()}
     ${panels.join("")}`;
+}
+
+// ---------------------------------------------------------------------
+// Tracker: a team's own racers ranked by points, same ledger and windows
+// as the site-wide leaderboard (see leaderboard-data.js's loadTeamTracker)
+// just scoped to one roster - modeled on Startrack's "Trackers" page.
+// ---------------------------------------------------------------------
+const TRACKER_RANGES = [
+  { key: "daily", label: "Daily" },
+  { key: "weekly", label: "Weekly" },
+  { key: "seasonal", label: "Season" },
+  { key: "alltime", label: "All-Time" },
+];
+
+function trackerTable(rows, rangeLabel) {
+  if (!rows.length) {
+    return `<div class="empty" style="padding:40px 24px;">No one on this team earned any points in the ${escapeHtml(rangeLabel)} window yet — this fills in as more syncs run.</div>`;
+  }
+  const body = rows
+    .map((r, i) => {
+      const rank = i + 1;
+      const name = r.display_name || r.username;
+      const accClass = accuracyClass(r.accuracy);
+      const accLabel = r.accuracy == null ? "—" : `${r.accuracy}%`;
+      return `
+        <tr>
+          <td><span class="lb-rank${rankBadgeClass(rank)}">${rank}</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:${avatarColor(name)}">${escapeHtml((name || "?").slice(0, 1).toUpperCase())}</span>
+            ${escapeHtml(name)}
+          </td>
+          <td><span class="points">${r.points}</span></td>
+          <td>${r.races}</td>
+          <td>${r.avg_speed ?? "-"}</td>
+          <td>${r.top_speed ?? "-"}</td>
+          <td><span class="pill ${accClass}">${accLabel}</span></td>
+        </tr>`;
+    })
+    .join("");
+  return `
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Racer</th><th>Points</th><th>Races</th><th>Avg speed</th><th>Highest speed</th><th>Accuracy</th></tr>
+        </thead>
+        <tbody>${body}</tbody>
+      </table>
+    </div>`;
+}
+
+function trackerControls() {
+  return `
+    <div class="lb-controls">
+      <div class="seg" data-role="trk-range">
+        ${TRACKER_RANGES.map((it, i) => `<button type="button" class="seg-btn${i === 0 ? " active" : ""}" data-range="${it.key}">${escapeHtml(it.label)}</button>`).join("")}
+      </div>
+    </div>
+    <script>
+      (function () {
+        var seg = document.querySelector('.seg[data-role="trk-range"]');
+        var panels = document.querySelectorAll(".trk-panel");
+        function sync() {
+          var range = seg.querySelector(".seg-btn.active").getAttribute("data-range");
+          panels.forEach(function (p) { p.hidden = p.getAttribute("data-range") !== range; });
+        }
+        seg.addEventListener("click", function (e) {
+          var btn = e.target.closest(".seg-btn");
+          if (!btn) return;
+          Array.prototype.slice.call(seg.querySelectorAll(".seg-btn")).forEach(function (b) {
+            b.classList.toggle("active", b === btn);
+          });
+          sync();
+        });
+      })();
+    </script>`;
+}
+
+// `data` is loadTeamTracker()'s result: { byRange: {daily:[],...}, season }.
+function trackerBody(data) {
+  const panels = TRACKER_RANGES.map((range, i) => {
+    const visible = i === 0;
+    const rows = data.byRange[range.key] || [];
+    const seasonNote = range.key === "seasonal" ? `<p class="lb-score-note">${seasonalNote(data.season)}</p>` : "";
+    return `<div class="trk-panel" data-range="${range.key}"${visible ? "" : " hidden"}>${trackerTable(rows, range.label)}${seasonNote}</div>`;
+  }).join("");
+  return `
+    <h2 style="margin:28px 0 14px;">Tracker</h2>
+    <p class="meta-row">This team's own racers, ranked by points earned in each window — the same ledger behind the site-wide leaderboard, scoped to just this roster.</p>
+    ${trackerControls()}
+    ${panels}`;
+}
+
+// ---------------------------------------------------------------------
+// Events: a team's event/tournament calendar. Unlike everything else on
+// this site, these are curated by hand (see data/events.json) rather than
+// synced from Nitro Type, which doesn't publish a per-team event calendar
+// the way it publishes season dates - modeled on Startrack's Events page.
+// ---------------------------------------------------------------------
+function eventStatusPill(status) {
+  const map = { pending: ["ok", "Pending"], active: ["good", "Active"], ended: ["na", "Ended"] };
+  const [cls, label] = map[status] || ["na", status];
+  return `<span class="pill ${cls}">${escapeHtml(label)}</span>`;
+}
+
+function formatEventDate(iso) {
+  if (!iso) return "—";
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return "—";
+  return d.toLocaleString(undefined, { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" });
+}
+
+function eventsBody(tag, events) {
+  if (!events.length) {
+    return `
+      <h2 style="margin:28px 0 14px;">Events</h2>
+      <div class="empty" style="padding:40px 24px;">
+        No events scheduled for [${escapeHtml(tag)}] yet. These are entered by hand — Nitro Type doesn't publish a per-team event calendar — so just ask for one to be added.
+      </div>`;
+  }
+  const rows = events
+    .map(
+      (ev) => `
+        <tr>
+          <td>
+            <b>${escapeHtml(ev.title)}</b>
+            ${ev.description ? `<div style="color:var(--muted);font-size:12.5px;margin-top:3px;max-width:420px;white-space:normal;">${escapeHtml(ev.description)}</div>` : ""}
+          </td>
+          <td>${eventStatusPill(ev.status)}</td>
+          <td>${formatEventDate(ev.start)}</td>
+          <td>${formatEventDate(ev.end)}</td>
+          <td>${(ev.teams || []).map((t) => `[${escapeHtml(t)}]`).join(" ")}</td>
+        </tr>`
+    )
+    .join("");
+  return `
+    <h2 style="margin:28px 0 14px;">Events</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Event</th><th>Status</th><th>Starts</th><th>Ends</th><th>Teams</th></tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+    <p class="lb-score-note">Curated by hand, not scraped from Nitro Type — just ask for an event to be added or changed.</p>`;
+}
+
+// ---------------------------------------------------------------------
+// Notifications: an auto-detected feed (new members, lifetime/team race
+// milestones) written during every sync - see src/notifications.js. No
+// curation needed, unlike Events above. Modeled on Startrack's own
+// Notifications page's day-grouped digest.
+// ---------------------------------------------------------------------
+const NOTIFICATION_ICON = {
+  new_member: "\u{1F44B}",
+  lifetime_milestone: "\u{1F3C1}",
+  team_milestone: "\u{1F697}",
+};
+const NOTIFICATION_LABEL = {
+  new_member: "New member",
+  lifetime_milestone: "Lifetime race milestone",
+  team_milestone: "Team race milestone",
+};
+
+function notificationsBody(tag, rows) {
+  if (!rows.length) {
+    return `
+      <h2 style="margin:28px 0 14px;">Notifications</h2>
+      <div class="empty" style="padding:40px 24px;">
+        No notifications yet for [${escapeHtml(tag)}] — new members and race milestones will show up here automatically as syncs run.
+      </div>`;
+  }
+  // Rows arrive newest-first from queryNotifications; just group
+  // consecutive same-day rows together under one date heading.
+  const groups = [];
+  let currentKey = null;
+  for (const row of rows) {
+    const key = new Date(row.created_at).toLocaleDateString(undefined, {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+    if (key !== currentKey) {
+      groups.push({ key, items: [] });
+      currentKey = key;
+    }
+    groups[groups.length - 1].items.push(row);
+  }
+  const groupsHtml = groups
+    .map(
+      (g) => `
+        <div class="notif-day">
+          <div class="notif-date">${escapeHtml(g.key)}</div>
+          ${g.items
+            .map(
+              (row) => `
+            <div class="notif-item">
+              <span class="notif-icon">${NOTIFICATION_ICON[row.kind] || "\u{1F4E2}"}</span>
+              <div>
+                <div class="notif-headline">${escapeHtml(row.headline)}</div>
+                <div class="notif-meta">${escapeHtml(NOTIFICATION_LABEL[row.kind] || row.kind)} · ${new Date(row.created_at).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}</div>
+              </div>
+            </div>`
+            )
+            .join("")}
+        </div>`
+    )
+    .join("");
+  return `
+    <h2 style="margin:28px 0 14px;">Notifications</h2>
+    <p class="meta-row">Auto-detected from every sync — new members and race milestones, newest first.</p>
+    ${groupsHtml}`;
 }
 
 const BASE_CSS = `
@@ -701,6 +913,20 @@ const BASE_CSS = `
   .pill.low  { background: rgba(255,107,107,0.15); color: var(--low); }
   .pill.na   { background: rgba(170,178,192,0.12); color: var(--muted); }
 
+  .notif-day { margin-bottom: 22px; }
+  .notif-date { font-weight: 800; font-size: 13.5px; margin-bottom: 8px; }
+  .notif-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    margin-bottom: 8px;
+  }
+  .notif-icon { font-size: 18px; line-height: 1; flex: none; margin-top: 1px; }
+  .notif-headline { font-size: 13.5px; color: var(--text); }
+  .notif-meta { font-size: 11.5px; color: var(--muted); margin-top: 3px; }
+
   .lb-controls {
     display: flex; justify-content: space-between; align-items: center;
     flex-wrap: wrap; gap: 10px;
@@ -839,5 +1065,9 @@ module.exports = {
   rankBadgeClass,
   nitroTypeTeamHref,
   leaderboardsBody,
+  TRACKER_RANGES,
+  trackerBody,
+  eventsBody,
+  notificationsBody,
   pageShell,
 };

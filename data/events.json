@@ -1,0 +1,4 @@
+{
+  "_comment": "Team event calendar (tournament schedule, scrimmages, cash comps your team is running) - curated here, not scraped from Nitro Type, since NT doesn't publish this per-team. To add or change one, just ask and it'll be added here and pushed. Each event: id (unique slug), title, description, start/end (ISO 8601, UTC), teams (array of team tags it applies to - an event can span several allied teams, same as Startrack's).",
+  "events": []
+}
