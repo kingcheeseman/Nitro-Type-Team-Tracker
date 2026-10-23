@@ -25,14 +25,42 @@ function hashHue(str) {
   return h % 360;
 }
 
-function teamGradient(tag) {
-  const hue = hashHue(tag);
-  return `linear-gradient(135deg, hsl(${hue} 70% 42%), hsl(${(hue + 40) % 360} 70% 30%))`;
+// Nitro Type's own API returns a team's real "tagColor" (e.g. "5b52a3") -
+// the exact same color shown on the team's actual NT page and the one
+// StarTrack uses too. We use that verbatim, as a flat color (not a
+// gradient we invented), so there's never any mismatch or confusion with
+// the real team color. Only a team we haven't captured tagColor for yet
+// falls back to a deterministic hash-based color.
+function teamColor(tag, tagColor) {
+  if (tagColor) return `#${String(tagColor).replace(/^#/, "")}`;
+  return `hsl(${hashHue(tag)} 70% 38%)`;
 }
 
-function teamBadgeColor(tag) {
-  const hue = hashHue(tag);
-  return `hsl(${hue} 85% 65%)`;
+function hexToRgb(hex) {
+  const n = parseInt(hex.replace(/^#/, ""), 16);
+  return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
+}
+
+function relativeLuminance({ r, g, b }) {
+  const [rs, gs, bs] = [r, g, b].map((v) => {
+    const c = v / 255;
+    return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+  });
+  return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
+}
+
+// A real team color can be light or dark, so the text on top of it (hero
+// banner, card badge) has to be chosen per-color instead of hardcoded -
+// otherwise a light tagColor would render near-invisible white-on-white.
+function textOnColor(color) {
+  if (!color.startsWith("#")) return "#ffffff"; // hash fallback is always dark enough
+  return relativeLuminance(hexToRgb(color)) > 0.5 ? "#0b1220" : "#ffffff";
+}
+
+// Decorative per-racer avatar color (not a claim about team identity) -
+// still hash-based since Nitro Type doesn't expose a per-racer color.
+function avatarColor(seed) {
+  return `hsl(${hashHue(seed)} 85% 65%)`;
 }
 
 // Bucket accuracy into a color class the same way a tier badge would -
@@ -108,6 +136,173 @@ function comingSoonBody(label) {
     </div>`;
 }
 
+// Leaderboard time-range boards we show tabs for. Only "alltime" has real
+// data right now (it's computed from each racer's latest snapshot) -
+// Daily/Weekly/Monthly need enough snapshot history behind them to compute
+// honestly, so they're real tabs that load a real "coming soon" panel
+// instead of silently missing or faking numbers.
+const LEADERBOARD_RANGES = [
+  { key: "alltime", label: "All-Time", built: true },
+  { key: "monthly", label: "Monthly", built: false },
+  { key: "weekly", label: "Weekly", built: false },
+  { key: "daily", label: "Daily", built: false },
+];
+
+function comingSoonLeaderboard(rangeLabel) {
+  return `
+    <div class="empty" style="padding:40px 24px;">
+      <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px;">Coming soon</div>
+      <div>The ${escapeHtml(rangeLabel)} board needs more sync history behind it before it can
+      rank anyone fairly — only All-Time (current standings) is live right now.</div>
+    </div>`;
+}
+
+// data-kind/data-range panel pair, built once per (kind, range) combo so
+// the segmented controls below just toggle which one is visible.
+function leaderboardPanel(kind, range, innerHtml, visible) {
+  return `<div class="lb-panel" data-kind="${kind}" data-range="${range}"${visible ? "" : " hidden"}>${innerHtml}</div>`;
+}
+
+function leaderboardControls() {
+  const kindBtn = (key, label, active) =>
+    `<button type="button" class="seg-btn${active ? " active" : ""}" data-kind="${key}">${escapeHtml(label)}</button>`;
+  const rangeBtn = (it, active) =>
+    `<button type="button" class="seg-btn${active ? " active" : ""}" data-range="${it.key}">${escapeHtml(it.label)}${it.built ? "" : ` <span class="soon-tag">Soon</span>`}</button>`;
+  return `
+    <div class="lb-controls">
+      <div class="seg" data-role="kind">
+        ${kindBtn("racers", "Racers", true)}
+        ${kindBtn("teams", "Teams", false)}
+      </div>
+      <div class="seg" data-role="range">
+        ${LEADERBOARD_RANGES.map((it) => rangeBtn(it, it.key === "alltime")).join("")}
+      </div>
+    </div>
+    <script>
+      (function () {
+        var kindSeg = document.querySelector('.seg[data-role="kind"]');
+        var rangeSeg = document.querySelector('.seg[data-role="range"]');
+        var panels = Array.prototype.slice.call(document.querySelectorAll(".lb-panel"));
+        function sync() {
+          var kind = kindSeg.querySelector(".seg-btn.active").getAttribute("data-kind");
+          var range = rangeSeg.querySelector(".seg-btn.active").getAttribute("data-range");
+          panels.forEach(function (p) {
+            p.hidden = !(p.getAttribute("data-kind") === kind && p.getAttribute("data-range") === range);
+          });
+        }
+        [kindSeg, rangeSeg].forEach(function (seg) {
+          seg.addEventListener("click", function (e) {
+            var btn = e.target.closest(".seg-btn");
+            if (!btn) return;
+            Array.prototype.slice.call(seg.querySelectorAll(".seg-btn")).forEach(function (b) {
+              b.classList.toggle("active", b === btn);
+            });
+            sync();
+          });
+        });
+      })();
+    </script>`;
+}
+
+function rankBadgeClass(rank) {
+  if (rank === 1) return " top1";
+  if (rank === 2) return " top2";
+  if (rank === 3) return " top3";
+  return "";
+}
+
+// Shared by build.js (static) and server.js (local preview) so the two
+// never render the leaderboard tables differently - pure HTML rendering
+// from already-queried rows, no DB access here.
+function racersLeaderboardTable(rows) {
+  if (!rows.length) {
+    return `<div class="empty">No racer stats synced yet.</div>`;
+  }
+  const body = rows
+    .map((r, i) => {
+      const rank = i + 1;
+      const tagBg = teamColor(r.team_tag, r.tag_color);
+      const accClass = accuracyClass(r.accuracy);
+      const accLabel = r.accuracy == null ? "—" : `${r.accuracy}%`;
+      return `
+        <tr>
+          <td><span class="lb-rank${rankBadgeClass(rank)}">${rank}</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:${avatarColor(r.username)}">${escapeHtml((r.username || "?").slice(0, 1).toUpperCase())}</span>
+            ${escapeHtml(r.username)}
+            <span class="lb-team-tag" style="background:${tagBg};color:${textOnColor(tagBg)}">${escapeHtml(r.team_tag)}</span>
+          </td>
+          <td>${r.avg_speed ?? "-"}</td>
+          <td>${r.top_speed ?? "-"}</td>
+          <td>${r.races ?? "-"}</td>
+          <td><span class="pill ${accClass}">${accLabel}</span></td>
+        </tr>`;
+    })
+    .join("");
+  return `
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Racer</th><th>Avg speed</th><th>Highest speed</th><th>Lifetime races</th><th>Accuracy</th></tr>
+        </thead>
+        <tbody>${body}</tbody>
+      </table>
+    </div>`;
+}
+
+function teamsLeaderboardTable(rows) {
+  if (!rows.length) {
+    return `<div class="empty">No team stats synced yet.</div>`;
+  }
+  const body = rows
+    .map((t, i) => {
+      const rank = i + 1;
+      const bg = teamColor(t.tag, t.tag_color);
+      return `
+        <tr>
+          <td><span class="lb-rank${rankBadgeClass(rank)}">${rank}</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:${bg};color:${textOnColor(bg)}">${escapeHtml((t.tag || "?").slice(0, 1).toUpperCase())}</span>
+            [${escapeHtml(t.tag)}] ${escapeHtml(t.display_name || "")}
+          </td>
+          <td>${t.avg_speed ?? "-"}</td>
+          <td>${t.top_speed ?? "-"}</td>
+          <td>${t.total_races ?? "-"}</td>
+          <td>${t.racer_count ?? "-"}</td>
+        </tr>`;
+    })
+    .join("");
+  return `
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Team</th><th>Avg speed</th><th>Top speed</th><th>Total races</th><th>Racers</th></tr>
+        </thead>
+        <tbody>${body}</tbody>
+      </table>
+    </div>`;
+}
+
+// Builds the full leaderboards page body (controls + all 8 panels) from
+// already-queried rows. Shared so build.js and server.js produce
+// identical markup; only the surrounding pageShell() call differs.
+function leaderboardsBody(racerRows, teamRows) {
+  const panels = [
+    leaderboardPanel("racers", "alltime", racersLeaderboardTable(racerRows), true),
+    leaderboardPanel("teams", "alltime", teamsLeaderboardTable(teamRows), false),
+  ];
+  for (const range of LEADERBOARD_RANGES) {
+    if (range.built) continue;
+    panels.push(leaderboardPanel("racers", range.key, comingSoonLeaderboard(range.label), false));
+    panels.push(leaderboardPanel("teams", range.key, comingSoonLeaderboard(range.label), false));
+  }
+  return `
+    <h1>Leaderboards</h1>
+    <p class="meta-row">Ranked across every team this tracker follows — not all of Nitro Type.</p>
+    ${leaderboardControls()}
+    ${panels.join("")}`;
+}
+
 const BASE_CSS = `
   :root {
     --bg: #0e1117;
@@ -148,8 +343,18 @@ const BASE_CSS = `
     font-weight: 800; font-size: 14px; color: #0b1220;
     flex: none;
   }
-  header.site .name { font-weight: 800; font-size: 17px; letter-spacing: 0.2px; }
+  header.site .name { font-weight: 800; font-size: 17px; letter-spacing: 0.2px; margin-right: 10px; }
   header.site .tagline { color: var(--muted); font-size: 13px; margin-left: 4px; }
+  .site-nav { display: flex; gap: 4px; margin-left: 6px; }
+  .site-nav-link {
+    color: var(--muted);
+    font-weight: 700;
+    font-size: 13.5px;
+    padding: 6px 11px;
+    border-radius: 7px;
+  }
+  .site-nav-link:hover { color: var(--text); text-decoration: none; background: var(--panel-2); }
+  .site-nav-link.active { color: var(--accent); background: rgba(61,161,255,0.12); }
 
   main { max-width: 1040px; margin: 0 auto; padding: 28px 20px 60px; }
 
@@ -168,7 +373,6 @@ const BASE_CSS = `
     border-radius: var(--radius);
     padding: 22px 24px;
     margin-bottom: 22px;
-    color: #fff;
     box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
   }
   .hero .tag { font-size: 13px; opacity: 0.85; font-weight: 700; letter-spacing: 0.4px; }
@@ -336,7 +540,7 @@ const BASE_CSS = `
   .card .badge {
     width: 38px; height: 38px; border-radius: 8px;
     display: flex; align-items: center; justify-content: center;
-    font-weight: 800; font-size: 12px; color: #0b1220;
+    font-weight: 800; font-size: 12px;
     flex: none;
   }
   .card .tag { font-weight: 800; font-size: 14px; }
@@ -402,6 +606,58 @@ const BASE_CSS = `
   .pill.low  { background: rgba(255,107,107,0.15); color: var(--low); }
   .pill.na   { background: rgba(170,178,192,0.12); color: var(--muted); }
 
+  .lb-controls {
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 10px;
+    margin-bottom: 18px;
+  }
+  .seg {
+    display: inline-flex;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    padding: 3px;
+    gap: 2px;
+  }
+  .seg-btn {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 12.5px;
+    padding: 7px 13px;
+    border-radius: 7px;
+    cursor: pointer;
+  }
+  .seg-btn:hover { color: var(--text); }
+  .seg-btn.active { background: var(--accent); color: #0b1220; }
+  .seg-btn .soon-tag { vertical-align: 1px; }
+
+  .lb-rank {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px; height: 24px;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 800;
+    background: var(--panel-2);
+    color: var(--muted);
+  }
+  .lb-rank.top1 { background: rgba(232,197,71,0.18); color: var(--ok); }
+  .lb-rank.top2 { background: rgba(170,178,192,0.22); color: #d8dee8; }
+  .lb-rank.top3 { background: rgba(255,142,96,0.18); color: #ff8e60; }
+
+  .lb-team-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 6px;
+    margin-left: 8px;
+  }
+
   footer.site {
     text-align: center;
     color: var(--muted);
@@ -415,16 +671,24 @@ const BASE_CSS = `
   }
 `;
 
-function siteHeader() {
+// teamsHref/leaderboardsHref are supplied by the caller because the two
+// page builders resolve them completely differently: build.js's static
+// pages need a relative path back up to each top-level section (depth
+// varies per page), while server.js's Express routes just use fixed
+// absolute paths. `active` highlights whichever one the current page is.
+function siteHeader({ teamsHref = "./", leaderboardsHref = "leaderboards/", active = "" } = {}) {
   return `
     <header class="site">
       <div class="mark">T</div>
       <div class="name">TypeTrack</div>
-      <div class="tagline">multi-team stats</div>
+      <nav class="site-nav">
+        <a class="site-nav-link${active === "teams" ? " active" : ""}" href="${teamsHref}">Teams</a>
+        <a class="site-nav-link${active === "leaderboards" ? " active" : ""}" href="${leaderboardsHref}">Leaderboards</a>
+      </nav>
     </header>`;
 }
 
-function pageShell({ title, body, crumb }) {
+function pageShell({ title, body, crumb, teamsHref, leaderboardsHref, active }) {
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -437,7 +701,7 @@ function pageShell({ title, body, crumb }) {
   <style>${BASE_CSS}</style>
 </head>
 <body>
-${siteHeader()}
+${siteHeader({ teamsHref, leaderboardsHref, active })}
 <main>
 ${crumb ? `<div class="crumb">${crumb}</div>` : ""}
 ${body}
@@ -450,8 +714,9 @@ ${body}
 module.exports = {
   escapeHtml,
   hashHue,
-  teamGradient,
-  teamBadgeColor,
+  teamColor,
+  textOnColor,
+  avatarColor,
   accuracyClass,
   formatDate,
   roleBadge,
@@ -460,5 +725,11 @@ module.exports = {
   MANAGE_NAV_ITEMS,
   teamSidebar,
   comingSoonBody,
+  LEADERBOARD_RANGES,
+  comingSoonLeaderboard,
+  leaderboardPanel,
+  leaderboardControls,
+  rankBadgeClass,
+  leaderboardsBody,
   pageShell,
 };

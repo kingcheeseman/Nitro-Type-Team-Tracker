@@ -69,9 +69,9 @@ async function upsertTeam(tag, info) {
     `insert into teams (
        tag, display_name, last_synced_at, next_sync_due_at,
        captain_username, captain_display_name, members_count, nt_created_at,
-       min_races, min_speed, min_level, enrollment, other_requirements
+       min_races, min_speed, min_level, enrollment, other_requirements, tag_color
      )
-     values ($1, $2, now(), now() + interval '30 minutes', $3, $4, $5, $6, $7, $8, $9, $10, $11)
+     values ($1, $2, now(), now() + interval '30 minutes', $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
      on conflict (tag) do update
        set display_name = excluded.display_name,
            last_synced_at = now(),
@@ -84,7 +84,8 @@ async function upsertTeam(tag, info) {
            min_speed = excluded.min_speed,
            min_level = excluded.min_level,
            enrollment = excluded.enrollment,
-           other_requirements = excluded.other_requirements`,
+           other_requirements = excluded.other_requirements,
+           tag_color = excluded.tag_color`,
     [
       tag,
       info.name || null,
@@ -97,6 +98,7 @@ async function upsertTeam(tag, info) {
       info.minLevel ?? null,
       info.enrollment || null,
       info.otherRequirements || null,
+      info.tagColor || null,
     ]
   );
 }

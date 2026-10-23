@@ -18,7 +18,12 @@ create table if not exists teams (
   min_speed              integer,
   min_level              integer,
   enrollment             text,
-  other_requirements     text
+  other_requirements     text,
+  -- The team's own color from Nitro Type's API (a hex string with no "#"),
+  -- e.g. "5b52a3". Used verbatim as the team's accent everywhere on this
+  -- site so there's never any mismatch with the real NT team page -
+  -- deliberately not a color we compute ourselves.
+  tag_color              text
 );
 
 create table if not exists racers (
@@ -64,6 +69,7 @@ alter table teams add column if not exists min_speed integer;
 alter table teams add column if not exists min_level integer;
 alter table teams add column if not exists enrollment text;
 alter table teams add column if not exists other_requirements text;
+alter table teams add column if not exists tag_color text;
 
 alter table racers add column if not exists role text;
 alter table racers add column if not exists membership text;

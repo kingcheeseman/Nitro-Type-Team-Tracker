@@ -8,8 +8,9 @@ const path = require("path");
 const { pool } = require("./db");
 const {
   escapeHtml,
-  teamGradient,
-  teamBadgeColor,
+  teamColor,
+  textOnColor,
+  avatarColor,
   accuracyClass,
   formatDate,
   roleBadge,
@@ -18,6 +19,7 @@ const {
   MANAGE_NAV_ITEMS,
   teamSidebar,
   comingSoonBody,
+  leaderboardsBody,
   pageShell,
 } = require("./theme");
 
@@ -41,10 +43,11 @@ function buildTeamsIndex(teams) {
            .map((t) => {
              const initial = (t.tag || "?").slice(0, 1).toUpperCase();
              const searchKey = `${t.tag} ${t.display_name || ""} ${t.captain_username || ""}`.toLowerCase();
+             const badgeBg = teamColor(t.tag, t.tag_color);
              return `
              <div class="card" data-search="${escapeHtml(searchKey)}">
                <div class="top">
-                 <div class="badge" style="background:${teamGradient(t.tag)}">${escapeHtml(initial)}</div>
+                 <div class="badge" style="background:${badgeBg};color:${textOnColor(badgeBg)}">${escapeHtml(initial)}</div>
                  <div>
                    <div class="tag">[${escapeHtml(t.tag)}]</div>
                    <div class="display-name">${escapeHtml(t.display_name || "(unsynced)")}</div>
@@ -79,7 +82,7 @@ function buildTeamsIndex(teams) {
 
   fs.writeFileSync(
     path.join(OUT_DIR, "index.html"),
-    pageShell({ title: "TypeTrack", body })
+    pageShell({ title: "TypeTrack", body, teamsHref: "./", leaderboardsHref: "leaderboards/", active: "teams" })
   );
 }
 
@@ -96,7 +99,7 @@ function buildTeamPage(team, racers) {
       return `
         <tr>
           <td class="racer">
-            <span class="avatar" style="background:${teamBadgeColor(r.username || team.tag)}">${escapeHtml(initial)}</span>
+            <span class="avatar" style="background:${avatarColor(r.username || team.tag)}">${escapeHtml(initial)}</span>
             ${escapeHtml(r.username)}${roleBadge(r.role, isCaptain)}${membershipBadge(r.membership)}
           </td>
           <td>${formatDate(r.joined_at_nt)}</td>
@@ -125,8 +128,9 @@ function buildTeamPage(team, racers) {
        </div>`
     : "";
 
+  const heroBg = teamColor(team.tag, team.tag_color);
   const hero = `
-    <div class="hero" style="background:${teamGradient(team.tag)}">
+    <div class="hero" style="background:${heroBg};color:${textOnColor(heroBg)}">
       <div class="tag">TEAM</div>
       <div class="name">[${escapeHtml(team.tag)}] ${escapeHtml(team.display_name || "")}</div>
       <div class="sub">
@@ -179,6 +183,30 @@ function buildTeamPage(team, racers) {
   }
 }
 
+// One page, four range tabs x two kinds = eight panels, toggled client-side
+// (leaderboardControls' inline script) rather than as separate pages,
+// since switching board/range shouldn't reload the page. Only All-Time is
+// real data today - the rest are honest "coming soon" panels, same
+// pattern as the team sidebar's unbuilt sections.
+function buildLeaderboardsPage(racerRows, teamRows) {
+  const dir = path.join(OUT_DIR, "leaderboards");
+  fs.mkdirSync(dir, { recursive: true });
+
+  const body = leaderboardsBody(racerRows, teamRows);
+
+  fs.writeFileSync(
+    path.join(dir, "index.html"),
+    pageShell({
+      title: "Leaderboards — TypeTrack",
+      body,
+      crumb: `<a href="../">← all teams</a>`,
+      teamsHref: "../",
+      leaderboardsHref: "./",
+      active: "leaderboards",
+    })
+  );
+}
+
 function writeTeamSectionPage({ dir, depth, activeKey, content, crumb, title }) {
   // depth 0 = this page is teams/<tag>/index.html, so "events" lives at
   // ./events/; depth 1 = teams/<tag>/<section>/index.html, so a sibling
@@ -190,14 +218,18 @@ function writeTeamSectionPage({ dir, depth, activeKey, content, crumb, title }) 
       ${teamSidebar(activeKey, linkFor)}
       <div class="team-content">${content}</div>
     </div>`;
-  fs.writeFileSync(path.join(dir, "index.html"), pageShell({ title, body, crumb }));
+  const teamsHref = depth === 0 ? "../../" : "../../../";
+  fs.writeFileSync(
+    path.join(dir, "index.html"),
+    pageShell({ title, body, crumb, teamsHref, leaderboardsHref: `${teamsHref}leaderboards/`, active: "teams" })
+  );
 }
 
 async function main() {
   const { rows: teams } = await pool.query(
     `select tag, display_name, last_synced_at,
             captain_username, captain_display_name, members_count, nt_created_at,
-            min_races, min_speed, min_level, enrollment, other_requirements
+            min_races, min_speed, min_level, enrollment, other_requirements, tag_color
      from teams order by tag`
   );
   buildTeamsIndex(teams);
@@ -218,6 +250,38 @@ async function main() {
     );
     buildTeamPage(team, racers);
   }
+
+  const { rows: racerLeaderboard } = await pool.query(
+    `select r.username, r.team_tag, t.tag_color,
+            s.avg_speed, s.top_speed, s.races, s.accuracy
+     from racers r
+     join teams t on t.tag = r.team_tag
+     left join lateral (
+       select * from racer_stats rs where rs.nt_user_id = r.nt_user_id
+       order by captured_at desc limit 1
+     ) s on true
+     where s.avg_speed is not null
+     order by s.avg_speed desc, s.top_speed desc
+     limit 100`
+  );
+
+  const { rows: teamLeaderboard } = await pool.query(
+    `select t.tag, t.display_name, t.tag_color,
+            round(avg(s.avg_speed), 1) as avg_speed,
+            max(s.top_speed) as top_speed,
+            sum(s.races) as total_races,
+            count(s.avg_speed) as racer_count
+     from teams t
+     join racers r on r.team_tag = t.tag
+     left join lateral (
+       select * from racer_stats rs where rs.nt_user_id = r.nt_user_id
+       order by captured_at desc limit 1
+     ) s on true
+     group by t.tag, t.display_name, t.tag_color
+     order by avg_speed desc nulls last`
+  );
+
+  buildLeaderboardsPage(racerLeaderboard, teamLeaderboard);
 
   console.log(`Built ${teams.length} team page(s) into ${OUT_DIR}`);
   await pool.end();

@@ -3,8 +3,9 @@ const express = require("express");
 const { pool } = require("./db");
 const {
   escapeHtml,
-  teamGradient,
-  teamBadgeColor,
+  teamColor,
+  textOnColor,
+  avatarColor,
   accuracyClass,
   formatDate,
   roleBadge,
@@ -13,8 +14,13 @@ const {
   MANAGE_NAV_ITEMS,
   teamSidebar,
   comingSoonBody,
+  leaderboardsBody,
   pageShell,
 } = require("./theme");
+
+// Express routes use fixed absolute paths (unlike build.js's relative,
+// depth-aware ones), so the nav hrefs are the same on every page here.
+const SITE_NAV = { teamsHref: "/teams", leaderboardsHref: "/leaderboards" };
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -33,6 +39,7 @@ app.get("/", async (req, res) => {
           <p class="meta-row">App is running and the database connection works.</p>
           <p class="meta-row">Database time: <strong>${rows[0].db_time}</strong></p>
           <p><a href="/teams">View tracked teams →</a></p>`,
+        ...SITE_NAV,
       })
     );
   } catch (err) {
@@ -49,7 +56,7 @@ app.get("/teams", async (req, res) => {
     const { rows } = await pool.query(
       `select tag, display_name, last_synced_at,
               captain_username, captain_display_name, members_count, nt_created_at,
-              min_races, min_speed
+              min_races, min_speed, tag_color
        from teams order by tag`
     );
     const body = rows.length
@@ -67,10 +74,11 @@ app.get("/teams", async (req, res) => {
              .map((t) => {
                const initial = (t.tag || "?").slice(0, 1).toUpperCase();
                const searchKey = `${t.tag} ${t.display_name || ""} ${t.captain_username || ""}`.toLowerCase();
+               const badgeBg = teamColor(t.tag, t.tag_color);
                return `
                <div class="card" data-search="${escapeHtml(searchKey)}">
                  <div class="top">
-                   <div class="badge" style="background:${teamGradient(t.tag)}">${escapeHtml(initial)}</div>
+                   <div class="badge" style="background:${badgeBg};color:${textOnColor(badgeBg)}">${escapeHtml(initial)}</div>
                    <div>
                      <div class="tag">[${escapeHtml(t.tag)}]</div>
                      <div class="display-name">${escapeHtml(t.display_name || "(unsynced)")}</div>
@@ -101,7 +109,7 @@ app.get("/teams", async (req, res) => {
            })();
          </script>`
       : `<h1>Browse teams</h1><div class="empty">No teams yet — run the ingestion script to add some.</div>`;
-    res.type("html").send(pageShell({ title: "Tracked teams", body, crumb: `<a href="/">← back</a>` }));
+    res.type("html").send(pageShell({ title: "Tracked teams", body, crumb: `<a href="/">← back</a>`, ...SITE_NAV, active: "teams" }));
   } catch (err) {
     console.error("Teams query failed:", err.message);
     res.status(500).send("Could not query teams.");
@@ -140,7 +148,7 @@ app.get("/teams/:tag", async (req, res) => {
         return `
           <tr>
             <td class="racer">
-              <span class="avatar" style="background:${teamBadgeColor(r.username || tag)}">${escapeHtml(initial)}</span>
+              <span class="avatar" style="background:${avatarColor(r.username || tag)}">${escapeHtml(initial)}</span>
               ${escapeHtml(r.username)}${roleBadge(r.role, isCaptain)}${membershipBadge(r.membership)}
             </td>
             <td>${formatDate(r.joined_at_nt)}</td>
@@ -169,8 +177,9 @@ app.get("/teams/:tag", async (req, res) => {
          </div>`
       : "";
 
+    const heroBg = teamColor(t.tag, t.tag_color);
     const hero = `
-      <div class="hero" style="background:${teamGradient(t.tag)}">
+      <div class="hero" style="background:${heroBg};color:${textOnColor(heroBg)}">
         <div class="tag">TEAM</div>
         <div class="name">[${escapeHtml(t.tag)}] ${escapeHtml(t.display_name || "")}</div>
         <div class="sub">
@@ -207,6 +216,8 @@ app.get("/teams/:tag", async (req, res) => {
         title: `[${t.tag}] ${t.display_name || "team"}`,
         body,
         crumb: `<a href="/teams">← all teams</a>`,
+        ...SITE_NAV,
+        active: "teams",
       })
     );
   } catch (err) {
@@ -231,8 +242,9 @@ app.get("/teams/:tag/:section", async (req, res) => {
       return res.status(404).send(`No team with tag "${escapeHtml(tag)}" in the database yet.`);
     }
     const t = team.rows[0];
+    const sectionHeroBg = teamColor(t.tag, t.tag_color);
     const hero = `
-      <div class="hero" style="background:${teamGradient(t.tag)}">
+      <div class="hero" style="background:${sectionHeroBg};color:${textOnColor(sectionHeroBg)}">
         <div class="tag">TEAM</div>
         <div class="name">[${escapeHtml(t.tag)}] ${escapeHtml(t.display_name || "")}</div>
       </div>`;
@@ -247,11 +259,63 @@ app.get("/teams/:tag/:section", async (req, res) => {
         title: `[${t.tag}] ${item.label}`,
         body,
         crumb: `<a href="/teams">← all teams</a>`,
+        ...SITE_NAV,
+        active: "teams",
       })
     );
   } catch (err) {
     console.error("Team section page query failed:", err.message);
     res.status(500).send("Could not load that team.");
+  }
+});
+
+// Site-wide leaderboards: racers and teams ranked across everything this
+// tracker follows (not all of Nitro Type - just the teams we ingest).
+// Mirrors build.js's buildLeaderboardsPage via the shared leaderboardsBody
+// helper in theme.js so local preview and the deployed static site never
+// drift apart.
+app.get("/leaderboards", async (req, res) => {
+  try {
+    const { rows: racerRows } = await pool.query(
+      `select r.username, r.team_tag, t.tag_color,
+              s.avg_speed, s.top_speed, s.races, s.accuracy
+       from racers r
+       join teams t on t.tag = r.team_tag
+       left join lateral (
+         select * from racer_stats rs where rs.nt_user_id = r.nt_user_id
+         order by captured_at desc limit 1
+       ) s on true
+       where s.avg_speed is not null
+       order by s.avg_speed desc, s.top_speed desc
+       limit 100`
+    );
+    const { rows: teamRows } = await pool.query(
+      `select t.tag, t.display_name, t.tag_color,
+              round(avg(s.avg_speed), 1) as avg_speed,
+              max(s.top_speed) as top_speed,
+              sum(s.races) as total_races,
+              count(s.avg_speed) as racer_count
+       from teams t
+       join racers r on r.team_tag = t.tag
+       left join lateral (
+         select * from racer_stats rs where rs.nt_user_id = r.nt_user_id
+         order by captured_at desc limit 1
+       ) s on true
+       group by t.tag, t.display_name, t.tag_color
+       order by avg_speed desc nulls last`
+    );
+    res.type("html").send(
+      pageShell({
+        title: "Leaderboards — TypeTrack",
+        body: leaderboardsBody(racerRows, teamRows),
+        crumb: `<a href="/teams">← all teams</a>`,
+        ...SITE_NAV,
+        active: "leaderboards",
+      })
+    );
+  } catch (err) {
+    console.error("Leaderboards query failed:", err.message);
+    res.status(500).send("Could not load leaderboards.");
   }
 });
 
