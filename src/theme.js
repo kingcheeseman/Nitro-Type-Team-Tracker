@@ -165,20 +165,26 @@ function comingSoonBody(label) {
     </div>`;
 }
 
-// Leaderboard time-range boards we show tabs for. All five of these are
-// real - each sums the racer_points ledger over a rolling window (see
-// leaderboard-data.js) - except Seasonal, which stays a "coming soon"
-// stub: Nitro Type has its own season/tournament boundaries we don't
-// track, and making one up would be a fabricated period dressed up as a
-// real one.
+// Leaderboard time-range boards we show tabs for. Every one sums the
+// racer_points ledger over a rolling window (see leaderboard-data.js).
+// Seasonal is a 45-day rolling window, same mechanism as the others - NOT
+// Nitro Type's own real season boundary (currently ~6 weeks, but there's
+// no reliable public API exposing exact season start/end dates to track
+// that automatically). racersLeaderboardTable/teamsLeaderboardTable add
+// an explicit note on the Seasonal panel so that's never implied.
 const LEADERBOARD_RANGES = [
   { key: "hourly", label: "Hourly", built: true },
   { key: "daily", label: "Daily", built: true },
   { key: "weekly", label: "Weekly", built: true },
   { key: "monthly", label: "Monthly", built: true },
-  { key: "seasonal", label: "Seasonal", built: false },
+  { key: "seasonal", label: "Seasonal", built: true },
   { key: "alltime", label: "All-Time", built: true },
 ];
+
+// Shown only on the Seasonal panel, in addition to the normal points-
+// formula note - keeps "Seasonal" here from being mistaken for Nitro
+// Type's own real season boundary.
+const SEASONAL_NOTE = `A rolling 45-day window, not Nitro Type's own season boundary (which runs on its own schedule we don't have reliable access to).`;
 
 function comingSoonLeaderboard(rangeLabel) {
   return `
@@ -311,7 +317,7 @@ function racersLeaderboardTable(rows, rangeLabel, teamHref) {
         <tbody>${body}</tbody>
       </table>
     </div>
-    <p class="lb-score-note">Points = (avg speed ÷ 2 + accuracy) × races completed since the last sync, earned race by race — not an official Nitro Type stat.</p>`;
+    <p class="lb-score-note">Points = (avg speed ÷ 2 + accuracy) × races completed since the last sync, earned race by race — not an official Nitro Type stat.${rangeLabel === "Seasonal" ? ` ${SEASONAL_NOTE}` : ""}</p>`;
 }
 
 function teamsLeaderboardTable(rows, rangeLabel, teamHref) {
@@ -347,7 +353,7 @@ function teamsLeaderboardTable(rows, rangeLabel, teamHref) {
         <tbody>${body}</tbody>
       </table>
     </div>
-    <p class="lb-score-note">Points = the sum of every member's points — races completed since joining this tracker × (avg speed ÷ 2 + accuracy). Team WPM/accuracy are races-weighted averages over this window.</p>`;
+    <p class="lb-score-note">Points = the sum of every member's points — races completed since joining this tracker × (avg speed ÷ 2 + accuracy). Team WPM/accuracy are races-weighted averages over this window.${rangeLabel === "Seasonal" ? ` ${SEASONAL_NOTE}` : ""}</p>`;
 }
 
 // Builds the full leaderboards page body (controls + all panels) from

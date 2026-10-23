@@ -12,15 +12,21 @@ const RANGE_INTERVALS = {
   daily: "1 day",
   weekly: "7 days",
   monthly: "30 days",
+  // Nitro Type does have real, dated seasons (~6 weeks each), but there's
+  // no reliable public API exposing a season's start/end dates - the
+  // season page is server-rendered with no backing JSON endpoint we could
+  // find. Rather than hand-maintain real season dates through code
+  // changes every rollover, "Seasonal" here is the same kind of rolling
+  // window as the others, just longer - explicitly NOT a claim about
+  // Nitro Type's own season boundary (see the extra note rendered with it
+  // in theme.js).
+  seasonal: "45 days",
   // Not a real "forever" - just long enough to include every row, since
   // racer_points only ever holds rows from after this feature shipped.
   alltime: "100 years",
 };
 
-// "seasonal" is deliberately absent: Nitro Type has its own season/
-// tournament boundaries we don't track, so making one up (a rolling
-// quarter, say) would be a fabricated period dressed up as a real one.
-const BUILT_RANGES = ["hourly", "daily", "weekly", "monthly", "alltime"];
+const BUILT_RANGES = ["hourly", "daily", "weekly", "monthly", "seasonal", "alltime"];
 
 async function queryRacerPoints(pool, range) {
   const { rows } = await pool.query(
