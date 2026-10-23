@@ -73,6 +73,83 @@
   .hero .tag { font-size: 13px; opacity: 0.85; font-weight: 700; letter-spacing: 0.4px; }
   .hero .name { font-size: 26px; font-weight: 800; margin-top: 2px; }
   .hero .sub { margin-top: 10px; font-size: 13px; opacity: 0.9; }
+  .hero .meta-stats {
+    display: flex; gap: 28px; margin-top: 14px; flex-wrap: wrap;
+  }
+  .hero .meta-stats .stat { font-size: 12px; opacity: 0.85; }
+  .hero .meta-stats .stat b { display: block; font-size: 15px; font-weight: 800; opacity: 1; margin-top: 2px; }
+
+  .req-bar {
+    display: flex; gap: 28px; flex-wrap: wrap; align-items: center;
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 20px;
+    margin-bottom: 14px;
+    font-size: 13px;
+  }
+  .req-bar .req { color: var(--muted); }
+  .req-bar .req b { color: var(--text); font-weight: 700; }
+
+  .special-reqs {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 20px;
+    margin-bottom: 22px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .special-reqs .label {
+    text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px;
+    color: var(--muted); font-weight: 700; margin-bottom: 6px;
+  }
+  .special-reqs .text { color: var(--text); line-height: 1.5; word-break: break-word; }
+
+  .index-header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    flex-wrap: wrap; gap: 12px; margin-bottom: 18px;
+  }
+  .search-box input {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-family: inherit;
+    font-size: 13px;
+    width: 220px;
+  }
+  .search-box input:focus { outline: 1px solid var(--accent); }
+  .search-box input::placeholder { color: var(--muted); }
+
+  .card .req-line { font-size: 12px; color: var(--muted); }
+  .card .req-line b { color: var(--text); }
+  .card .view-btn {
+    margin-top: 4px;
+    display: inline-block;
+    background: var(--accent);
+    color: #0b1220;
+    font-weight: 700;
+    font-size: 12.5px;
+    padding: 7px 12px;
+    border-radius: 8px;
+    align-self: flex-start;
+  }
+
+  .role-pill {
+    display: inline-block;
+    font-size: 10.5px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    padding: 1px 6px;
+    border-radius: 5px;
+    margin-left: 7px;
+    vertical-align: middle;
+  }
+  .role-pill.captain { background: rgba(232,197,71,0.18); color: var(--ok); }
+  .role-pill.officer { background: rgba(61,161,255,0.18); color: var(--accent); }
+  .role-pill.gold { background: rgba(232,197,71,0.12); color: var(--ok); }
 
   .grid {
     display: grid;
@@ -182,11 +259,18 @@
     </header>
 <main>
 
-<h1>Tracked teams</h1>
-       <p class="meta-row">10 teams tracked</p>
-       <div class="grid">
+<div class="index-header">
+         <div>
+           <h1>Browse teams</h1>
+           <p class="meta-row">10 teams tracked</p>
+         </div>
+         <div class="search-box">
+           <input id="teamSearch" type="text" placeholder="Search teams…" autocomplete="off">
+         </div>
+       </div>
+       <div class="grid" id="teamGrid">
          
-             <a class="card" href="teams/bn8/" style="text-decoration:none;color:inherit;">
+             <div class="card" data-search="bn8 benevolence l3g3ndary_back4more">
                <div class="top">
                  <div class="badge" style="background:linear-gradient(135deg, hsl(20 70% 42%), hsl(60 70% 30%))">B</div>
                  <div>
@@ -194,9 +278,13 @@
                    <div class="display-name">BENEVOLENCE</div>
                  </div>
                </div>
-               <div class="footer">Synced 10/22/2026, 8:16:42 PM</div>
-             </a>
-             <a class="card" href="teams/imt/" style="text-decoration:none;color:inherit;">
+               <div class="req-line">Captain: <b>L3G3NDARY</b></div>
+               <div class="req-line">Members: <b>49</b> &nbsp;·&nbsp; Formed: <b>Sep 5, 2025</b></div>
+               <div class="req-line">Min: <b>0 races</b> / <b>0 wpm</b></div>
+               <a class="view-btn" href="teams/bn8/">View team →</a>
+               <div class="footer">Synced 10/23/2026, 12:44:58 AM</div>
+             </div>
+             <div class="card" data-search="imt immortal legends taylorja32">
                <div class="top">
                  <div class="badge" style="background:linear-gradient(135deg, hsl(264 70% 42%), hsl(304 70% 30%))">I</div>
                  <div>
@@ -204,9 +292,13 @@
                    <div class="display-name">Immortal Legends</div>
                  </div>
                </div>
-               <div class="footer">Synced 10/22/2026, 8:16:24 PM</div>
-             </a>
-             <a class="card" href="teams/imtr/" style="text-decoration:none;color:inherit;">
+               <div class="req-line">Captain: <b>Void Racer</b></div>
+               <div class="req-line">Members: <b>48</b> &nbsp;·&nbsp; Formed: <b>Jun 10, 2026</b></div>
+               <div class="req-line">Min: <b>500 races</b> / <b>50 wpm</b></div>
+               <a class="view-btn" href="teams/imt/">View team →</a>
+               <div class="footer">Synced 10/23/2026, 12:44:40 AM</div>
+             </div>
+             <div class="card" data-search="imtr imt retired racers the_only_winner123">
                <div class="top">
                  <div class="badge" style="background:linear-gradient(135deg, hsl(346 70% 42%), hsl(26 70% 30%))">I</div>
                  <div>
@@ -214,9 +306,13 @@
                    <div class="display-name">IMT Retired Racers</div>
                  </div>
                </div>
-               <div class="footer">Synced 10/22/2026, 8:17:00 PM</div>
-             </a>
-             <a class="card" href="teams/keycat/" style="text-decoration:none;color:inherit;">
+               <div class="req-line">Captain: <b>the_only_winner123</b></div>
+               <div class="req-line">Members: <b>2</b> &nbsp;·&nbsp; Formed: <b>Oct 4, 2026</b></div>
+               <div class="req-line">Min: <b>50 races</b> / <b>40 wpm</b></div>
+               <a class="view-btn" href="teams/imtr/">View team →</a>
+               <div class="footer">Synced 10/23/2026, 12:45:16 AM</div>
+             </div>
+             <div class="card" data-search="keycat the keyboard cats cats_4_eva">
                <div class="top">
                  <div class="badge" style="background:linear-gradient(135deg, hsl(119 70% 42%), hsl(159 70% 30%))">K</div>
                  <div>
@@ -224,9 +320,13 @@
                    <div class="display-name">The Keyboard Cats</div>
                  </div>
                </div>
-               <div class="footer">Synced 10/22/2026, 8:16:30 PM</div>
-             </a>
-             <a class="card" href="teams/ku/" style="text-decoration:none;color:inherit;">
+               <div class="req-line">Captain: <b>Cats_4_Eva</b></div>
+               <div class="req-line">Members: <b>43</b> &nbsp;·&nbsp; Formed: <b>Nov 14, 2025</b></div>
+               <div class="req-line">Min: <b>100 races</b> / <b>0 wpm</b></div>
+               <a class="view-btn" href="teams/keycat/">View team →</a>
+               <div class="footer">Synced 10/23/2026, 12:44:46 AM</div>
+             </div>
+             <div class="card" data-search="ku ketsui 999x">
                <div class="top">
                  <div class="badge" style="background:linear-gradient(135deg, hsl(250 70% 42%), hsl(290 70% 30%))">K</div>
                  <div>
@@ -234,9 +334,13 @@
                    <div class="display-name">Ketsui</div>
                  </div>
                </div>
-               <div class="footer">Synced 10/22/2026, 8:16:48 PM</div>
-             </a>
-             <a class="card" href="teams/nohope/" style="text-decoration:none;color:inherit;">
+               <div class="req-line">Captain: <b>Ketsui</b></div>
+               <div class="req-line">Members: <b>49</b> &nbsp;·&nbsp; Formed: <b>Nov 19, 2025</b></div>
+               <div class="req-line">Min: <b>500 races</b> / <b>100 wpm</b></div>
+               <a class="view-btn" href="teams/ku/">View team →</a>
+               <div class="footer">Synced 10/23/2026, 12:45:04 AM</div>
+             </div>
+             <div class="card" data-search="nohope maybe just a little uroboros">
                <div class="top">
                  <div class="badge" style="background:linear-gradient(135deg, hsl(157 70% 42%), hsl(197 70% 30%))">N</div>
                  <div>
@@ -244,9 +348,13 @@
                    <div class="display-name">Maybe just a little</div>
                  </div>
                </div>
-               <div class="footer">Synced 10/22/2026, 8:17:14 PM</div>
-             </a>
-             <a class="card" href="teams/ssh/" style="text-decoration:none;color:inherit;">
+               <div class="req-line">Captain: <b>One Life - One Cycle</b></div>
+               <div class="req-line">Members: <b>49</b> &nbsp;·&nbsp; Formed: <b>Feb 21, 2026</b></div>
+               <div class="req-line">Min: <b>0 races</b> / <b>0 wpm</b></div>
+               <a class="view-btn" href="teams/nohope/">View team →</a>
+               <div class="footer">Synced 10/23/2026, 12:45:29 AM</div>
+             </div>
+             <div class="card" data-search="ssh shell  riders volatile">
                <div class="top">
                  <div class="badge" style="background:linear-gradient(135deg, hsl(328 70% 42%), hsl(8 70% 30%))">S</div>
                  <div>
@@ -254,9 +362,13 @@
                    <div class="display-name">Shell  Riders</div>
                  </div>
                </div>
-               <div class="footer">Synced 10/22/2026, 8:17:07 PM</div>
-             </a>
-             <a class="card" href="teams/svc/" style="text-decoration:none;color:inherit;">
+               <div class="req-line">Captain: <b>volatile</b></div>
+               <div class="req-line">Members: <b>47</b> &nbsp;·&nbsp; Formed: <b>Dec 11, 2014</b></div>
+               <div class="req-line">Min: <b>500 races</b> / <b>40 wpm</b></div>
+               <a class="view-btn" href="teams/ssh/">View team →</a>
+               <div class="footer">Synced 10/23/2026, 12:45:23 AM</div>
+             </div>
+             <div class="card" data-search="svc -servants of christ- lynahx33">
                <div class="top">
                  <div class="badge" style="background:linear-gradient(135deg, hsl(56 70% 42%), hsl(96 70% 30%))">S</div>
                  <div>
@@ -264,9 +376,13 @@
                    <div class="display-name">-Servants of Christ-</div>
                  </div>
                </div>
-               <div class="footer">Synced 10/22/2026, 8:16:54 PM</div>
-             </a>
-             <a class="card" href="teams/thb0s/" style="text-decoration:none;color:inherit;">
+               <div class="req-line">Captain: <b>-Exotic19-</b></div>
+               <div class="req-line">Members: <b>46</b> &nbsp;·&nbsp; Formed: <b>Aug 5, 2025</b></div>
+               <div class="req-line">Min: <b>500 races</b> / <b>60 wpm</b></div>
+               <a class="view-btn" href="teams/svc/">View team →</a>
+               <div class="footer">Synced 10/23/2026, 12:45:10 AM</div>
+             </div>
+             <div class="card" data-search="thb0s theb0ss sara0010">
                <div class="top">
                  <div class="badge" style="background:linear-gradient(135deg, hsl(353 70% 42%), hsl(33 70% 30%))">T</div>
                  <div>
@@ -274,9 +390,13 @@
                    <div class="display-name">THEB0SS</div>
                  </div>
                </div>
-               <div class="footer">Synced 10/22/2026, 8:16:36 PM</div>
-             </a>
-             <a class="card" href="teams/w1nn6r/" style="text-decoration:none;color:inherit;">
+               <div class="req-line">Captain: <b>Sara10</b></div>
+               <div class="req-line">Members: <b>48</b> &nbsp;·&nbsp; Formed: <b>Nov 14, 2025</b></div>
+               <div class="req-line">Min: <b>350 races</b> / <b>50 wpm</b></div>
+               <a class="view-btn" href="teams/thb0s/">View team →</a>
+               <div class="footer">Synced 10/23/2026, 12:44:52 AM</div>
+             </div>
+             <div class="card" data-search="w1nn6r time2rise vortexkeyz">
                <div class="top">
                  <div class="badge" style="background:linear-gradient(135deg, hsl(278 70% 42%), hsl(318 70% 30%))">W</div>
                  <div>
@@ -284,10 +404,27 @@
                    <div class="display-name">Time2Rise</div>
                  </div>
                </div>
-               <div class="footer">Synced 10/22/2026, 8:17:01 PM</div>
-             </a>
+               <div class="req-line">Captain: <b>Vk      </b></div>
+               <div class="req-line">Members: <b>50</b> &nbsp;·&nbsp; Formed: <b>Aug 8, 2025</b></div>
+               <div class="req-line">Min: <b>0 races</b> / <b>0 wpm</b></div>
+               <a class="view-btn" href="teams/w1nn6r/">View team →</a>
+               <div class="footer">Synced 10/23/2026, 12:45:17 AM</div>
+             </div>
        </div>
+       <script>
+         (function () {
+           var input = document.getElementById("teamSearch");
+           var cards = Array.prototype.slice.call(document.querySelectorAll("#teamGrid .card"));
+           input.addEventListener("input", function () {
+             var q = input.value.trim().toLowerCase();
+             cards.forEach(function (card) {
+               var match = !q || card.getAttribute("data-search").indexOf(q) !== -1;
+               card.style.display = match ? "" : "none";
+             });
+           });
+         })();
+       </script>
 </main>
-<footer class="site">Generated 2026-10-23T00:25:56.804Z</footer>
+<footer class="site">Generated 2026-10-23T00:45:59.237Z</footer>
 </body>
 </html>

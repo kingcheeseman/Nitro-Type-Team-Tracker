@@ -73,6 +73,83 @@
   .hero .tag { font-size: 13px; opacity: 0.85; font-weight: 700; letter-spacing: 0.4px; }
   .hero .name { font-size: 26px; font-weight: 800; margin-top: 2px; }
   .hero .sub { margin-top: 10px; font-size: 13px; opacity: 0.9; }
+  .hero .meta-stats {
+    display: flex; gap: 28px; margin-top: 14px; flex-wrap: wrap;
+  }
+  .hero .meta-stats .stat { font-size: 12px; opacity: 0.85; }
+  .hero .meta-stats .stat b { display: block; font-size: 15px; font-weight: 800; opacity: 1; margin-top: 2px; }
+
+  .req-bar {
+    display: flex; gap: 28px; flex-wrap: wrap; align-items: center;
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 20px;
+    margin-bottom: 14px;
+    font-size: 13px;
+  }
+  .req-bar .req { color: var(--muted); }
+  .req-bar .req b { color: var(--text); font-weight: 700; }
+
+  .special-reqs {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 20px;
+    margin-bottom: 22px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .special-reqs .label {
+    text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px;
+    color: var(--muted); font-weight: 700; margin-bottom: 6px;
+  }
+  .special-reqs .text { color: var(--text); line-height: 1.5; word-break: break-word; }
+
+  .index-header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    flex-wrap: wrap; gap: 12px; margin-bottom: 18px;
+  }
+  .search-box input {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-family: inherit;
+    font-size: 13px;
+    width: 220px;
+  }
+  .search-box input:focus { outline: 1px solid var(--accent); }
+  .search-box input::placeholder { color: var(--muted); }
+
+  .card .req-line { font-size: 12px; color: var(--muted); }
+  .card .req-line b { color: var(--text); }
+  .card .view-btn {
+    margin-top: 4px;
+    display: inline-block;
+    background: var(--accent);
+    color: #0b1220;
+    font-weight: 700;
+    font-size: 12.5px;
+    padding: 7px 12px;
+    border-radius: 8px;
+    align-self: flex-start;
+  }
+
+  .role-pill {
+    display: inline-block;
+    font-size: 10.5px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    padding: 1px 6px;
+    border-radius: 5px;
+    margin-left: 7px;
+    vertical-align: middle;
+  }
+  .role-pill.captain { background: rgba(232,197,71,0.18); color: var(--ok); }
+  .role-pill.officer { background: rgba(61,161,255,0.18); color: var(--accent); }
+  .role-pill.gold { background: rgba(232,197,71,0.12); color: var(--ok); }
 
   .grid {
     display: grid;
@@ -186,20 +263,35 @@
     <div class="hero" style="background:linear-gradient(135deg, hsl(346 70% 42%), hsl(26 70% 30%))">
       <div class="tag">TEAM</div>
       <div class="name">[IMTR] IMT Retired Racers</div>
-      <div class="sub">2 racers tracked · last synced 10/22/2026, 8:17:00 PM</div>
+      <div class="sub">
+        Captain: the_only_winner123 · 2 racers tracked · last synced 10/23/2026, 12:45:16 AM</div>
     </div>
+    
+    <div class="req-bar">
+      <div class="req">Members <b>2</b></div>
+      <div class="req">Formed <b>Oct 4, 2026</b></div>
+      <div class="req">Enrollment <b>auto</b></div>
+      <div class="req">Min races <b>50</b></div>
+      <div class="req">Min speed <b>40 wpm</b></div>
+      <div class="req">Min level <b>0</b></div>
+    </div>
+    <div class="special-reqs">
+         <div class="label">Special requirements</div>
+         <div class="text">Official IMT retirement team | NO cheating of any type | Racing is not necessary but is appreciated | Allies: KEYCAT, SVC, IMT, &amp; THB0S</div>
+       </div>
     <div class="table-wrap">
       <table>
         <thead>
-          <tr><th>Racer</th><th>Avg speed</th><th>Top speed</th><th>Races</th><th>Accuracy</th></tr>
+          <tr><th>Racer</th><th>Joined</th><th>Avg speed</th><th>Highest speed</th><th>Lifetime races</th><th>Accuracy</th></tr>
         </thead>
         <tbody>
           
         <tr>
           <td class="racer">
             <span class="avatar" style="background:hsl(67 85% 65%)">K</span>
-            king_cheeseman
+            king_cheeseman<span class="role-pill officer">Officer</span>
           </td>
+          <td>Oct 21, 2026</td>
           <td>85</td>
           <td>118</td>
           <td>16151</td>
@@ -208,8 +300,9 @@
         <tr>
           <td class="racer">
             <span class="avatar" style="background:hsl(254 85% 65%)">T</span>
-            the_only_winner123
+            the_only_winner123<span class="role-pill captain">Captain</span>
           </td>
+          <td>Oct 4, 2026</td>
           <td>95</td>
           <td>118</td>
           <td>60</td>
@@ -219,6 +312,6 @@
       </table>
     </div>
 </main>
-<footer class="site">Generated 2026-10-23T00:25:56.975Z</footer>
+<footer class="site">Generated 2026-10-23T00:45:59.358Z</footer>
 </body>
 </html>

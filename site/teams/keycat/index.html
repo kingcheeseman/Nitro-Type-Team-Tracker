@@ -73,6 +73,83 @@
   .hero .tag { font-size: 13px; opacity: 0.85; font-weight: 700; letter-spacing: 0.4px; }
   .hero .name { font-size: 26px; font-weight: 800; margin-top: 2px; }
   .hero .sub { margin-top: 10px; font-size: 13px; opacity: 0.9; }
+  .hero .meta-stats {
+    display: flex; gap: 28px; margin-top: 14px; flex-wrap: wrap;
+  }
+  .hero .meta-stats .stat { font-size: 12px; opacity: 0.85; }
+  .hero .meta-stats .stat b { display: block; font-size: 15px; font-weight: 800; opacity: 1; margin-top: 2px; }
+
+  .req-bar {
+    display: flex; gap: 28px; flex-wrap: wrap; align-items: center;
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 20px;
+    margin-bottom: 14px;
+    font-size: 13px;
+  }
+  .req-bar .req { color: var(--muted); }
+  .req-bar .req b { color: var(--text); font-weight: 700; }
+
+  .special-reqs {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 20px;
+    margin-bottom: 22px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .special-reqs .label {
+    text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px;
+    color: var(--muted); font-weight: 700; margin-bottom: 6px;
+  }
+  .special-reqs .text { color: var(--text); line-height: 1.5; word-break: break-word; }
+
+  .index-header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    flex-wrap: wrap; gap: 12px; margin-bottom: 18px;
+  }
+  .search-box input {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-family: inherit;
+    font-size: 13px;
+    width: 220px;
+  }
+  .search-box input:focus { outline: 1px solid var(--accent); }
+  .search-box input::placeholder { color: var(--muted); }
+
+  .card .req-line { font-size: 12px; color: var(--muted); }
+  .card .req-line b { color: var(--text); }
+  .card .view-btn {
+    margin-top: 4px;
+    display: inline-block;
+    background: var(--accent);
+    color: #0b1220;
+    font-weight: 700;
+    font-size: 12.5px;
+    padding: 7px 12px;
+    border-radius: 8px;
+    align-self: flex-start;
+  }
+
+  .role-pill {
+    display: inline-block;
+    font-size: 10.5px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    padding: 1px 6px;
+    border-radius: 5px;
+    margin-left: 7px;
+    vertical-align: middle;
+  }
+  .role-pill.captain { background: rgba(232,197,71,0.18); color: var(--ok); }
+  .role-pill.officer { background: rgba(61,161,255,0.18); color: var(--accent); }
+  .role-pill.gold { background: rgba(232,197,71,0.12); color: var(--ok); }
 
   .grid {
     display: grid;
@@ -186,12 +263,26 @@
     <div class="hero" style="background:linear-gradient(135deg, hsl(119 70% 42%), hsl(159 70% 30%))">
       <div class="tag">TEAM</div>
       <div class="name">[KEYCAT] The Keyboard Cats</div>
-      <div class="sub">43 racers tracked · last synced 10/22/2026, 8:16:30 PM</div>
+      <div class="sub">
+        Captain: Cats_4_Eva · 43 racers tracked · last synced 10/23/2026, 12:44:46 AM</div>
     </div>
+    
+    <div class="req-bar">
+      <div class="req">Members <b>43</b></div>
+      <div class="req">Formed <b>Nov 14, 2025</b></div>
+      <div class="req">Enrollment <b>auto</b></div>
+      <div class="req">Min races <b>100</b></div>
+      <div class="req">Min speed <b>0 wpm</b></div>
+      <div class="req">Min level <b>0</b></div>
+    </div>
+    <div class="special-reqs">
+         <div class="label">Special requirements</div>
+         <div class="text">⚞^. .^⚟ &quot;A cat will do what it wants, when it wants, and there is nothing you can do about it&quot; | Tournaments won: 7| Allies: MTEXAS, AUG3, IMT, IMTR</div>
+       </div>
     <div class="table-wrap">
       <table>
         <thead>
-          <tr><th>Racer</th><th>Avg speed</th><th>Top speed</th><th>Races</th><th>Accuracy</th></tr>
+          <tr><th>Racer</th><th>Joined</th><th>Avg speed</th><th>Highest speed</th><th>Lifetime races</th><th>Accuracy</th></tr>
         </thead>
         <tbody>
           
@@ -200,6 +291,7 @@
             <span class="avatar" style="background:hsl(105 85% 65%)">0</span>
             0aec5c58b29b446a974707cee786e4b6
           </td>
+          <td>Sep 30, 2026</td>
           <td>24</td>
           <td>46</td>
           <td>525</td>
@@ -210,6 +302,7 @@
             <span class="avatar" style="background:hsl(191 85% 65%)">1</span>
             123d920ba28e9959c2eb402ab64f351b
           </td>
+          <td>Oct 21, 2026</td>
           <td>40</td>
           <td>51</td>
           <td>307</td>
@@ -218,8 +311,9 @@
         <tr>
           <td class="racer">
             <span class="avatar" style="background:hsl(138 85% 65%)">1</span>
-            1e47c8cfaf1f8f2565f896d4d9b4ef7a
+            1e47c8cfaf1f8f2565f896d4d9b4ef7a<span class="role-pill officer">Officer</span><span class="role-pill gold">Gold</span>
           </td>
+          <td>Sep 25, 2026</td>
           <td>66</td>
           <td>94</td>
           <td>2209</td>
@@ -230,6 +324,7 @@
             <span class="avatar" style="background:hsl(313 85% 65%)">2</span>
             294028
           </td>
+          <td>Oct 22, 2026</td>
           <td>39</td>
           <td>101</td>
           <td>410</td>
@@ -240,6 +335,7 @@
             <span class="avatar" style="background:hsl(83 85% 65%)">3</span>
             3bb7e2bbbd18f1973a5c17381643350c
           </td>
+          <td>Sep 27, 2026</td>
           <td>32</td>
           <td>45</td>
           <td>716</td>
@@ -250,6 +346,7 @@
             <span class="avatar" style="background:hsl(352 85% 65%)">4</span>
             40afc44b976786bdc764ab2456aeb386
           </td>
+          <td>Sep 16, 2026</td>
           <td>81</td>
           <td>100</td>
           <td>2267</td>
@@ -260,6 +357,7 @@
             <span class="avatar" style="background:hsl(186 85% 65%)">6</span>
             687be2d1cef5ef13bb95c5f37d5bf8dd
           </td>
+          <td>Aug 7, 2026</td>
           <td>46</td>
           <td>92</td>
           <td>3606</td>
@@ -270,6 +368,7 @@
             <span class="avatar" style="background:hsl(230 85% 65%)">6</span>
             6a7b8c86ab1785b7ec0f0df5d0fe9dc4
           </td>
+          <td>Oct 14, 2026</td>
           <td>59</td>
           <td>77</td>
           <td>906</td>
@@ -278,8 +377,9 @@
         <tr>
           <td class="racer">
             <span class="avatar" style="background:hsl(29 85% 65%)">6</span>
-            6fbd67f9d84f6c8b513276ecce2b0bd2
+            6fbd67f9d84f6c8b513276ecce2b0bd2<span class="role-pill gold">Gold</span>
           </td>
+          <td>Oct 9, 2026</td>
           <td>84</td>
           <td>116</td>
           <td>15847</td>
@@ -290,6 +390,7 @@
             <span class="avatar" style="background:hsl(138 85% 65%)">7</span>
             7604263cc5b3ae1cda6af38e9a437c85
           </td>
+          <td>Sep 29, 2026</td>
           <td>32</td>
           <td>47</td>
           <td>180</td>
@@ -300,6 +401,7 @@
             <span class="avatar" style="background:hsl(131 85% 65%)">7</span>
             7786738cc9ba530c1191612ac17ae92d
           </td>
+          <td>Oct 6, 2026</td>
           <td>90</td>
           <td>112</td>
           <td>1518</td>
@@ -310,6 +412,7 @@
             <span class="avatar" style="background:hsl(11 85% 65%)">8</span>
             87fcfdfb0800cb09690e8a373dc58063
           </td>
+          <td>Oct 16, 2026</td>
           <td>53</td>
           <td>102</td>
           <td>1057</td>
@@ -318,8 +421,9 @@
         <tr>
           <td class="racer">
             <span class="avatar" style="background:hsl(149 85% 65%)">8</span>
-            8b752d6e29182fdb8861d032e7780a60
+            8b752d6e29182fdb8861d032e7780a60<span class="role-pill officer">Officer</span>
           </td>
+          <td>Jul 17, 2026</td>
           <td>79</td>
           <td>97</td>
           <td>4007</td>
@@ -330,6 +434,7 @@
             <span class="avatar" style="background:hsl(349 85% 65%)">A</span>
             adde0f9a93c81f15800f19720c04f793
           </td>
+          <td>Oct 7, 2026</td>
           <td>53</td>
           <td>105</td>
           <td>593</td>
@@ -338,8 +443,9 @@
         <tr>
           <td class="racer">
             <span class="avatar" style="background:hsl(40 85% 65%)">A</span>
-            ahhh2014
+            ahhh2014<span class="role-pill officer">Officer</span>
           </td>
+          <td>Apr 10, 2026</td>
           <td>72</td>
           <td>90</td>
           <td>8364</td>
@@ -350,6 +456,7 @@
             <span class="avatar" style="background:hsl(344 85% 65%)">B</span>
             bf60bb92cfa7c5f84cc4932cb845bacf
           </td>
+          <td>Sep 24, 2026</td>
           <td>33</td>
           <td>44</td>
           <td>521</td>
@@ -358,8 +465,9 @@
         <tr>
           <td class="racer">
             <span class="avatar" style="background:hsl(311 85% 65%)">B</span>
-            bob_ate_bob_twice
+            bob_ate_bob_twice<span class="role-pill officer">Officer</span>
           </td>
+          <td>Oct 5, 2026</td>
           <td>74</td>
           <td>113</td>
           <td>304</td>
@@ -370,6 +478,7 @@
             <span class="avatar" style="background:hsl(49 85% 65%)">C</span>
             c3d82c7617aee254df7e8f77d3de405b
           </td>
+          <td>Oct 5, 2026</td>
           <td>59</td>
           <td>78</td>
           <td>1443</td>
@@ -380,16 +489,18 @@
             <span class="avatar" style="background:hsl(252 85% 65%)">C</span>
             c52fd2ca61cebcfa9c50be45911b7138
           </td>
-          <td>50</td>
+          <td>Oct 20, 2026</td>
+          <td>59</td>
           <td>66</td>
-          <td>856</td>
-          <td><span class="pill ok">94.98%</span></td>
+          <td>900</td>
+          <td><span class="pill ok">94.88%</span></td>
         </tr>
         <tr>
           <td class="racer">
             <span class="avatar" style="background:hsl(83 85% 65%)">C</span>
             c8819cadbfe243837c5545b372cb3cd1
           </td>
+          <td>Aug 24, 2026</td>
           <td>79</td>
           <td>96</td>
           <td>2552</td>
@@ -398,8 +509,9 @@
         <tr>
           <td class="racer">
             <span class="avatar" style="background:hsl(91 85% 65%)">C</span>
-            cats_4_eva
+            cats_4_eva<span class="role-pill captain">Captain</span>
           </td>
+          <td>Nov 14, 2025</td>
           <td>83</td>
           <td>111</td>
           <td>13878</td>
@@ -410,6 +522,7 @@
             <span class="avatar" style="background:hsl(1 85% 65%)">D</span>
             d805338153c36671f411566bd44c1b95
           </td>
+          <td>Sep 25, 2026</td>
           <td>23</td>
           <td>35</td>
           <td>175</td>
@@ -420,6 +533,7 @@
             <span class="avatar" style="background:hsl(204 85% 65%)">D</span>
             dac15c1994a90cbf2a9bd6dab29b550a
           </td>
+          <td>Oct 20, 2026</td>
           <td>67</td>
           <td>84</td>
           <td>127</td>
@@ -430,6 +544,7 @@
             <span class="avatar" style="background:hsl(22 85% 65%)">D</span>
             dc7021a089975ab161ac339f7dd7fc2a
           </td>
+          <td>Nov 15, 2025</td>
           <td>45</td>
           <td>78</td>
           <td>3423</td>
@@ -440,6 +555,7 @@
             <span class="avatar" style="background:hsl(261 85% 65%)">D</span>
             dirk_nowitzki41
           </td>
+          <td>Oct 6, 2026</td>
           <td>52</td>
           <td>63</td>
           <td>158</td>
@@ -450,6 +566,7 @@
             <span class="avatar" style="background:hsl(270 85% 65%)">E</span>
             e6c26c62f86a10bff77dd164ac359f83
           </td>
+          <td>Sep 16, 2026</td>
           <td>78</td>
           <td>96</td>
           <td>546</td>
@@ -460,6 +577,7 @@
             <span class="avatar" style="background:hsl(153 85% 65%)">F</span>
             fresh_shrimpy
           </td>
+          <td>Oct 21, 2026</td>
           <td>59</td>
           <td>75</td>
           <td>862</td>
@@ -470,6 +588,7 @@
             <span class="avatar" style="background:hsl(225 85% 65%)">G</span>
             gogracie
           </td>
+          <td>May 10, 2026</td>
           <td>66</td>
           <td>100</td>
           <td>5725</td>
@@ -478,11 +597,12 @@
         <tr>
           <td class="racer">
             <span class="avatar" style="background:hsl(89 85% 65%)">H</span>
-            haleyyrose
+            haleyyrose<span class="role-pill officer">Officer</span><span class="role-pill gold">Gold</span>
           </td>
+          <td>Sep 22, 2026</td>
           <td>80</td>
           <td>112</td>
-          <td>5165</td>
+          <td>5169</td>
           <td><span class="pill ok">94.64%</span></td>
         </tr>
         <tr>
@@ -490,6 +610,7 @@
             <span class="avatar" style="background:hsl(83 85% 65%)">H</span>
             happygoluckygirl07
           </td>
+          <td>Aug 2, 2026</td>
           <td>45</td>
           <td>58</td>
           <td>1829</td>
@@ -500,6 +621,7 @@
             <span class="avatar" style="background:hsl(86 85% 65%)">J</span>
             jaysongilman28
           </td>
+          <td>Oct 5, 2026</td>
           <td>62</td>
           <td>88</td>
           <td>2801</td>
@@ -510,6 +632,7 @@
             <span class="avatar" style="background:hsl(3 85% 65%)">K</span>
             k9vr_17
           </td>
+          <td>Sep 24, 2026</td>
           <td>81</td>
           <td>94</td>
           <td>2430</td>
@@ -520,6 +643,7 @@
             <span class="avatar" style="background:hsl(19 85% 65%)">L</span>
             lillie1432
           </td>
+          <td>Apr 20, 2026</td>
           <td>39</td>
           <td>49</td>
           <td>1654</td>
@@ -530,6 +654,7 @@
             <span class="avatar" style="background:hsl(211 85% 65%)">M</span>
             makawgamer88
           </td>
+          <td>Oct 20, 2026</td>
           <td>35</td>
           <td>156</td>
           <td>161</td>
@@ -540,6 +665,7 @@
             <span class="avatar" style="background:hsl(249 85% 65%)">M</span>
             mazen_67
           </td>
+          <td>Sep 29, 2026</td>
           <td>26</td>
           <td>56</td>
           <td>1324</td>
@@ -550,6 +676,7 @@
             <span class="avatar" style="background:hsl(190 85% 65%)">M</span>
             milkshake889
           </td>
+          <td>Oct 21, 2026</td>
           <td>40</td>
           <td>55</td>
           <td>280</td>
@@ -560,6 +687,7 @@
             <span class="avatar" style="background:hsl(291 85% 65%)">Q</span>
             quickbrownpony
           </td>
+          <td>Apr 7, 2026</td>
           <td>71</td>
           <td>99</td>
           <td>1352</td>
@@ -570,6 +698,7 @@
             <span class="avatar" style="background:hsl(7 85% 65%)">S</span>
             s218250
           </td>
+          <td>Oct 22, 2026</td>
           <td>31</td>
           <td>44</td>
           <td>556</td>
@@ -580,6 +709,7 @@
             <span class="avatar" style="background:hsl(110 85% 65%)">S</span>
             slushy_da_goat
           </td>
+          <td>Sep 24, 2026</td>
           <td>63</td>
           <td>108</td>
           <td>6734</td>
@@ -590,6 +720,7 @@
             <span class="avatar" style="background:hsl(65 85% 65%)">S</span>
             soap2x
           </td>
+          <td>Oct 19, 2026</td>
           <td>55</td>
           <td>83</td>
           <td>2530</td>
@@ -600,6 +731,7 @@
             <span class="avatar" style="background:hsl(31 85% 65%)">S</span>
             speed_demon17888
           </td>
+          <td>Sep 21, 2026</td>
           <td>45</td>
           <td>64</td>
           <td>401</td>
@@ -610,6 +742,7 @@
             <span class="avatar" style="background:hsl(110 85% 65%)">V</span>
             vertur
           </td>
+          <td>Oct 19, 2026</td>
           <td>55</td>
           <td>65</td>
           <td>1401</td>
@@ -620,6 +753,7 @@
             <span class="avatar" style="background:hsl(173 85% 65%)">W</span>
             watermelonsupreme
           </td>
+          <td>Sep 28, 2026</td>
           <td>71</td>
           <td>94</td>
           <td>287</td>
@@ -629,6 +763,6 @@
       </table>
     </div>
 </main>
-<footer class="site">Generated 2026-10-23T00:25:57.031Z</footer>
+<footer class="site">Generated 2026-10-23T00:45:59.398Z</footer>
 </body>
 </html>
