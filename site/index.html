@@ -47,8 +47,18 @@
     font-weight: 800; font-size: 14px; color: #0b1220;
     flex: none;
   }
-  header.site .name { font-weight: 800; font-size: 17px; letter-spacing: 0.2px; }
+  header.site .name { font-weight: 800; font-size: 17px; letter-spacing: 0.2px; margin-right: 10px; }
   header.site .tagline { color: var(--muted); font-size: 13px; margin-left: 4px; }
+  .site-nav { display: flex; gap: 4px; margin-left: 6px; }
+  .site-nav-link {
+    color: var(--muted);
+    font-weight: 700;
+    font-size: 13.5px;
+    padding: 6px 11px;
+    border-radius: 7px;
+  }
+  .site-nav-link:hover { color: var(--text); text-decoration: none; background: var(--panel-2); }
+  .site-nav-link.active { color: var(--accent); background: rgba(61,161,255,0.12); }
 
   main { max-width: 1040px; margin: 0 auto; padding: 28px 20px 60px; }
 
@@ -67,7 +77,6 @@
     border-radius: var(--radius);
     padding: 22px 24px;
     margin-bottom: 22px;
-    color: #fff;
     box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
   }
   .hero .tag { font-size: 13px; opacity: 0.85; font-weight: 700; letter-spacing: 0.4px; }
@@ -235,7 +244,7 @@
   .card .badge {
     width: 38px; height: 38px; border-radius: 8px;
     display: flex; align-items: center; justify-content: center;
-    font-weight: 800; font-size: 12px; color: #0b1220;
+    font-weight: 800; font-size: 12px;
     flex: none;
   }
   .card .tag { font-weight: 800; font-size: 14px; }
@@ -301,6 +310,58 @@
   .pill.low  { background: rgba(255,107,107,0.15); color: var(--low); }
   .pill.na   { background: rgba(170,178,192,0.12); color: var(--muted); }
 
+  .lb-controls {
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 10px;
+    margin-bottom: 18px;
+  }
+  .seg {
+    display: inline-flex;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    padding: 3px;
+    gap: 2px;
+  }
+  .seg-btn {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 12.5px;
+    padding: 7px 13px;
+    border-radius: 7px;
+    cursor: pointer;
+  }
+  .seg-btn:hover { color: var(--text); }
+  .seg-btn.active { background: var(--accent); color: #0b1220; }
+  .seg-btn .soon-tag { vertical-align: 1px; }
+
+  .lb-rank {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px; height: 24px;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 800;
+    background: var(--panel-2);
+    color: var(--muted);
+  }
+  .lb-rank.top1 { background: rgba(232,197,71,0.18); color: var(--ok); }
+  .lb-rank.top2 { background: rgba(170,178,192,0.22); color: #d8dee8; }
+  .lb-rank.top3 { background: rgba(255,142,96,0.18); color: #ff8e60; }
+
+  .lb-team-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 6px;
+    margin-left: 8px;
+  }
+
   footer.site {
     text-align: center;
     color: var(--muted);
@@ -319,7 +380,10 @@
     <header class="site">
       <div class="mark">T</div>
       <div class="name">TypeTrack</div>
-      <div class="tagline">multi-team stats</div>
+      <nav class="site-nav">
+        <a class="site-nav-link active" href="./">Teams</a>
+        <a class="site-nav-link" href="leaderboards/">Leaderboards</a>
+      </nav>
     </header>
 <main>
 
@@ -336,7 +400,7 @@
          
              <div class="card" data-search="bn8 benevolence l3g3ndary_back4more">
                <div class="top">
-                 <div class="badge" style="background:linear-gradient(135deg, hsl(20 70% 42%), hsl(60 70% 30%))">B</div>
+                 <div class="badge" style="background:#ee1f25;color:#ffffff">B</div>
                  <div>
                    <div class="tag">[BN8]</div>
                    <div class="display-name">BENEVOLENCE</div>
@@ -346,11 +410,11 @@
                <div class="req-line">Members: <b>49</b> &nbsp;·&nbsp; Formed: <b>Sep 5, 2025</b></div>
                <div class="req-line">Min: <b>0 races</b> / <b>0 wpm</b></div>
                <a class="view-btn" href="teams/bn8/">View team →</a>
-               <div class="footer">Synced 10/23/2026, 12:44:58 AM</div>
+               <div class="footer">Synced 10/23/2026, 1:17:56 AM</div>
              </div>
              <div class="card" data-search="imt immortal legends taylorja32">
                <div class="top">
-                 <div class="badge" style="background:linear-gradient(135deg, hsl(264 70% 42%), hsl(304 70% 30%))">I</div>
+                 <div class="badge" style="background:#5b52a3;color:#ffffff">I</div>
                  <div>
                    <div class="tag">[IMT]</div>
                    <div class="display-name">Immortal Legends</div>
@@ -360,11 +424,11 @@
                <div class="req-line">Members: <b>48</b> &nbsp;·&nbsp; Formed: <b>Jun 10, 2026</b></div>
                <div class="req-line">Min: <b>500 races</b> / <b>50 wpm</b></div>
                <a class="view-btn" href="teams/imt/">View team →</a>
-               <div class="footer">Synced 10/23/2026, 12:44:40 AM</div>
+               <div class="footer">Synced 10/23/2026, 1:17:38 AM</div>
              </div>
              <div class="card" data-search="imtr imt retired racers the_only_winner123">
                <div class="top">
-                 <div class="badge" style="background:linear-gradient(135deg, hsl(346 70% 42%), hsl(26 70% 30%))">I</div>
+                 <div class="badge" style="background:#5b52a3;color:#ffffff">I</div>
                  <div>
                    <div class="tag">[IMTR]</div>
                    <div class="display-name">IMT Retired Racers</div>
@@ -374,11 +438,11 @@
                <div class="req-line">Members: <b>2</b> &nbsp;·&nbsp; Formed: <b>Oct 4, 2026</b></div>
                <div class="req-line">Min: <b>50 races</b> / <b>40 wpm</b></div>
                <a class="view-btn" href="teams/imtr/">View team →</a>
-               <div class="footer">Synced 10/23/2026, 12:45:16 AM</div>
+               <div class="footer">Synced 10/23/2026, 1:18:14 AM</div>
              </div>
              <div class="card" data-search="keycat the keyboard cats cats_4_eva">
                <div class="top">
-                 <div class="badge" style="background:linear-gradient(135deg, hsl(119 70% 42%), hsl(159 70% 30%))">K</div>
+                 <div class="badge" style="background:#71c6a5;color:#ffffff">K</div>
                  <div>
                    <div class="tag">[KEYCAT]</div>
                    <div class="display-name">The Keyboard Cats</div>
@@ -388,39 +452,39 @@
                <div class="req-line">Members: <b>43</b> &nbsp;·&nbsp; Formed: <b>Nov 14, 2025</b></div>
                <div class="req-line">Min: <b>100 races</b> / <b>0 wpm</b></div>
                <a class="view-btn" href="teams/keycat/">View team →</a>
-               <div class="footer">Synced 10/23/2026, 12:44:46 AM</div>
+               <div class="footer">Synced 10/23/2026, 1:17:44 AM</div>
              </div>
              <div class="card" data-search="ku ketsui 999x">
                <div class="top">
-                 <div class="badge" style="background:linear-gradient(135deg, hsl(250 70% 42%), hsl(290 70% 30%))">K</div>
+                 <div class="badge" style="background:#fba51a;color:#ffffff">K</div>
                  <div>
                    <div class="tag">[KU]</div>
                    <div class="display-name">Ketsui</div>
                  </div>
                </div>
                <div class="req-line">Captain: <b>Ketsui</b></div>
-               <div class="req-line">Members: <b>49</b> &nbsp;·&nbsp; Formed: <b>Nov 19, 2025</b></div>
+               <div class="req-line">Members: <b>48</b> &nbsp;·&nbsp; Formed: <b>Nov 19, 2025</b></div>
                <div class="req-line">Min: <b>500 races</b> / <b>100 wpm</b></div>
                <a class="view-btn" href="teams/ku/">View team →</a>
-               <div class="footer">Synced 10/23/2026, 12:45:04 AM</div>
+               <div class="footer">Synced 10/23/2026, 1:18:02 AM</div>
              </div>
              <div class="card" data-search="nohope maybe just a little uroboros">
                <div class="top">
-                 <div class="badge" style="background:linear-gradient(135deg, hsl(157 70% 42%), hsl(197 70% 30%))">N</div>
+                 <div class="badge" style="background:#fba51a;color:#ffffff">N</div>
                  <div>
                    <div class="tag">[NOHOPE]</div>
                    <div class="display-name">Maybe just a little</div>
                  </div>
                </div>
                <div class="req-line">Captain: <b>One Life - One Cycle</b></div>
-               <div class="req-line">Members: <b>49</b> &nbsp;·&nbsp; Formed: <b>Feb 21, 2026</b></div>
+               <div class="req-line">Members: <b>50</b> &nbsp;·&nbsp; Formed: <b>Feb 21, 2026</b></div>
                <div class="req-line">Min: <b>0 races</b> / <b>0 wpm</b></div>
                <a class="view-btn" href="teams/nohope/">View team →</a>
-               <div class="footer">Synced 10/23/2026, 12:45:29 AM</div>
+               <div class="footer">Synced 10/23/2026, 1:18:27 AM</div>
              </div>
              <div class="card" data-search="ssh shell  riders volatile">
                <div class="top">
-                 <div class="badge" style="background:linear-gradient(135deg, hsl(328 70% 42%), hsl(8 70% 30%))">S</div>
+                 <div class="badge" style="background:#436fb6;color:#ffffff">S</div>
                  <div>
                    <div class="tag">[SSH]</div>
                    <div class="display-name">Shell  Riders</div>
@@ -430,11 +494,11 @@
                <div class="req-line">Members: <b>47</b> &nbsp;·&nbsp; Formed: <b>Dec 11, 2014</b></div>
                <div class="req-line">Min: <b>500 races</b> / <b>40 wpm</b></div>
                <a class="view-btn" href="teams/ssh/">View team →</a>
-               <div class="footer">Synced 10/23/2026, 12:45:23 AM</div>
+               <div class="footer">Synced 10/23/2026, 1:18:21 AM</div>
              </div>
              <div class="card" data-search="svc -servants of christ- lynahx33">
                <div class="top">
-                 <div class="badge" style="background:linear-gradient(135deg, hsl(56 70% 42%), hsl(96 70% 30%))">S</div>
+                 <div class="badge" style="background:#f5eb21;color:#0b1220">S</div>
                  <div>
                    <div class="tag">[SVC]</div>
                    <div class="display-name">-Servants of Christ-</div>
@@ -444,11 +508,11 @@
                <div class="req-line">Members: <b>46</b> &nbsp;·&nbsp; Formed: <b>Aug 5, 2025</b></div>
                <div class="req-line">Min: <b>500 races</b> / <b>60 wpm</b></div>
                <a class="view-btn" href="teams/svc/">View team →</a>
-               <div class="footer">Synced 10/23/2026, 12:45:10 AM</div>
+               <div class="footer">Synced 10/23/2026, 1:18:08 AM</div>
              </div>
              <div class="card" data-search="thb0s theb0ss sara0010">
                <div class="top">
-                 <div class="badge" style="background:linear-gradient(135deg, hsl(353 70% 42%), hsl(33 70% 30%))">T</div>
+                 <div class="badge" style="background:#fba51a;color:#ffffff">T</div>
                  <div>
                    <div class="tag">[THB0S]</div>
                    <div class="display-name">THEB0SS</div>
@@ -458,11 +522,11 @@
                <div class="req-line">Members: <b>48</b> &nbsp;·&nbsp; Formed: <b>Nov 14, 2025</b></div>
                <div class="req-line">Min: <b>350 races</b> / <b>50 wpm</b></div>
                <a class="view-btn" href="teams/thb0s/">View team →</a>
-               <div class="footer">Synced 10/23/2026, 12:44:52 AM</div>
+               <div class="footer">Synced 10/23/2026, 1:17:50 AM</div>
              </div>
              <div class="card" data-search="w1nn6r time2rise vortexkeyz">
                <div class="top">
-                 <div class="badge" style="background:linear-gradient(135deg, hsl(278 70% 42%), hsl(318 70% 30%))">W</div>
+                 <div class="badge" style="background:#ee1f25;color:#ffffff">W</div>
                  <div>
                    <div class="tag">[W1NN6R]</div>
                    <div class="display-name">Time2Rise</div>
@@ -472,7 +536,7 @@
                <div class="req-line">Members: <b>50</b> &nbsp;·&nbsp; Formed: <b>Aug 8, 2025</b></div>
                <div class="req-line">Min: <b>0 races</b> / <b>0 wpm</b></div>
                <a class="view-btn" href="teams/w1nn6r/">View team →</a>
-               <div class="footer">Synced 10/23/2026, 12:45:17 AM</div>
+               <div class="footer">Synced 10/23/2026, 1:18:15 AM</div>
              </div>
        </div>
        <script>
@@ -489,6 +553,6 @@
          })();
        </script>
 </main>
-<footer class="site">Generated 2026-10-23T01:01:08.530Z</footer>
+<footer class="site">Generated 2026-10-23T01:19:43.802Z</footer>
 </body>
 </html>

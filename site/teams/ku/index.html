@@ -47,8 +47,18 @@
     font-weight: 800; font-size: 14px; color: #0b1220;
     flex: none;
   }
-  header.site .name { font-weight: 800; font-size: 17px; letter-spacing: 0.2px; }
+  header.site .name { font-weight: 800; font-size: 17px; letter-spacing: 0.2px; margin-right: 10px; }
   header.site .tagline { color: var(--muted); font-size: 13px; margin-left: 4px; }
+  .site-nav { display: flex; gap: 4px; margin-left: 6px; }
+  .site-nav-link {
+    color: var(--muted);
+    font-weight: 700;
+    font-size: 13.5px;
+    padding: 6px 11px;
+    border-radius: 7px;
+  }
+  .site-nav-link:hover { color: var(--text); text-decoration: none; background: var(--panel-2); }
+  .site-nav-link.active { color: var(--accent); background: rgba(61,161,255,0.12); }
 
   main { max-width: 1040px; margin: 0 auto; padding: 28px 20px 60px; }
 
@@ -67,7 +77,6 @@
     border-radius: var(--radius);
     padding: 22px 24px;
     margin-bottom: 22px;
-    color: #fff;
     box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
   }
   .hero .tag { font-size: 13px; opacity: 0.85; font-weight: 700; letter-spacing: 0.4px; }
@@ -235,7 +244,7 @@
   .card .badge {
     width: 38px; height: 38px; border-radius: 8px;
     display: flex; align-items: center; justify-content: center;
-    font-weight: 800; font-size: 12px; color: #0b1220;
+    font-weight: 800; font-size: 12px;
     flex: none;
   }
   .card .tag { font-weight: 800; font-size: 14px; }
@@ -301,6 +310,58 @@
   .pill.low  { background: rgba(255,107,107,0.15); color: var(--low); }
   .pill.na   { background: rgba(170,178,192,0.12); color: var(--muted); }
 
+  .lb-controls {
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 10px;
+    margin-bottom: 18px;
+  }
+  .seg {
+    display: inline-flex;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    padding: 3px;
+    gap: 2px;
+  }
+  .seg-btn {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 12.5px;
+    padding: 7px 13px;
+    border-radius: 7px;
+    cursor: pointer;
+  }
+  .seg-btn:hover { color: var(--text); }
+  .seg-btn.active { background: var(--accent); color: #0b1220; }
+  .seg-btn .soon-tag { vertical-align: 1px; }
+
+  .lb-rank {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px; height: 24px;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 800;
+    background: var(--panel-2);
+    color: var(--muted);
+  }
+  .lb-rank.top1 { background: rgba(232,197,71,0.18); color: var(--ok); }
+  .lb-rank.top2 { background: rgba(170,178,192,0.22); color: #d8dee8; }
+  .lb-rank.top3 { background: rgba(255,142,96,0.18); color: #ff8e60; }
+
+  .lb-team-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 6px;
+    margin-left: 8px;
+  }
+
   footer.site {
     text-align: center;
     color: var(--muted);
@@ -319,7 +380,10 @@
     <header class="site">
       <div class="mark">T</div>
       <div class="name">TypeTrack</div>
-      <div class="tagline">multi-team stats</div>
+      <nav class="site-nav">
+        <a class="site-nav-link active" href="../../">Teams</a>
+        <a class="site-nav-link" href="../../leaderboards/">Leaderboards</a>
+      </nav>
     </header>
 <main>
 <div class="crumb"><a href="../../">← all teams</a></div>
@@ -332,15 +396,15 @@
       <a class="nav-item" href="admin/"><span class="nav-icon">⚙️</span>Team Admin<span class="soon-tag">Soon</span></a>
     </nav>
       <div class="team-content">
-    <div class="hero" style="background:linear-gradient(135deg, hsl(250 70% 42%), hsl(290 70% 30%))">
+    <div class="hero" style="background:#fba51a;color:#ffffff">
       <div class="tag">TEAM</div>
       <div class="name">[KU] Ketsui</div>
       <div class="sub">
-        Captain: Ketsui · 50 racers tracked · last synced 10/23/2026, 12:45:04 AM</div>
+        Captain: Ketsui · 50 racers tracked · last synced 10/23/2026, 1:18:02 AM</div>
     </div>
     
     <div class="req-bar">
-      <div class="req">Members <b>49</b></div>
+      <div class="req">Members <b>48</b></div>
       <div class="req">Formed <b>Nov 19, 2025</b></div>
       <div class="req">Enrollment <b>closed</b></div>
       <div class="req">Min races <b>500</b></div>
@@ -540,9 +604,9 @@
             dodge_hornet_2024<span class="role-pill gold">Gold</span>
           </td>
           <td>Oct 18, 2026</td>
-          <td>155</td>
+          <td>153</td>
           <td>199</td>
-          <td>39939</td>
+          <td>39959</td>
           <td><span class="pill good">98.59%</span></td>
         </tr>
         <tr>
@@ -562,9 +626,9 @@
             ikandoit<span class="role-pill gold">Gold</span>
           </td>
           <td>Aug 31, 2026</td>
-          <td>178</td>
+          <td>173</td>
           <td>208</td>
-          <td>204292</td>
+          <td>204321</td>
           <td><span class="pill good">96.43%</span></td>
         </tr>
         <tr>
@@ -663,8 +727,8 @@
           <td>Oct 17, 2026</td>
           <td>92</td>
           <td>144</td>
-          <td>85707</td>
-          <td><span class="pill good">97.14%</span></td>
+          <td>85749</td>
+          <td><span class="pill good">97.13%</span></td>
         </tr>
         <tr>
           <td class="racer">
@@ -672,9 +736,9 @@
             maiisoh<span class="role-pill gold">Gold</span>
           </td>
           <td>Oct 19, 2026</td>
-          <td>78</td>
+          <td>82</td>
           <td>123</td>
-          <td>153150</td>
+          <td>153191</td>
           <td><span class="pill good">98.13%</span></td>
         </tr>
         <tr>
@@ -705,9 +769,9 @@
             mrw21502<span class="role-pill gold">Gold</span>
           </td>
           <td>Sep 19, 2026</td>
-          <td>104</td>
+          <td>106</td>
           <td>185</td>
-          <td>46929</td>
+          <td>46931</td>
           <td><span class="pill good">96.55%</span></td>
         </tr>
         <tr>
@@ -773,8 +837,8 @@
           <td>Oct 19, 2026</td>
           <td>99</td>
           <td>135</td>
-          <td>73631</td>
-          <td><span class="pill good">99.04%</span></td>
+          <td>73660</td>
+          <td><span class="pill good">99.03%</span></td>
         </tr>
         <tr>
           <td class="racer">
@@ -784,8 +848,8 @@
           <td>Oct 17, 2026</td>
           <td>70</td>
           <td>182</td>
-          <td>363574</td>
-          <td><span class="pill good">97.39%</span></td>
+          <td>363609</td>
+          <td><span class="pill good">97.38%</span></td>
         </tr>
         <tr>
           <td class="racer">
@@ -848,10 +912,10 @@
             t4l4n06<span class="role-pill gold">Gold</span>
           </td>
           <td>Oct 7, 2026</td>
-          <td>73</td>
+          <td>79</td>
           <td>107</td>
-          <td>89310</td>
-          <td><span class="pill good">96.56%</span></td>
+          <td>89348</td>
+          <td><span class="pill good">96.57%</span></td>
         </tr>
         <tr>
           <td class="racer">
@@ -913,6 +977,6 @@
     </div></div>
     </div>
 </main>
-<footer class="site">Generated 2026-10-23T01:01:08.977Z</footer>
+<footer class="site">Generated 2026-10-23T01:19:44.158Z</footer>
 </body>
 </html>
