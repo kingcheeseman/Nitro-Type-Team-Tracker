@@ -1086,13 +1086,13 @@ function pageShell({ title, body, crumb, teamsHref, leaderboardsHref, accountHre
   <style>${BASE_CSS}</style>
 </head>
 <body>
+<script src="${assetsHref}"></script>
 ${siteHeader({ teamsHref, leaderboardsHref, accountHref, active })}
 <main>
 ${crumb ? `<div class="crumb">${crumb}</div>` : ""}
 ${body}
 </main>
 <footer class="site">Generated ${new Date().toISOString()}</footer>
-<script src="${assetsHref}"></script>
 </body>
 </html>`;
 }
