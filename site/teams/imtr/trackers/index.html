@@ -398,6 +398,40 @@
     main { padding: 20px 14px 50px; }
     .hero .name { font-size: 21px; }
   }
+
+  /* Forms - account pages (sign in/up, connect) and the captain events
+     manager share this small set of classes. */
+  .form-input {
+    width: 100%;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font: inherit;
+    font-family: "Manrope", -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  .form-input:focus { outline: 1px solid var(--accent); }
+  .form-input::placeholder { color: var(--muted); }
+  label.form-input-wrap { font-size: 12px; color: var(--muted); display: flex; flex-direction: column; gap: 4px; }
+  .btn-primary, .btn-secondary, .btn-danger {
+    font: inherit;
+    font-weight: 700;
+    font-size: 13.5px;
+    border-radius: 8px;
+    padding: 10px 14px;
+    border: 1px solid transparent;
+    cursor: pointer;
+  }
+  .btn-primary { background: var(--accent); color: #06121f; }
+  .btn-primary:hover { opacity: 0.9; }
+  .btn-secondary { background: var(--panel-2); color: var(--text); border-color: var(--border); }
+  .btn-secondary:hover { border-color: var(--accent); }
+  .btn-danger { background: rgba(255,107,107,0.12); color: var(--low); border-color: rgba(255,107,107,0.3); }
+  .btn-danger:hover { background: rgba(255,107,107,0.2); }
+  .form-error { color: var(--low); font-size: 12.5px; }
+  .form-note { font-size: 12.5px; }
+  .site-nav-link[data-account-nav] { white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -408,6 +442,7 @@
       <nav class="site-nav">
         <a class="site-nav-link active" href="../../../">Teams</a>
         <a class="site-nav-link" href="../../../leaderboards/">Leaderboards</a>
+        <a class="site-nav-link" href="../../../account/" data-account-nav>Account</a>
       </nav>
     </header>
 <main>
@@ -456,6 +491,7 @@
     <div class="trk-panel" data-range="daily"><div class="empty" style="padding:40px 24px;">No one on this team earned any points in the Daily window yet — this fills in as more syncs run.</div></div><div class="trk-panel" data-range="weekly" hidden><div class="empty" style="padding:40px 24px;">No one on this team earned any points in the Weekly window yet — this fills in as more syncs run.</div></div><div class="trk-panel" data-range="seasonal" hidden><div class="empty" style="padding:40px 24px;">No one on this team earned any points in the Season window yet — this fills in as more syncs run.</div><p class="lb-score-note">Tracks Nitro Type's own current season, "Spirit Racers" (Oct 18 – Nov 29).</p></div><div class="trk-panel" data-range="alltime" hidden><div class="empty" style="padding:40px 24px;">No one on this team earned any points in the All-Time window yet — this fills in as more syncs run.</div></div></div>
     </div>
 </main>
-<footer class="site">Generated 2026-10-23T20:21:12.404Z</footer>
+<footer class="site">Generated 2026-10-23T20:27:29.127Z</footer>
+<script src="../../../assets/app.js"></script>
 </body>
 </html>

@@ -398,6 +398,40 @@
     main { padding: 20px 14px 50px; }
     .hero .name { font-size: 21px; }
   }
+
+  /* Forms - account pages (sign in/up, connect) and the captain events
+     manager share this small set of classes. */
+  .form-input {
+    width: 100%;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font: inherit;
+    font-family: "Manrope", -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  .form-input:focus { outline: 1px solid var(--accent); }
+  .form-input::placeholder { color: var(--muted); }
+  label.form-input-wrap { font-size: 12px; color: var(--muted); display: flex; flex-direction: column; gap: 4px; }
+  .btn-primary, .btn-secondary, .btn-danger {
+    font: inherit;
+    font-weight: 700;
+    font-size: 13.5px;
+    border-radius: 8px;
+    padding: 10px 14px;
+    border: 1px solid transparent;
+    cursor: pointer;
+  }
+  .btn-primary { background: var(--accent); color: #06121f; }
+  .btn-primary:hover { opacity: 0.9; }
+  .btn-secondary { background: var(--panel-2); color: var(--text); border-color: var(--border); }
+  .btn-secondary:hover { border-color: var(--accent); }
+  .btn-danger { background: rgba(255,107,107,0.12); color: var(--low); border-color: rgba(255,107,107,0.3); }
+  .btn-danger:hover { background: rgba(255,107,107,0.2); }
+  .form-error { color: var(--low); font-size: 12.5px; }
+  .form-note { font-size: 12.5px; }
+  .site-nav-link[data-account-nav] { white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -408,6 +442,7 @@
       <nav class="site-nav">
         <a class="site-nav-link" href="../">Teams</a>
         <a class="site-nav-link active" href="./">Leaderboards</a>
+        <a class="site-nav-link" href="../account/" data-account-nav>Account</a>
       </nav>
     </header>
 <main>
@@ -541,6 +576,19 @@
         <tr>
           <td><span class="lb-rank">7</span></td>
           <td class="racer">
+            <span class="avatar" style="background:hsl(61 85% 65%)">E</span>
+            Electric
+            <a class="lb-team-tag" href="../teams/blank/" style="background:#abb7dd;color:#ffffff">BLANK</a>
+          </td>
+          <td><span class="points">8024.18</span></td>
+          <td>55</td>
+          <td>102</td>
+          <td>193</td>
+          <td><span class="pill good">96.62%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">8</span></td>
+          <td class="racer">
             <span class="avatar" style="background:hsl(193 85% 65%)">L</span>
             LovelyLyrica
             <a class="lb-team-tag" href="../teams/ku/" style="background:#fba51a;color:#ffffff">KU</a>
@@ -552,7 +600,7 @@
           <td><span class="pill good">98.11%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">8</span></td>
+          <td><span class="lb-rank">9</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(85 85% 65%)">L</span>
             Like2Type
@@ -565,7 +613,7 @@
           <td><span class="pill good">95.78%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">9</span></td>
+          <td><span class="lb-rank">10</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(12 85% 65%)">B</span>
             BicentricFir13
@@ -578,7 +626,7 @@
           <td><span class="pill good">95.84%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">10</span></td>
+          <td><span class="lb-rank">11</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(253 85% 65%)">W</span>
             Wraptor
@@ -591,7 +639,7 @@
           <td><span class="pill good">95.2%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">11</span></td>
+          <td><span class="lb-rank">12</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(70 85% 65%)">C</span>
             Calhoun
@@ -604,7 +652,7 @@
           <td><span class="pill ok">94.32%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">12</span></td>
+          <td><span class="lb-rank">13</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(356 85% 65%)">M</span>
             monster_iii
@@ -617,7 +665,7 @@
           <td><span class="pill good">98%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">13</span></td>
+          <td><span class="lb-rank">14</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(22 85% 65%)">P</span>
             pinkpanthor
@@ -630,7 +678,7 @@
           <td><span class="pill good">95.02%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">14</span></td>
+          <td><span class="lb-rank">15</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(48 85% 65%)">0</span>
             0
@@ -643,7 +691,7 @@
           <td><span class="pill good">99.14%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">15</span></td>
+          <td><span class="lb-rank">16</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(280 85% 65%)">A</span>
             atrg                                              
@@ -656,7 +704,7 @@
           <td><span class="pill good">98.87%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">16</span></td>
+          <td><span class="lb-rank">17</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(85 85% 65%)">G</span>
             GREEK BANANA
@@ -669,7 +717,7 @@
           <td><span class="pill ok">92.64%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">17</span></td>
+          <td><span class="lb-rank">18</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(148 85% 65%)">K</span>
             KFcfriendchic1
@@ -682,7 +730,7 @@
           <td><span class="pill good">96.85%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">18</span></td>
+          <td><span class="lb-rank">19</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(200 85% 65%)">A</span>
             Applez
@@ -695,7 +743,7 @@
           <td><span class="pill good">98.97%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">19</span></td>
+          <td><span class="lb-rank">20</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(291 85% 65%)">1</span>
             14 ᅠ
@@ -708,7 +756,7 @@
           <td><span class="pill good">96.87%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">20</span></td>
+          <td><span class="lb-rank">21</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(200 85% 65%)">N</span>
             NeonDrifter
@@ -721,7 +769,7 @@
           <td><span class="pill good">97.28%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">21</span></td>
+          <td><span class="lb-rank">22</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(81 85% 65%)">F</span>
             Farmbell
@@ -734,7 +782,7 @@
           <td><span class="pill good">95.83%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">22</span></td>
+          <td><span class="lb-rank">23</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(82 85% 65%)">S</span>
             Sum 41
@@ -747,7 +795,7 @@
           <td><span class="pill low">89.88%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">23</span></td>
+          <td><span class="lb-rank">24</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(286 85% 65%)">J</span>
             JCKrayzie
@@ -760,7 +808,7 @@
           <td><span class="pill good">97.66%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">24</span></td>
+          <td><span class="lb-rank">25</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(79 85% 65%)">C</span>
             Cr4zyTyper YT
@@ -773,7 +821,7 @@
           <td><span class="pill good">97.5%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">25</span></td>
+          <td><span class="lb-rank">26</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(136 85% 65%)">Y</span>
             Yayyyyyyyy
@@ -786,7 +834,7 @@
           <td><span class="pill good">96.47%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">26</span></td>
+          <td><span class="lb-rank">27</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(276 85% 65%)">B</span>
             B1ACKhornet
@@ -799,7 +847,7 @@
           <td><span class="pill ok">94%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">27</span></td>
+          <td><span class="lb-rank">28</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(77 85% 65%)">J</span>
             Josiah4theWin
@@ -812,7 +860,7 @@
           <td><span class="pill ok">93.29%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">28</span></td>
+          <td><span class="lb-rank">29</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(182 85% 65%)">G</span>
             Ghoulish Paradox
@@ -825,7 +873,7 @@
           <td><span class="pill good">99.65%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">29</span></td>
+          <td><span class="lb-rank">30</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(20 85% 65%)">T</span>
             TimB.
@@ -838,7 +886,7 @@
           <td><span class="pill good">97.71%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">30</span></td>
+          <td><span class="lb-rank">31</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(42 85% 65%)">M</span>
             mike4532fxfx
@@ -851,7 +899,7 @@
           <td><span class="pill low">89%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">31</span></td>
+          <td><span class="lb-rank">32</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(188 85% 65%)">S</span>
             Shad0w-_-
@@ -864,7 +912,7 @@
           <td><span class="pill ok">93.13%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">32</span></td>
+          <td><span class="lb-rank">33</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(48 85% 65%)">J</span>
             Jail2zz
@@ -877,7 +925,7 @@
           <td><span class="pill good">97.06%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">33</span></td>
+          <td><span class="lb-rank">34</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(332 85% 65%)">N</span>
             Nathan
@@ -890,7 +938,7 @@
           <td><span class="pill good">95.14%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">34</span></td>
+          <td><span class="lb-rank">35</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(87 85% 65%)">S</span>
             spookyicecoffee245
@@ -903,7 +951,7 @@
           <td><span class="pill ok">94.96%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">35</span></td>
+          <td><span class="lb-rank">36</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(267 85% 65%)">H</span>
             hihihi
@@ -916,7 +964,7 @@
           <td><span class="pill ok">93.85%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">36</span></td>
+          <td><span class="lb-rank">37</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(144 85% 65%)">T</span>
             TBZRocket
@@ -929,7 +977,7 @@
           <td><span class="pill ok">93.88%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">37</span></td>
+          <td><span class="lb-rank">38</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(184 85% 65%)">U</span>
             Unnamed
@@ -942,7 +990,7 @@
           <td><span class="pill ok">94.03%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">38</span></td>
+          <td><span class="lb-rank">39</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(73 85% 65%)">Y</span>
             YN MON
@@ -955,7 +1003,20 @@
           <td><span class="pill ok">94.13%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">39</span></td>
+          <td><span class="lb-rank">40</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(239 85% 65%)">E</span>
+            eatpizzaneatly
+            <a class="lb-team-tag" href="../teams/beehve/" style="background:#5b52a3;color:#ffffff">BEEHVE</a>
+          </td>
+          <td><span class="points">3620.43</span></td>
+          <td>26</td>
+          <td>90</td>
+          <td>115</td>
+          <td><span class="pill ok">93.26%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">41</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(90 85% 65%)">T</span>
             type for huzz
@@ -968,7 +1029,7 @@
           <td><span class="pill ok">93.45%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">40</span></td>
+          <td><span class="lb-rank">42</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(106 85% 65%)">B</span>
             Bicentricfir4
@@ -981,7 +1042,7 @@
           <td><span class="pill good">98.17%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">41</span></td>
+          <td><span class="lb-rank">43</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(144 85% 65%)">H</span>
             Hokey Pokey
@@ -994,7 +1055,7 @@
           <td><span class="pill low">87.99%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">42</span></td>
+          <td><span class="lb-rank">44</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(184 85% 65%)">D</span>
             disgratedboy191
@@ -1007,7 +1068,7 @@
           <td><span class="pill ok">93.42%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">43</span></td>
+          <td><span class="lb-rank">45</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(292 85% 65%)">N</span>
             Neutrino_18 on yt
@@ -1020,20 +1081,7 @@
           <td><span class="pill low">87.61%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">44</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(61 85% 65%)">E</span>
-            Electric
-            <a class="lb-team-tag" href="../teams/blank/" style="background:#abb7dd;color:#ffffff">BLANK</a>
-          </td>
-          <td><span class="points">3005.1</span></td>
-          <td>21</td>
-          <td>93</td>
-          <td>193</td>
-          <td><span class="pill good">96.6%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">45</span></td>
+          <td><span class="lb-rank">46</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(262 85% 65%)">R</span>
             RadioactiveLegend
@@ -1046,7 +1094,7 @@
           <td><span class="pill good">95.16%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">46</span></td>
+          <td><span class="lb-rank">47</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(301 85% 65%)">N</span>
             NitroTypist
@@ -1059,7 +1107,7 @@
           <td><span class="pill ok">93.77%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">47</span></td>
+          <td><span class="lb-rank">48</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(166 85% 65%)">S</span>
             SYBAUN
@@ -1072,7 +1120,7 @@
           <td><span class="pill ok">90.06%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">48</span></td>
+          <td><span class="lb-rank">49</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(152 85% 65%)">C</span>
             Comet_Eclipse
@@ -1085,7 +1133,7 @@
           <td><span class="pill good">95.56%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">49</span></td>
+          <td><span class="lb-rank">50</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(292 85% 65%)">U</span>
             USAF_SECRET_SQUIRREL
@@ -1098,7 +1146,7 @@
           <td><span class="pill ok">94.28%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">50</span></td>
+          <td><span class="lb-rank">51</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(80 85% 65%)">T</span>
             The champ
@@ -1111,7 +1159,7 @@
           <td><span class="pill ok">91.74%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">51</span></td>
+          <td><span class="lb-rank">52</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(149 85% 65%)">L</span>
             lebron James 23
@@ -1124,7 +1172,7 @@
           <td><span class="pill low">77.64%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">52</span></td>
+          <td><span class="lb-rank">53</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(70 85% 65%)">T</span>
             TheMrMe
@@ -1137,7 +1185,7 @@
           <td><span class="pill good">96.11%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">53</span></td>
+          <td><span class="lb-rank">54</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(45 85% 65%)">_</span>
             _ShadowPulse_
@@ -1150,7 +1198,7 @@
           <td><span class="pill ok">92.29%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">54</span></td>
+          <td><span class="lb-rank">55</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(277 85% 65%)">G</span>
             GoldenHour
@@ -1163,7 +1211,7 @@
           <td><span class="pill good">96.96%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">55</span></td>
+          <td><span class="lb-rank">56</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(256 85% 65%)">M</span>
             MrsWTypes
@@ -1174,19 +1222,6 @@
           <td>90</td>
           <td>112</td>
           <td><span class="pill good">96.88%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">56</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(239 85% 65%)">E</span>
-            eatpizzaneatly
-            <a class="lb-team-tag" href="../teams/beehve/" style="background:#5b52a3;color:#ffffff">BEEHVE</a>
-          </td>
-          <td><span class="points">2376.09</span></td>
-          <td>17</td>
-          <td>93</td>
-          <td>115</td>
-          <td><span class="pill ok">93.27%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">57</span></td>
@@ -1412,6 +1447,19 @@
         <tr>
           <td><span class="lb-rank">74</span></td>
           <td class="racer">
+            <span class="avatar" style="background:hsl(114 85% 65%)">-</span>
+            -FIRE-
+            <a class="lb-team-tag" href="../teams/beehve/" style="background:#5b52a3;color:#ffffff">BEEHVE</a>
+          </td>
+          <td><span class="points">1711.44</span></td>
+          <td>12</td>
+          <td>92</td>
+          <td>125</td>
+          <td><span class="pill good">96.62%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">75</span></td>
+          <td class="racer">
             <span class="avatar" style="background:hsl(43 85% 65%)">⚡</span>
             ⚡Ⱳîzard⚡
             <a class="lb-team-tag" href="../teams/ku/" style="background:#fba51a;color:#ffffff">KU</a>
@@ -1423,7 +1471,7 @@
           <td><span class="pill good">96.44%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">75</span></td>
+          <td><span class="lb-rank">76</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(13 85% 65%)">-</span>
             -belive in f a i t h
@@ -1436,7 +1484,7 @@
           <td><span class="pill low">88.3%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">76</span></td>
+          <td><span class="lb-rank">77</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(244 85% 65%)">D</span>
             Deltis_
@@ -1449,7 +1497,7 @@
           <td><span class="pill ok">93.83%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">77</span></td>
+          <td><span class="lb-rank">78</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(119 85% 65%)">O</span>
             Orb_362
@@ -1462,7 +1510,7 @@
           <td><span class="pill ok">93.63%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">78</span></td>
+          <td><span class="lb-rank">79</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(280 85% 65%)">N</span>
             Nightfall-5K
@@ -1475,7 +1523,7 @@
           <td><span class="pill ok">93.54%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">79</span></td>
+          <td><span class="lb-rank">80</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(131 85% 65%)"> </span>
              Kraze 
@@ -1488,7 +1536,7 @@
           <td><span class="pill good">99.02%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">80</span></td>
+          <td><span class="lb-rank">81</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(146 85% 65%)">G</span>
             Gambit
@@ -1501,7 +1549,7 @@
           <td><span class="pill ok">92.42%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">81</span></td>
+          <td><span class="lb-rank">82</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(264 85% 65%)">T</span>
             Try-NT-Mod-Suite
@@ -1514,7 +1562,7 @@
           <td><span class="pill good">95.5%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">82</span></td>
+          <td><span class="lb-rank">83</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(256 85% 65%)">K</span>
             KippKat
@@ -1527,7 +1575,7 @@
           <td><span class="pill good">96.25%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">83</span></td>
+          <td><span class="lb-rank">84</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(328 85% 65%)">R</span>
             review
@@ -1540,7 +1588,7 @@
           <td><span class="pill ok">92.31%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">84</span></td>
+          <td><span class="lb-rank">85</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(65 85% 65%)">S</span>
             soap2x
@@ -1553,7 +1601,7 @@
           <td><span class="pill good">95.49%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">85</span></td>
+          <td><span class="lb-rank">86</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(67 85% 65%)">B</span>
             Barcelona
@@ -1566,7 +1614,7 @@
           <td><span class="pill ok">94.54%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">86</span></td>
+          <td><span class="lb-rank">87</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(198 85% 65%)">N</span>
             Namedisplayed
@@ -1579,7 +1627,7 @@
           <td><span class="pill ok">94.09%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">87</span></td>
+          <td><span class="lb-rank">88</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(138 85% 65%)">A</span>
             andrewleslieparker
@@ -1592,7 +1640,7 @@
           <td><span class="pill good">96.46%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">88</span></td>
+          <td><span class="lb-rank">89</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(203 85% 65%)">S</span>
             staygrixndn_to_20K
@@ -1605,7 +1653,7 @@
           <td><span class="pill ok">93.9%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">89</span></td>
+          <td><span class="lb-rank">90</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(94 85% 65%)">S</span>
             shalomgggggg
@@ -1618,7 +1666,7 @@
           <td><span class="pill good">96.9%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">90</span></td>
+          <td><span class="lb-rank">91</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(215 85% 65%)">-</span>
             -FlowerTech-
@@ -1631,7 +1679,7 @@
           <td><span class="pill ok">94.39%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">91</span></td>
+          <td><span class="lb-rank">92</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(229 85% 65%)">G</span>
             gratified
@@ -1644,7 +1692,7 @@
           <td><span class="pill ok">93.49%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">92</span></td>
+          <td><span class="lb-rank">93</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(329 85% 65%)">R</span>
             ReeL_303
@@ -1657,7 +1705,7 @@
           <td><span class="pill good">96.72%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">93</span></td>
+          <td><span class="lb-rank">94</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(55 85% 65%)">Z</span>
             zxralii
@@ -1670,7 +1718,7 @@
           <td><span class="pill ok">94.61%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">94</span></td>
+          <td><span class="lb-rank">95</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(51 85% 65%)">I</span>
             in 1st grade btw
@@ -1683,7 +1731,7 @@
           <td><span class="pill ok">93.15%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">95</span></td>
+          <td><span class="lb-rank">96</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(97 85% 65%)">-</span>
             -C3RT1FIED-YT-
@@ -1696,7 +1744,7 @@
           <td><span class="pill ok">93.86%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">96</span></td>
+          <td><span class="lb-rank">97</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(281 85% 65%)">B</span>
             BlueBomber
@@ -1709,7 +1757,7 @@
           <td><span class="pill low">79.75%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">97</span></td>
+          <td><span class="lb-rank">98</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(185 85% 65%)">O</span>
             Obsidianator
@@ -1722,7 +1770,7 @@
           <td><span class="pill ok">94.53%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">98</span></td>
+          <td><span class="lb-rank">99</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(223 85% 65%)">T</span>
             THECANDYTAKER
@@ -1735,7 +1783,7 @@
           <td><span class="pill ok">92.77%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">99</span></td>
+          <td><span class="lb-rank">100</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(204 85% 65%)">F</span>
             FishingRod-7K
@@ -1746,19 +1794,6 @@
           <td>103</td>
           <td>182</td>
           <td><span class="pill good">97.23%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">100</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(75 85% 65%)">D</span>
-            Dynamics to 10k
-            <a class="lb-team-tag" href="../teams/dn1/" style="background:#40b8ea;color:#ffffff">DN1</a>
-          </td>
-          <td><span class="points">1002.56</span></td>
-          <td>8</td>
-          <td>70</td>
-          <td>101</td>
-          <td><span class="pill ok">90.32%</span></td>
         </tr></tbody>
       </table>
     </div>
@@ -1993,6 +2028,19 @@
         <tr>
           <td><span class="lb-rank">18</span></td>
           <td class="racer">
+            <span class="avatar" style="background:#abb7dd;color:#ffffff">B</span>
+            <a href="../teams/blank/">[BLANK]</a>
+            <a href="https://www.nitrotype.com/team/BLANK" target="_blank" rel="noopener">V0idlandZ</a>
+          </td>
+          <td><span class="points">8024.18</span></td>
+          <td>55</td>
+          <td>98.6</td>
+          <td>96.61%</td>
+          <td>1</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">19</span></td>
+          <td class="racer">
             <span class="avatar" style="background:#71c055;color:#ffffff">S</span>
             <a href="../teams/szm/">[SZM]</a>
             <a href="https://www.nitrotype.com/team/SZM" target="_blank" rel="noopener">S-ZooMing Typers</a>
@@ -2004,7 +2052,20 @@
           <td>4</td>
         </tr>
         <tr>
-          <td><span class="lb-rank">19</span></td>
+          <td><span class="lb-rank">20</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:#5b52a3;color:#ffffff">B</span>
+            <a href="../teams/beehve/">[BEEHVE]</a>
+            <a href="https://www.nitrotype.com/team/BEEHVE" target="_blank" rel="noopener">Weekly Gold Comp</a>
+          </td>
+          <td><span class="points">7319.23</span></td>
+          <td>54</td>
+          <td>84.1</td>
+          <td>93.50%</td>
+          <td>5</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">21</span></td>
           <td class="racer">
             <span class="avatar" style="background:#fba51a;color:#ffffff">N</span>
             <a href="../teams/nohope/">[NOHOPE]</a>
@@ -2017,7 +2078,7 @@
           <td>3</td>
         </tr>
         <tr>
-          <td><span class="lb-rank">20</span></td>
+          <td><span class="lb-rank">22</span></td>
           <td class="racer">
             <span class="avatar" style="background:#ee1f25;color:#ffffff">W</span>
             <a href="../teams/w1nn6r/">[W1NN6R]</a>
@@ -2030,7 +2091,7 @@
           <td>3</td>
         </tr>
         <tr>
-          <td><span class="lb-rank">21</span></td>
+          <td><span class="lb-rank">23</span></td>
           <td class="racer">
             <span class="avatar" style="background:#8750a0;color:#ffffff">R</span>
             <a href="../teams/rl/">[RL]</a>
@@ -2043,20 +2104,7 @@
           <td>3</td>
         </tr>
         <tr>
-          <td><span class="lb-rank">22</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:#5b52a3;color:#ffffff">B</span>
-            <a href="../teams/beehve/">[BEEHVE]</a>
-            <a href="https://www.nitrotype.com/team/BEEHVE" target="_blank" rel="noopener">Weekly Gold Comp</a>
-          </td>
-          <td><span class="points">3775.55</span></td>
-          <td>28</td>
-          <td>84.3</td>
-          <td>92.68%</td>
-          <td>3</td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">23</span></td>
+          <td><span class="lb-rank">24</span></td>
           <td class="racer">
             <span class="avatar" style="background:#9bca3c;color:#ffffff">S</span>
             <a href="../teams/s0ccer/">[S0CCER]</a>
@@ -2067,19 +2115,6 @@
           <td>71.3</td>
           <td>93.16%</td>
           <td>4</td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">24</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:#abb7dd;color:#ffffff">B</span>
-            <a href="../teams/blank/">[BLANK]</a>
-            <a href="https://www.nitrotype.com/team/BLANK" target="_blank" rel="noopener">V0idlandZ</a>
-          </td>
-          <td><span class="points">3005.1</span></td>
-          <td>21</td>
-          <td>93.0</td>
-          <td>96.60%</td>
-          <td>1</td>
         </tr>
         <tr>
           <td><span class="lb-rank">25</span></td>
@@ -2201,11 +2236,11 @@
             Electric
             <a class="lb-team-tag" href="../teams/blank/" style="background:#abb7dd;color:#ffffff">BLANK</a>
           </td>
-          <td><span class="points">50951.18</span></td>
-          <td>351</td>
-          <td>93</td>
+          <td><span class="points">55970.26</span></td>
+          <td>385</td>
+          <td>102</td>
           <td>193</td>
-          <td><span class="pill good">96.6%</span></td>
+          <td><span class="pill good">96.62%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">5</span></td>
@@ -3701,6 +3736,19 @@
         <tr>
           <td><span class="lb-rank">19</span></td>
           <td class="racer">
+            <span class="avatar" style="background:#5b52a3;color:#ffffff">B</span>
+            <a href="../teams/beehve/">[BEEHVE]</a>
+            <a href="https://www.nitrotype.com/team/BEEHVE" target="_blank" rel="noopener">Weekly Gold Comp</a>
+          </td>
+          <td><span class="points">84591.14</span></td>
+          <td>637</td>
+          <td>79.4</td>
+          <td>93.12%</td>
+          <td>23</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">20</span></td>
+          <td class="racer">
             <span class="avatar" style="background:#9bca3c;color:#ffffff">S</span>
             <a href="../teams/s0ccer/">[S0CCER]</a>
             <a href="https://www.nitrotype.com/team/S0CCER" target="_blank" rel="noopener">SoccerLegends450k</a>
@@ -3712,7 +3760,7 @@
           <td>20</td>
         </tr>
         <tr>
-          <td><span class="lb-rank">20</span></td>
+          <td><span class="lb-rank">21</span></td>
           <td class="racer">
             <span class="avatar" style="background:#ee1f25;color:#ffffff">N</span>
             <a href="../teams/ntr/">[NTR]</a>
@@ -3723,19 +3771,6 @@
           <td>88.4</td>
           <td>93.96%</td>
           <td>14</td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">21</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:#5b52a3;color:#ffffff">B</span>
-            <a href="../teams/beehve/">[BEEHVE]</a>
-            <a href="https://www.nitrotype.com/team/BEEHVE" target="_blank" rel="noopener">Weekly Gold Comp</a>
-          </td>
-          <td><span class="points">81047.46</span></td>
-          <td>611</td>
-          <td>79.2</td>
-          <td>93.07%</td>
-          <td>23</td>
         </tr>
         <tr>
           <td><span class="lb-rank">22</span></td>
@@ -3805,6 +3840,19 @@
         <tr>
           <td><span class="lb-rank">27</span></td>
           <td class="racer">
+            <span class="avatar" style="background:#abb7dd;color:#ffffff">B</span>
+            <a href="../teams/blank/">[BLANK]</a>
+            <a href="https://www.nitrotype.com/team/BLANK" target="_blank" rel="noopener">V0idlandZ</a>
+          </td>
+          <td><span class="points">55970.26</span></td>
+          <td>385</td>
+          <td>97.3</td>
+          <td>96.74%</td>
+          <td>1</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">28</span></td>
+          <td class="racer">
             <span class="avatar" style="background:#5b52a3;color:#ffffff">N</span>
             <a href="../teams/nh/">[NH]</a>
             <a href="https://www.nitrotype.com/team/NH" target="_blank" rel="noopener">Nephilims</a>
@@ -3814,19 +3862,6 @@
           <td>102.0</td>
           <td>94.70%</td>
           <td>10</td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">28</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:#abb7dd;color:#ffffff">B</span>
-            <a href="../teams/blank/">[BLANK]</a>
-            <a href="https://www.nitrotype.com/team/BLANK" target="_blank" rel="noopener">V0idlandZ</a>
-          </td>
-          <td><span class="points">50951.18</span></td>
-          <td>351</td>
-          <td>96.8</td>
-          <td>96.76%</td>
-          <td>1</td>
         </tr>
         <tr>
           <td><span class="lb-rank">29</span></td>
@@ -3922,11 +3957,11 @@
             Electric
             <a class="lb-team-tag" href="../teams/blank/" style="background:#abb7dd;color:#ffffff">BLANK</a>
           </td>
-          <td><span class="points">50951.18</span></td>
-          <td>351</td>
-          <td>93</td>
+          <td><span class="points">55970.26</span></td>
+          <td>385</td>
+          <td>102</td>
           <td>193</td>
-          <td><span class="pill good">96.6%</span></td>
+          <td><span class="pill good">96.62%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">5</span></td>
@@ -5422,6 +5457,19 @@
         <tr>
           <td><span class="lb-rank">19</span></td>
           <td class="racer">
+            <span class="avatar" style="background:#5b52a3;color:#ffffff">B</span>
+            <a href="../teams/beehve/">[BEEHVE]</a>
+            <a href="https://www.nitrotype.com/team/BEEHVE" target="_blank" rel="noopener">Weekly Gold Comp</a>
+          </td>
+          <td><span class="points">84591.14</span></td>
+          <td>637</td>
+          <td>79.4</td>
+          <td>93.12%</td>
+          <td>23</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">20</span></td>
+          <td class="racer">
             <span class="avatar" style="background:#9bca3c;color:#ffffff">S</span>
             <a href="../teams/s0ccer/">[S0CCER]</a>
             <a href="https://www.nitrotype.com/team/S0CCER" target="_blank" rel="noopener">SoccerLegends450k</a>
@@ -5433,7 +5481,7 @@
           <td>20</td>
         </tr>
         <tr>
-          <td><span class="lb-rank">20</span></td>
+          <td><span class="lb-rank">21</span></td>
           <td class="racer">
             <span class="avatar" style="background:#ee1f25;color:#ffffff">N</span>
             <a href="../teams/ntr/">[NTR]</a>
@@ -5444,19 +5492,6 @@
           <td>88.4</td>
           <td>93.96%</td>
           <td>14</td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">21</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:#5b52a3;color:#ffffff">B</span>
-            <a href="../teams/beehve/">[BEEHVE]</a>
-            <a href="https://www.nitrotype.com/team/BEEHVE" target="_blank" rel="noopener">Weekly Gold Comp</a>
-          </td>
-          <td><span class="points">81047.46</span></td>
-          <td>611</td>
-          <td>79.2</td>
-          <td>93.07%</td>
-          <td>23</td>
         </tr>
         <tr>
           <td><span class="lb-rank">22</span></td>
@@ -5526,6 +5561,19 @@
         <tr>
           <td><span class="lb-rank">27</span></td>
           <td class="racer">
+            <span class="avatar" style="background:#abb7dd;color:#ffffff">B</span>
+            <a href="../teams/blank/">[BLANK]</a>
+            <a href="https://www.nitrotype.com/team/BLANK" target="_blank" rel="noopener">V0idlandZ</a>
+          </td>
+          <td><span class="points">55970.26</span></td>
+          <td>385</td>
+          <td>97.3</td>
+          <td>96.74%</td>
+          <td>1</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">28</span></td>
+          <td class="racer">
             <span class="avatar" style="background:#5b52a3;color:#ffffff">N</span>
             <a href="../teams/nh/">[NH]</a>
             <a href="https://www.nitrotype.com/team/NH" target="_blank" rel="noopener">Nephilims</a>
@@ -5535,19 +5583,6 @@
           <td>102.0</td>
           <td>94.70%</td>
           <td>10</td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">28</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:#abb7dd;color:#ffffff">B</span>
-            <a href="../teams/blank/">[BLANK]</a>
-            <a href="https://www.nitrotype.com/team/BLANK" target="_blank" rel="noopener">V0idlandZ</a>
-          </td>
-          <td><span class="points">50951.18</span></td>
-          <td>351</td>
-          <td>96.8</td>
-          <td>96.76%</td>
-          <td>1</td>
         </tr>
         <tr>
           <td><span class="lb-rank">29</span></td>
@@ -5643,11 +5678,11 @@
             Electric
             <a class="lb-team-tag" href="../teams/blank/" style="background:#abb7dd;color:#ffffff">BLANK</a>
           </td>
-          <td><span class="points">50951.18</span></td>
-          <td>351</td>
-          <td>93</td>
+          <td><span class="points">55970.26</span></td>
+          <td>385</td>
+          <td>102</td>
           <td>193</td>
-          <td><span class="pill good">96.6%</span></td>
+          <td><span class="pill good">96.62%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">5</span></td>
@@ -7143,6 +7178,19 @@
         <tr>
           <td><span class="lb-rank">19</span></td>
           <td class="racer">
+            <span class="avatar" style="background:#5b52a3;color:#ffffff">B</span>
+            <a href="../teams/beehve/">[BEEHVE]</a>
+            <a href="https://www.nitrotype.com/team/BEEHVE" target="_blank" rel="noopener">Weekly Gold Comp</a>
+          </td>
+          <td><span class="points">84591.14</span></td>
+          <td>637</td>
+          <td>79.4</td>
+          <td>93.12%</td>
+          <td>23</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">20</span></td>
+          <td class="racer">
             <span class="avatar" style="background:#9bca3c;color:#ffffff">S</span>
             <a href="../teams/s0ccer/">[S0CCER]</a>
             <a href="https://www.nitrotype.com/team/S0CCER" target="_blank" rel="noopener">SoccerLegends450k</a>
@@ -7154,7 +7202,7 @@
           <td>20</td>
         </tr>
         <tr>
-          <td><span class="lb-rank">20</span></td>
+          <td><span class="lb-rank">21</span></td>
           <td class="racer">
             <span class="avatar" style="background:#ee1f25;color:#ffffff">N</span>
             <a href="../teams/ntr/">[NTR]</a>
@@ -7165,19 +7213,6 @@
           <td>88.4</td>
           <td>93.96%</td>
           <td>14</td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">21</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:#5b52a3;color:#ffffff">B</span>
-            <a href="../teams/beehve/">[BEEHVE]</a>
-            <a href="https://www.nitrotype.com/team/BEEHVE" target="_blank" rel="noopener">Weekly Gold Comp</a>
-          </td>
-          <td><span class="points">81047.46</span></td>
-          <td>611</td>
-          <td>79.2</td>
-          <td>93.07%</td>
-          <td>23</td>
         </tr>
         <tr>
           <td><span class="lb-rank">22</span></td>
@@ -7247,6 +7282,19 @@
         <tr>
           <td><span class="lb-rank">27</span></td>
           <td class="racer">
+            <span class="avatar" style="background:#abb7dd;color:#ffffff">B</span>
+            <a href="../teams/blank/">[BLANK]</a>
+            <a href="https://www.nitrotype.com/team/BLANK" target="_blank" rel="noopener">V0idlandZ</a>
+          </td>
+          <td><span class="points">55970.26</span></td>
+          <td>385</td>
+          <td>97.3</td>
+          <td>96.74%</td>
+          <td>1</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">28</span></td>
+          <td class="racer">
             <span class="avatar" style="background:#5b52a3;color:#ffffff">N</span>
             <a href="../teams/nh/">[NH]</a>
             <a href="https://www.nitrotype.com/team/NH" target="_blank" rel="noopener">Nephilims</a>
@@ -7256,19 +7304,6 @@
           <td>102.0</td>
           <td>94.70%</td>
           <td>10</td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">28</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:#abb7dd;color:#ffffff">B</span>
-            <a href="../teams/blank/">[BLANK]</a>
-            <a href="https://www.nitrotype.com/team/BLANK" target="_blank" rel="noopener">V0idlandZ</a>
-          </td>
-          <td><span class="points">50951.18</span></td>
-          <td>351</td>
-          <td>96.8</td>
-          <td>96.76%</td>
-          <td>1</td>
         </tr>
         <tr>
           <td><span class="lb-rank">29</span></td>
@@ -7364,11 +7399,11 @@
             Electric
             <a class="lb-team-tag" href="../teams/blank/" style="background:#abb7dd;color:#ffffff">BLANK</a>
           </td>
-          <td><span class="points">50951.18</span></td>
-          <td>351</td>
-          <td>93</td>
+          <td><span class="points">55970.26</span></td>
+          <td>385</td>
+          <td>102</td>
           <td>193</td>
-          <td><span class="pill good">96.6%</span></td>
+          <td><span class="pill good">96.62%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">5</span></td>
@@ -8864,6 +8899,19 @@
         <tr>
           <td><span class="lb-rank">19</span></td>
           <td class="racer">
+            <span class="avatar" style="background:#5b52a3;color:#ffffff">B</span>
+            <a href="../teams/beehve/">[BEEHVE]</a>
+            <a href="https://www.nitrotype.com/team/BEEHVE" target="_blank" rel="noopener">Weekly Gold Comp</a>
+          </td>
+          <td><span class="points">84591.14</span></td>
+          <td>637</td>
+          <td>79.4</td>
+          <td>93.12%</td>
+          <td>23</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">20</span></td>
+          <td class="racer">
             <span class="avatar" style="background:#9bca3c;color:#ffffff">S</span>
             <a href="../teams/s0ccer/">[S0CCER]</a>
             <a href="https://www.nitrotype.com/team/S0CCER" target="_blank" rel="noopener">SoccerLegends450k</a>
@@ -8875,7 +8923,7 @@
           <td>20</td>
         </tr>
         <tr>
-          <td><span class="lb-rank">20</span></td>
+          <td><span class="lb-rank">21</span></td>
           <td class="racer">
             <span class="avatar" style="background:#ee1f25;color:#ffffff">N</span>
             <a href="../teams/ntr/">[NTR]</a>
@@ -8886,19 +8934,6 @@
           <td>88.4</td>
           <td>93.96%</td>
           <td>14</td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">21</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:#5b52a3;color:#ffffff">B</span>
-            <a href="../teams/beehve/">[BEEHVE]</a>
-            <a href="https://www.nitrotype.com/team/BEEHVE" target="_blank" rel="noopener">Weekly Gold Comp</a>
-          </td>
-          <td><span class="points">81047.46</span></td>
-          <td>611</td>
-          <td>79.2</td>
-          <td>93.07%</td>
-          <td>23</td>
         </tr>
         <tr>
           <td><span class="lb-rank">22</span></td>
@@ -8968,6 +9003,19 @@
         <tr>
           <td><span class="lb-rank">27</span></td>
           <td class="racer">
+            <span class="avatar" style="background:#abb7dd;color:#ffffff">B</span>
+            <a href="../teams/blank/">[BLANK]</a>
+            <a href="https://www.nitrotype.com/team/BLANK" target="_blank" rel="noopener">V0idlandZ</a>
+          </td>
+          <td><span class="points">55970.26</span></td>
+          <td>385</td>
+          <td>97.3</td>
+          <td>96.74%</td>
+          <td>1</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">28</span></td>
+          <td class="racer">
             <span class="avatar" style="background:#5b52a3;color:#ffffff">N</span>
             <a href="../teams/nh/">[NH]</a>
             <a href="https://www.nitrotype.com/team/NH" target="_blank" rel="noopener">Nephilims</a>
@@ -8977,19 +9025,6 @@
           <td>102.0</td>
           <td>94.70%</td>
           <td>10</td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">28</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:#abb7dd;color:#ffffff">B</span>
-            <a href="../teams/blank/">[BLANK]</a>
-            <a href="https://www.nitrotype.com/team/BLANK" target="_blank" rel="noopener">V0idlandZ</a>
-          </td>
-          <td><span class="points">50951.18</span></td>
-          <td>351</td>
-          <td>96.8</td>
-          <td>96.76%</td>
-          <td>1</td>
         </tr>
         <tr>
           <td><span class="lb-rank">29</span></td>
@@ -9085,11 +9120,11 @@
             Electric
             <a class="lb-team-tag" href="../teams/blank/" style="background:#abb7dd;color:#ffffff">BLANK</a>
           </td>
-          <td><span class="points">50951.18</span></td>
-          <td>351</td>
-          <td>93</td>
+          <td><span class="points">55970.26</span></td>
+          <td>385</td>
+          <td>102</td>
           <td>193</td>
-          <td><span class="pill good">96.6%</span></td>
+          <td><span class="pill good">96.62%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">5</span></td>
@@ -10585,6 +10620,19 @@
         <tr>
           <td><span class="lb-rank">19</span></td>
           <td class="racer">
+            <span class="avatar" style="background:#5b52a3;color:#ffffff">B</span>
+            <a href="../teams/beehve/">[BEEHVE]</a>
+            <a href="https://www.nitrotype.com/team/BEEHVE" target="_blank" rel="noopener">Weekly Gold Comp</a>
+          </td>
+          <td><span class="points">84591.14</span></td>
+          <td>637</td>
+          <td>79.4</td>
+          <td>93.12%</td>
+          <td>23</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">20</span></td>
+          <td class="racer">
             <span class="avatar" style="background:#9bca3c;color:#ffffff">S</span>
             <a href="../teams/s0ccer/">[S0CCER]</a>
             <a href="https://www.nitrotype.com/team/S0CCER" target="_blank" rel="noopener">SoccerLegends450k</a>
@@ -10596,7 +10644,7 @@
           <td>20</td>
         </tr>
         <tr>
-          <td><span class="lb-rank">20</span></td>
+          <td><span class="lb-rank">21</span></td>
           <td class="racer">
             <span class="avatar" style="background:#ee1f25;color:#ffffff">N</span>
             <a href="../teams/ntr/">[NTR]</a>
@@ -10607,19 +10655,6 @@
           <td>88.4</td>
           <td>93.96%</td>
           <td>14</td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">21</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:#5b52a3;color:#ffffff">B</span>
-            <a href="../teams/beehve/">[BEEHVE]</a>
-            <a href="https://www.nitrotype.com/team/BEEHVE" target="_blank" rel="noopener">Weekly Gold Comp</a>
-          </td>
-          <td><span class="points">81047.46</span></td>
-          <td>611</td>
-          <td>79.2</td>
-          <td>93.07%</td>
-          <td>23</td>
         </tr>
         <tr>
           <td><span class="lb-rank">22</span></td>
@@ -10689,6 +10724,19 @@
         <tr>
           <td><span class="lb-rank">27</span></td>
           <td class="racer">
+            <span class="avatar" style="background:#abb7dd;color:#ffffff">B</span>
+            <a href="../teams/blank/">[BLANK]</a>
+            <a href="https://www.nitrotype.com/team/BLANK" target="_blank" rel="noopener">V0idlandZ</a>
+          </td>
+          <td><span class="points">55970.26</span></td>
+          <td>385</td>
+          <td>97.3</td>
+          <td>96.74%</td>
+          <td>1</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">28</span></td>
+          <td class="racer">
             <span class="avatar" style="background:#5b52a3;color:#ffffff">N</span>
             <a href="../teams/nh/">[NH]</a>
             <a href="https://www.nitrotype.com/team/NH" target="_blank" rel="noopener">Nephilims</a>
@@ -10698,19 +10746,6 @@
           <td>102.0</td>
           <td>94.70%</td>
           <td>10</td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">28</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:#abb7dd;color:#ffffff">B</span>
-            <a href="../teams/blank/">[BLANK]</a>
-            <a href="https://www.nitrotype.com/team/BLANK" target="_blank" rel="noopener">V0idlandZ</a>
-          </td>
-          <td><span class="points">50951.18</span></td>
-          <td>351</td>
-          <td>96.8</td>
-          <td>96.76%</td>
-          <td>1</td>
         </tr>
         <tr>
           <td><span class="lb-rank">29</span></td>
@@ -10755,6 +10790,7 @@
     </div>
     <p class="lb-score-note">Points = the sum of every member's points — races completed since joining this tracker × (avg speed ÷ 2 + accuracy). Team WPM/accuracy are races-weighted averages over this window.</p></div>
 </main>
-<footer class="site">Generated 2026-10-23T20:21:21.304Z</footer>
+<footer class="site">Generated 2026-10-23T20:27:46.050Z</footer>
+<script src="../assets/app.js"></script>
 </body>
 </html>

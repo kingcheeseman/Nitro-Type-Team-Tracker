@@ -1,0 +1,397 @@
+// TypeTrack account / captain-events client logic.
+//
+// Runs only in the browser - never during the static build (build.js just
+// copies this file verbatim into site/assets/app.js, and server.js serves
+// it straight from this directory for local preview).
+//
+// Uses Supabase's publishable (anon) key, which is meant to be public and
+// is safe to ship in client code: every table this talks to is protected
+// by Row Level Security (see schema.sql), and the one operation that must
+// never be left to the client - proving someone owns a Nitro Type account -
+// is handled entirely server-side by the verify-car-swap Edge Function.
+(function () {
+  "use strict";
+
+  var SUPABASE_URL = "https://pbnolrgiqpnfmbvgemcy.supabase.co";
+  var SUPABASE_ANON_KEY = "sb_publishable_ltaNA7nnVozoSCOcZIjg";
+
+  var _client = null;
+  function withClient(cb) {
+    if (_client) return cb(_client);
+    if (window.supabase && window.supabase.createClient) {
+      _client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      return cb(_client);
+    }
+    var s = document.createElement("script");
+    s.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js";
+    s.onload = function () {
+      _client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      cb(_client);
+    };
+    s.onerror = function () {
+      console.error("TypeTrack: could not load the Supabase client library.");
+    };
+    document.head.appendChild(s);
+  }
+
+  // ---------------------------------------------------------------------
+  // Small helpers shared by every page that uses this file.
+  // ---------------------------------------------------------------------
+  function el(tag, attrs, children) {
+    var node = document.createElement(tag);
+    for (var k in attrs || {}) {
+      if (k === "text") node.textContent = attrs[k];
+      else if (k === "html") node.innerHTML = attrs[k];
+      else node.setAttribute(k, attrs[k]);
+    }
+    (children || []).forEach(function (c) {
+      if (c) node.appendChild(c);
+    });
+    return node;
+  }
+
+  function fmtDate(iso) {
+    if (!iso) return "—";
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return "—";
+    return d.toLocaleString(undefined, { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" });
+  }
+
+  function eventStatus(ev, now) {
+    now = now || new Date();
+    var start = new Date(ev.start_stamp);
+    var end = new Date(ev.end_stamp);
+    if (now < start) return "pending";
+    if (now > end) return "ended";
+    return "active";
+  }
+
+  function statusPill(status) {
+    var label = status === "pending" ? "Upcoming" : status === "active" ? "Happening now" : "Ended";
+    var cls = status === "pending" ? "ok" : status === "active" ? "good" : "na";
+    return '<span class="pill ' + cls + '">' + label + "</span>";
+  }
+
+  function escapeHtml(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  // ---------------------------------------------------------------------
+  // Auth
+  // ---------------------------------------------------------------------
+  function getSession(cb) {
+    withClient(function (sb) {
+      sb.auth.getSession().then(function (res) {
+        cb(res.data && res.data.session ? res.data.session : null, sb);
+      });
+    });
+  }
+
+  function signUp(email, password, cb) {
+    withClient(function (sb) {
+      sb.auth.signUp({ email: email, password: password }).then(function (res) {
+        cb(res.error ? res.error.message : null, res.data);
+      });
+    });
+  }
+
+  function signIn(email, password, cb) {
+    withClient(function (sb) {
+      sb.auth.signInWithPassword({ email: email, password: password }).then(function (res) {
+        cb(res.error ? res.error.message : null, res.data);
+      });
+    });
+  }
+
+  function signOut(cb) {
+    withClient(function (sb) {
+      sb.auth.signOut().then(function () {
+        cb && cb();
+      });
+    });
+  }
+
+  // Looks up the Nitro Type racer (if any) this signed-in account has
+  // verified ownership of. account_links is publicly readable (see
+  // schema.sql), so this is a plain select.
+  function getMyLink(userId, cb) {
+    withClient(function (sb) {
+      sb.from("account_links")
+        .select("nt_user_id, verified_at")
+        .eq("auth_user_id", userId)
+        .maybeSingle()
+        .then(function (res) {
+          cb(res.error ? res.error.message : null, res.data);
+        });
+    });
+  }
+
+  function getRacerById(ntUserId, cb) {
+    withClient(function (sb) {
+      sb.from("racers")
+        .select("nt_user_id, username, display_name, team_tag")
+        .eq("nt_user_id", ntUserId)
+        .maybeSingle()
+        .then(function (res) {
+          cb(res.error ? res.error.message : null, res.data);
+        });
+    });
+  }
+
+  // ---------------------------------------------------------------------
+  // Verification (the Edge Function does the actual work - this just
+  // invokes it with the signed-in user's session attached automatically).
+  // ---------------------------------------------------------------------
+  function startVerification(username, cb) {
+    withClient(function (sb) {
+      sb.functions.invoke("verify-car-swap", { body: { action: "start", username: username } }).then(function (res) {
+        if (res.error) {
+          var msg = res.error.message || "Could not start verification.";
+          (res.error.context && res.error.context.json ? res.error.context.json() : Promise.resolve(null)).then(function (body) {
+            cb((body && body.error) || msg, null);
+          }).catch(function () {
+            cb(msg, null);
+          });
+          return;
+        }
+        cb(null, res.data);
+      });
+    });
+  }
+
+  function checkVerification(cb) {
+    withClient(function (sb) {
+      sb.functions.invoke("verify-car-swap", { body: { action: "check" } }).then(function (res) {
+        if (res.error) {
+          var msg = res.error.message || "Could not check verification.";
+          (res.error.context && res.error.context.json ? res.error.context.json() : Promise.resolve(null)).then(function (body) {
+            cb((body && body.error) || msg, null);
+          }).catch(function () {
+            cb(msg, null);
+          });
+          return;
+        }
+        cb(null, res.data);
+      });
+    });
+  }
+
+  // ---------------------------------------------------------------------
+  // Team events - public read is always live (not just at build time);
+  // writes only succeed server-side (via RLS) for that team's verified
+  // real captain, but the UI only shows the manage panel at all when the
+  // signed-in visitor's linked racer matches the team's captain_nt_user_id
+  // baked into the page at build time.
+  // ---------------------------------------------------------------------
+  function loadTeamEvents(teamTag, cb) {
+    withClient(function (sb) {
+      sb.from("events")
+        .select("id, title, description, start_stamp, end_stamp")
+        .eq("team_tag", teamTag)
+        .order("start_stamp", { ascending: false })
+        .then(function (res) {
+          cb(res.error ? res.error.message : null, res.data || []);
+        });
+    });
+  }
+
+  function renderEventsTable(events) {
+    if (!events.length) {
+      return (
+        '<div class="empty" style="padding:40px 24px;">No events scheduled for this team yet.</div>'
+      );
+    }
+    var rows = events
+      .map(function (ev) {
+        var status = eventStatus(ev);
+        return (
+          "<tr>" +
+          "<td><b>" +
+          escapeHtml(ev.title) +
+          "</b>" +
+          (ev.description
+            ? '<div style="color:var(--muted);font-size:12.5px;margin-top:3px;max-width:420px;white-space:normal;">' +
+              escapeHtml(ev.description) +
+              "</div>"
+            : "") +
+          "</td>" +
+          "<td>" +
+          statusPill(status) +
+          "</td>" +
+          "<td>" +
+          fmtDate(ev.start_stamp) +
+          "</td>" +
+          "<td>" +
+          fmtDate(ev.end_stamp) +
+          "</td>" +
+          "</tr>"
+        );
+      })
+      .join("");
+    return (
+      '<div class="table-wrap"><table><thead><tr><th>Event</th><th>Status</th><th>Starts</th><th>Ends</th></tr></thead><tbody>' +
+      rows +
+      "</tbody></table></div>"
+    );
+  }
+
+  function toLocalInputValue(iso) {
+    var d = iso ? new Date(iso) : new Date();
+    var pad = function (n) {
+      return String(n).padStart(2, "0");
+    };
+    return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()) + "T" + pad(d.getHours()) + ":" + pad(d.getMinutes());
+  }
+
+  function renderCaptainManager(container, teamTag, events, refresh) {
+    container.innerHTML = "";
+    var wrap = el("div", { class: "card", style: "margin-top:18px;max-width:640px;" });
+    wrap.appendChild(el("div", { style: "font-weight:700;margin-bottom:10px;", text: "Manage events (captain)" }));
+
+    var list = el("div", { style: "display:flex;flex-direction:column;gap:10px;margin-bottom:16px;" });
+    events.forEach(function (ev) {
+      var row = el("div", { class: "card", style: "padding:12px;" });
+      row.innerHTML =
+        "<div style='font-weight:700;'>" +
+        escapeHtml(ev.title) +
+        "</div><div style='color:var(--muted);font-size:12.5px;margin:2px 0 8px;'>" +
+        fmtDate(ev.start_stamp) +
+        " → " +
+        fmtDate(ev.end_stamp) +
+        (ev.description ? "<br>" + escapeHtml(ev.description) : "") +
+        "</div>";
+      var delBtn = el("button", { type: "button", class: "btn-danger", text: "Delete" });
+      delBtn.addEventListener("click", function () {
+        if (!confirm('Delete "' + ev.title + '"?')) return;
+        withClient(function (sb) {
+          sb.from("events")
+            .delete()
+            .eq("id", ev.id)
+            .then(function (res) {
+              if (res.error) {
+                alert("Could not delete: " + res.error.message);
+                return;
+              }
+              refresh();
+            });
+        });
+      });
+      row.appendChild(delBtn);
+      list.appendChild(row);
+    });
+    wrap.appendChild(list);
+
+    var form = el("form", { style: "display:flex;flex-direction:column;gap:8px;" });
+    form.innerHTML =
+      '<input class="form-input" name="title" placeholder="Event title" required>' +
+      '<textarea class="form-input" name="description" placeholder="Description (optional)" rows="2"></textarea>' +
+      '<label style="font-size:12px;color:var(--muted);">Starts<input class="form-input" name="start" type="datetime-local" required value="' +
+      toLocalInputValue() +
+      '"></label>' +
+      '<label style="font-size:12px;color:var(--muted);">Ends<input class="form-input" name="end" type="datetime-local" required value="' +
+      toLocalInputValue(new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString()) +
+      '"></label>' +
+      '<button type="submit" class="btn-primary">Add event</button>' +
+      '<div class="form-error" style="display:none;"></div>';
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var fd = new FormData(form);
+      var title = (fd.get("title") || "").toString().trim();
+      var description = (fd.get("description") || "").toString().trim();
+      var start = fd.get("start");
+      var end = fd.get("end");
+      var errorEl = form.querySelector(".form-error");
+      errorEl.style.display = "none";
+      if (!title || !start || !end) return;
+      withClient(function (sb) {
+        sb.from("events")
+          .insert({
+            team_tag: teamTag,
+            title: title,
+            description: description || null,
+            start_stamp: new Date(start).toISOString(),
+            end_stamp: new Date(end).toISOString(),
+          })
+          .then(function (res) {
+            if (res.error) {
+              errorEl.textContent = res.error.message;
+              errorEl.style.display = "";
+              return;
+            }
+            form.reset();
+            refresh();
+          });
+      });
+    });
+    wrap.appendChild(form);
+    container.appendChild(wrap);
+  }
+
+  function initEventsPage() {
+    var panel = document.querySelector("[data-events-panel]");
+    if (!panel) return;
+    var teamTag = panel.getAttribute("data-team-tag");
+    var captainNtUserId = panel.getAttribute("data-captain-nt-user-id") || "";
+    var listTarget = panel.querySelector("[data-events-list]");
+    var manageTarget = panel.querySelector("[data-events-manage]");
+
+    function refresh() {
+      loadTeamEvents(teamTag, function (err, events) {
+        if (err) return;
+        if (listTarget) listTarget.innerHTML = renderEventsTable(events);
+        if (manageTarget && manageTarget.getAttribute("data-is-captain") === "1") {
+          renderCaptainManager(manageTarget, teamTag, events, refresh);
+        }
+      });
+    }
+
+    refresh();
+
+    if (!captainNtUserId) return;
+    getSession(function (session) {
+      if (!session) return;
+      getMyLink(session.user.id, function (err, link) {
+        if (err || !link) return;
+        if (String(link.nt_user_id) !== String(captainNtUserId)) return;
+        if (manageTarget) manageTarget.setAttribute("data-is-captain", "1");
+        refresh();
+      });
+    });
+  }
+
+  // ---------------------------------------------------------------------
+  // Site-wide header auth status (shown on every page via a small badge
+  // next to the Account nav link, when that link is present).
+  // ---------------------------------------------------------------------
+  function initHeaderStatus() {
+    var link = document.querySelector('[data-account-nav]');
+    if (!link) return;
+    getSession(function (session) {
+      if (session && session.user) {
+        link.textContent = "Account ●";
+        link.title = session.user.email;
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    initHeaderStatus();
+    initEventsPage();
+  });
+
+  window.TypeTrack = {
+    withClient: withClient,
+    getSession: getSession,
+    signUp: signUp,
+    signIn: signIn,
+    signOut: signOut,
+    getMyLink: getMyLink,
+    getRacerById: getRacerById,
+    startVerification: startVerification,
+    checkVerification: checkVerification,
+    el: el,
+    escapeHtml: escapeHtml,
+  };
+})();
