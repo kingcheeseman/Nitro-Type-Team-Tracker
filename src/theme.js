@@ -236,6 +236,7 @@ function racersLeaderboardTable(rows) {
             ${escapeHtml(r.username)}
             <span class="lb-team-tag" style="background:${tagBg};color:${textOnColor(tagBg)}">${escapeHtml(r.team_tag)}</span>
           </td>
+          <td><span class="score">${r.score ?? "—"}</span></td>
           <td>${r.avg_speed ?? "-"}</td>
           <td>${r.top_speed ?? "-"}</td>
           <td>${r.races ?? "-"}</td>
@@ -247,11 +248,12 @@ function racersLeaderboardTable(rows) {
     <div class="table-wrap">
       <table>
         <thead>
-          <tr><th>#</th><th>Racer</th><th>Avg speed</th><th>Highest speed</th><th>Lifetime races</th><th>Accuracy</th></tr>
+          <tr><th>#</th><th>Racer</th><th>Score</th><th>Avg speed</th><th>Highest speed</th><th>Lifetime races</th><th>Accuracy</th></tr>
         </thead>
         <tbody>${body}</tbody>
       </table>
-    </div>`;
+    </div>
+    <p class="lb-score-note">Score = avg speed ÷ 2 + accuracy — a blended ranking we compute ourselves, not an official Nitro Type stat.</p>`;
 }
 
 function teamsLeaderboardTable(rows) {
@@ -269,6 +271,7 @@ function teamsLeaderboardTable(rows) {
             <span class="avatar" style="background:${bg};color:${textOnColor(bg)}">${escapeHtml((t.tag || "?").slice(0, 1).toUpperCase())}</span>
             [${escapeHtml(t.tag)}] ${escapeHtml(t.display_name || "")}
           </td>
+          <td><span class="score">${t.score ?? "—"}</span></td>
           <td>${t.avg_speed ?? "-"}</td>
           <td>${t.top_speed ?? "-"}</td>
           <td>${t.total_races ?? "-"}</td>
@@ -280,11 +283,12 @@ function teamsLeaderboardTable(rows) {
     <div class="table-wrap">
       <table>
         <thead>
-          <tr><th>#</th><th>Team</th><th>Avg speed</th><th>Top speed</th><th>Total races</th><th>Racers</th></tr>
+          <tr><th>#</th><th>Team</th><th>Score</th><th>Avg speed</th><th>Top speed</th><th>Total races</th><th>Racers</th></tr>
         </thead>
         <tbody>${body}</tbody>
       </table>
-    </div>`;
+    </div>
+    <p class="lb-score-note">Score = avg speed ÷ 2 + accuracy, averaged across the team's racers — our own blended ranking, not an official Nitro Type stat.</p>`;
 }
 
 // Builds the full leaderboards page body (controls + all 8 panels) from
@@ -660,6 +664,13 @@ const BASE_CSS = `
     padding: 2px 7px;
     border-radius: 6px;
     margin-left: 8px;
+  }
+
+  .score { font-weight: 800; color: var(--accent); font-size: 14px; }
+  .lb-score-note {
+    color: var(--muted);
+    font-size: 12px;
+    margin: 10px 2px 0;
   }
 
   footer.site {

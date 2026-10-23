@@ -251,9 +251,15 @@ async function main() {
     buildTeamPage(team, racers);
   }
 
+  // "score" is our own blended progress metric (avg speed / 2 + accuracy),
+  // not anything Nitro Type itself reports - chosen so the two terms land
+  // in comparable ranges (speed/2 roughly 25-90, accuracy roughly 90-99)
+  // instead of speed alone drowning out accuracy.
   const { rows: racerLeaderboard } = await pool.query(
     `select r.username, r.team_tag, t.tag_color,
-            s.avg_speed, s.top_speed, s.races, s.accuracy
+            s.avg_speed, s.top_speed, s.races, s.accuracy,
+            case when s.avg_speed is not null and s.accuracy is not null
+                 then round(s.avg_speed / 2 + s.accuracy, 1) end as score
      from racers r
      join teams t on t.tag = r.team_tag
      left join lateral (
@@ -261,7 +267,7 @@ async function main() {
        order by captured_at desc limit 1
      ) s on true
      where s.avg_speed is not null
-     order by s.avg_speed desc, s.top_speed desc
+     order by score desc nulls last, s.avg_speed desc
      limit 100`
   );
 
@@ -270,7 +276,8 @@ async function main() {
             round(avg(s.avg_speed), 1) as avg_speed,
             max(s.top_speed) as top_speed,
             sum(s.races) as total_races,
-            count(s.avg_speed) as racer_count
+            count(s.avg_speed) as racer_count,
+            round(avg(s.avg_speed) / 2 + avg(s.accuracy), 1) as score
      from teams t
      join racers r on r.team_tag = t.tag
      left join lateral (
@@ -278,7 +285,7 @@ async function main() {
        order by captured_at desc limit 1
      ) s on true
      group by t.tag, t.display_name, t.tag_color
-     order by avg_speed desc nulls last`
+     order by score desc nulls last`
   );
 
   buildLeaderboardsPage(racerLeaderboard, teamLeaderboard);
