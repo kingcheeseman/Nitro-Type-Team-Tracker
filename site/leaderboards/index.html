@@ -362,7 +362,7 @@
     margin-left: 8px;
   }
 
-  .score { font-weight: 800; color: var(--accent); font-size: 14px; }
+  .points { font-weight: 800; color: var(--accent); font-size: 14px; }
   .lb-score-note {
     color: var(--muted);
     font-size: 12px;
@@ -404,7 +404,7 @@
         <button type="button" class="seg-btn" data-kind="teams">Teams</button>
       </div>
       <div class="seg" data-role="range">
-        <button type="button" class="seg-btn active" data-range="alltime">All-Time</button><button type="button" class="seg-btn" data-range="monthly">Monthly <span class="soon-tag">Soon</span></button><button type="button" class="seg-btn" data-range="weekly">Weekly <span class="soon-tag">Soon</span></button><button type="button" class="seg-btn" data-range="daily">Daily <span class="soon-tag">Soon</span></button>
+        <button type="button" class="seg-btn" data-range="hourly">Hourly</button><button type="button" class="seg-btn" data-range="daily">Daily</button><button type="button" class="seg-btn" data-range="weekly">Weekly</button><button type="button" class="seg-btn" data-range="monthly">Monthly</button><button type="button" class="seg-btn" data-range="seasonal">Seasonal <span class="soon-tag">Soon</span></button><button type="button" class="seg-btn active" data-range="alltime">All-Time</button>
       </div>
     </div>
     <script>
@@ -435,1320 +435,384 @@
         });
       })();
     </script>
-    <div class="lb-panel" data-kind="racers" data-range="alltime">
+    <div class="lb-panel" data-kind="racers" data-range="hourly" hidden>
     <div class="table-wrap">
       <table>
         <thead>
-          <tr><th>#</th><th>Racer</th><th>Score</th><th>Avg speed</th><th>Highest speed</th><th>Lifetime races</th><th>Accuracy</th></tr>
+          <tr><th>#</th><th>Racer</th><th>Points</th><th>Races tracked</th><th>Avg speed</th><th>Highest speed</th><th>Accuracy</th></tr>
         </thead>
         <tbody>
         <tr>
           <td><span class="lb-rank top1">1</span></td>
           <td class="racer">
-            <span class="avatar" style="background:hsl(261 85% 65%)">I</span>
-            ikandoit
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
+            <span class="avatar" style="background:hsl(224 85% 65%)">7</span>
+            77uu
+            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
           </td>
-          <td><span class="score">182.9</span></td>
-          <td>173</td>
-          <td>208</td>
-          <td>204321</td>
-          <td><span class="pill good">96.43%</span></td>
+          <td><span class="points">8632.08</span></td>
+          <td>57</td>
+          <td>114</td>
+          <td>161</td>
+          <td><span class="pill ok">94.44%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank top2">2</span></td>
           <td class="racer">
-            <span class="avatar" style="background:hsl(192 85% 65%)">N</span>
-            nothisisdoma
+            <span class="avatar" style="background:hsl(261 85% 65%)">I</span>
+            ikandoit
             <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
           </td>
-          <td><span class="score">181.6</span></td>
-          <td>172</td>
-          <td>211</td>
-          <td>4741</td>
-          <td><span class="pill good">95.62%</span></td>
+          <td><span class="points">7541.54</span></td>
+          <td>41</td>
+          <td>175</td>
+          <td>208</td>
+          <td><span class="pill good">96.44%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank top3">3</span></td>
           <td class="racer">
-            <span class="avatar" style="background:hsl(109 85% 65%)">D</span>
-            dodge_hornet_2024
+            <span class="avatar" style="background:hsl(209 85% 65%)">R</span>
+            randora
             <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
           </td>
-          <td><span class="score">175.1</span></td>
-          <td>153</td>
-          <td>199</td>
-          <td>39959</td>
-          <td><span class="pill good">98.59%</span></td>
+          <td><span class="points">7065.24</span></td>
+          <td>52</td>
+          <td>77</td>
+          <td>182</td>
+          <td><span class="pill good">97.37%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">4</span></td>
           <td class="racer">
-            <span class="avatar" style="background:hsl(273 85% 65%)">I</span>
-            itspickles
-            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
+            <span class="avatar" style="background:hsl(156 85% 65%)">T</span>
+            t4l4n06
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
           </td>
-          <td><span class="score">174.6</span></td>
-          <td>158</td>
-          <td>200</td>
-          <td>345504</td>
-          <td><span class="pill good">95.64%</span></td>
+          <td><span class="points">7024.16</span></td>
+          <td>52</td>
+          <td>77</td>
+          <td>107</td>
+          <td><span class="pill good">96.58%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">5</span></td>
           <td class="racer">
-            <span class="avatar" style="background:hsl(127 85% 65%)">T</span>
-            tankispanky
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
+            <span class="avatar" style="background:hsl(345 85% 65%)">O</span>
+            op_elemental
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
           </td>
-          <td><span class="score">173.9</span></td>
-          <td>153</td>
-          <td>183</td>
-          <td>151640</td>
-          <td><span class="pill good">97.38%</span></td>
+          <td><span class="points">6088.56</span></td>
+          <td>46</td>
+          <td>73</td>
+          <td>108</td>
+          <td><span class="pill good">95.86%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">6</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(225 85% 65%)">T</span>
-            tranq_
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
-          </td>
-          <td><span class="score">172.0</span></td>
-          <td>150</td>
-          <td>196</td>
-          <td>363306</td>
-          <td><span class="pill good">96.95%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">7</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(230 85% 65%)">B</span>
-            bibbon
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
-          </td>
-          <td><span class="score">171.7</span></td>
-          <td>152</td>
-          <td>200</td>
-          <td>38678</td>
-          <td><span class="pill good">95.68%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">8</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(182 85% 65%)">R</span>
-            realquezzy
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
-          </td>
-          <td><span class="score">168.9</span></td>
-          <td>140</td>
-          <td>184</td>
-          <td>120010</td>
-          <td><span class="pill good">98.89%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">9</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(192 85% 65%)">B</span>
-            bigbird14356
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
-          </td>
-          <td><span class="score">168.7</span></td>
-          <td>144</td>
-          <td>179</td>
-          <td>88168</td>
-          <td><span class="pill good">96.66%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">10</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(259 85% 65%)">Z</span>
-            zombie_car
-            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">W1NN6R</span>
-          </td>
-          <td><span class="score">166.2</span></td>
-          <td>145</td>
-          <td>163</td>
-          <td>11384</td>
-          <td><span class="pill ok">93.7%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">11</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(94 85% 65%)">C</span>
-            cortezdavis6565
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
-          </td>
-          <td><span class="score">166.1</span></td>
-          <td>139</td>
-          <td>164</td>
-          <td>91221</td>
-          <td><span class="pill good">96.59%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">12</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(175 85% 65%)">M</span>
-            mal123wt
-            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
-          </td>
-          <td><span class="score">165.9</span></td>
-          <td>135</td>
-          <td>177</td>
-          <td>322171</td>
-          <td><span class="pill good">98.44%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">13</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(245 85% 65%)">W</span>
-            wilshireblvd
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
-          </td>
-          <td><span class="score">165.8</span></td>
-          <td>134</td>
-          <td>185</td>
-          <td>61131</td>
-          <td><span class="pill good">98.84%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">14</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(30 85% 65%)">0</span>
-            05e31d0dda18c127ec9d2b775d50b63a
-            <span class="lb-team-tag" style="background:#f5eb21;color:#0b1220">SVC</span>
-          </td>
-          <td><span class="score">165.4</span></td>
-          <td>135</td>
-          <td>157</td>
-          <td>913</td>
-          <td><span class="pill good">97.9%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">15</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(19 85% 65%)">K</span>
-            karacter
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
-          </td>
-          <td><span class="score">165.4</span></td>
-          <td>134</td>
-          <td>166</td>
-          <td>204515</td>
-          <td><span class="pill good">98.35%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">16</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(271 85% 65%)">C</span>
             cosmickeystroke
             <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
           </td>
-          <td><span class="score">164.7</span></td>
-          <td>135</td>
-          <td>172</td>
-          <td>11547</td>
-          <td><span class="pill good">97.23%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">17</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(63 85% 65%)">C</span>
-            chetdavis
-            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
-          </td>
-          <td><span class="score">163.6</span></td>
-          <td>133</td>
-          <td>166</td>
-          <td>52932</td>
-          <td><span class="pill good">97.13%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">18</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(248 85% 65%)">P</span>
-            pbnl
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
-          </td>
-          <td><span class="score">162.7</span></td>
-          <td>129</td>
-          <td>188</td>
-          <td>102097</td>
-          <td><span class="pill good">98.24%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">19</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(22 85% 65%)">K</span>
-            kureizukraze
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
-          </td>
-          <td><span class="score">162.5</span></td>
-          <td>127</td>
-          <td>166</td>
-          <td>266441</td>
-          <td><span class="pill good">99.02%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">20</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(256 85% 65%)">W</span>
-            wallflowerwendy
-            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
-          </td>
-          <td><span class="score">162.1</span></td>
-          <td>127</td>
-          <td>159</td>
-          <td>24289</td>
-          <td><span class="pill good">98.56%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">21</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(86 85% 65%)">R</span>
-            ryan46741
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">NOHOPE</span>
-          </td>
-          <td><span class="score">161.7</span></td>
-          <td>133</td>
-          <td>162</td>
-          <td>15548</td>
-          <td><span class="pill good">95.21%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">22</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(202 85% 65%)">A</span>
-            a621e22fb4fffdedf1c0b965d99f29ed
-            <span class="lb-team-tag" style="background:#f5eb21;color:#0b1220">SVC</span>
-          </td>
-          <td><span class="score">161.4</span></td>
-          <td>129</td>
-          <td>151</td>
-          <td>151</td>
-          <td><span class="pill good">96.93%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">23</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(47 85% 65%)">H</span>
-            hat4rofll4evrjuyh
-            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
-          </td>
-          <td><span class="score">161.1</span></td>
-          <td>131</td>
-          <td>178</td>
-          <td>41217</td>
-          <td><span class="pill good">95.55%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">24</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(283 85% 65%)">1</span>
-            1vxymphasdf
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">THB0S</span>
-          </td>
-          <td><span class="score">159.4</span></td>
-          <td>125</td>
-          <td>156</td>
-          <td>11764</td>
-          <td><span class="pill good">96.91%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">25</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(79 85% 65%)">S</span>
-            scrowy
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
-          </td>
-          <td><span class="score">159.4</span></td>
-          <td>123</td>
-          <td>185</td>
-          <td>249300</td>
-          <td><span class="pill good">97.88%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">26</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(117 85% 65%)">7</span>
-            73e9119399c5e48123c481a73e87840c
-            <span class="lb-team-tag" style="background:#f5eb21;color:#0b1220">SVC</span>
-          </td>
-          <td><span class="score">159.0</span></td>
-          <td>119</td>
-          <td>126</td>
-          <td>452</td>
-          <td><span class="pill good">99.48%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">27</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(49 85% 65%)">1</span>
-            1586f9591d54ef8e32f5e3e09c5ee752
-            <span class="lb-team-tag" style="background:#f5eb21;color:#0b1220">SVC</span>
-          </td>
-          <td><span class="score">158.9</span></td>
-          <td>126</td>
-          <td>145</td>
-          <td>670</td>
-          <td><span class="pill good">95.94%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">28</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(153 85% 65%)">T</span>
-            thedestroyist
-            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
-          </td>
-          <td><span class="score">158.7</span></td>
-          <td>120</td>
-          <td>155</td>
-          <td>169254</td>
-          <td><span class="pill good">98.74%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">29</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(198 85% 65%)">P</span>
-            phantom300
-            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
-          </td>
-          <td><span class="score">158.0</span></td>
-          <td>121</td>
-          <td>148</td>
-          <td>19660</td>
-          <td><span class="pill good">97.51%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">30</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(336 85% 65%)">B</span>
-            blazendary
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
-          </td>
-          <td><span class="score">157.7</span></td>
-          <td>122</td>
-          <td>156</td>
-          <td>5977</td>
-          <td><span class="pill good">96.67%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">31</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(55 85% 65%)">A</span>
-            atruetypingaddict
-            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
-          </td>
-          <td><span class="score">157.7</span></td>
-          <td>119</td>
-          <td>172</td>
-          <td>9947</td>
-          <td><span class="pill good">98.18%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">32</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(351 85% 65%)">I</span>
-            imbigmannaruto
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
-          </td>
-          <td><span class="score">157.6</span></td>
-          <td>121</td>
-          <td>147</td>
-          <td>4638</td>
-          <td><span class="pill good">97.13%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">33</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(306 85% 65%)">S</span>
-            steno_slipstream
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">NOHOPE</span>
-          </td>
-          <td><span class="score">157.6</span></td>
-          <td>121</td>
-          <td>164</td>
-          <td>5737</td>
-          <td><span class="pill good">97.05%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">34</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(64 85% 65%)">C</span>
-            championtyper34
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
-          </td>
-          <td><span class="score">157.5</span></td>
-          <td>122</td>
-          <td>178</td>
-          <td>5146</td>
-          <td><span class="pill good">96.47%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">35</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(352 85% 65%)">V</span>
-            voxbeast
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
-          </td>
-          <td><span class="score">156.7</span></td>
-          <td>117</td>
-          <td>176</td>
-          <td>63165</td>
-          <td><span class="pill good">98.16%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">36</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(165 85% 65%)">S</span>
-            spanky_29924
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
-          </td>
-          <td><span class="score">156.6</span></td>
-          <td>129</td>
-          <td>167</td>
-          <td>122744</td>
-          <td><span class="pill ok">92.12%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">37</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(335 85% 65%)">T</span>
-            texanbeaver4321
-            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
-          </td>
-          <td><span class="score">156.6</span></td>
-          <td>125</td>
-          <td>157</td>
-          <td>3370</td>
-          <td><span class="pill ok">94.11%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">38</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(177 85% 65%)">M</span>
-            mynameismyself
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
-          </td>
-          <td><span class="score">156.4</span></td>
-          <td>120</td>
-          <td>153</td>
-          <td>7893</td>
-          <td><span class="pill good">96.35%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">39</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(111 85% 65%)">9</span>
-            999x
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
-          </td>
-          <td><span class="score">156.1</span></td>
-          <td>115</td>
-          <td>217</td>
-          <td>16110</td>
-          <td><span class="pill good">98.55%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">40</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(310 85% 65%)">M</span>
-            mason9111
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
-          </td>
-          <td><span class="score">155.9</span></td>
-          <td>120</td>
-          <td>178</td>
-          <td>17550</td>
-          <td><span class="pill good">95.85%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">41</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(206 85% 65%)">L</span>
-            ljkafdjklafdjlkfad
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">NOHOPE</span>
-          </td>
-          <td><span class="score">155.8</span></td>
-          <td>118</td>
-          <td>144</td>
-          <td>5526</td>
-          <td><span class="pill good">96.76%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">42</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(226 85% 65%)">9</span>
-            9b34fdad7fdbaf0a518333388f13f2f2
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
-          </td>
-          <td><span class="score">155.5</span></td>
-          <td>118</td>
-          <td>144</td>
-          <td>24682</td>
-          <td><span class="pill good">96.45%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">43</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(163 85% 65%)">N</span>
-            nitrotypegui
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
-          </td>
-          <td><span class="score">155.3</span></td>
-          <td>122</td>
-          <td>146</td>
-          <td>1691</td>
-          <td><span class="pill ok">94.32%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">44</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(155 85% 65%)">F</span>
-            funktions
-            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
-          </td>
-          <td><span class="score">155.3</span></td>
-          <td>119</td>
-          <td>161</td>
-          <td>83955</td>
-          <td><span class="pill good">95.75%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">45</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(50 85% 65%)">L</span>
-            llk_zeltron
-            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
-          </td>
-          <td><span class="score">155.3</span></td>
-          <td>117</td>
-          <td>139</td>
-          <td>7222</td>
-          <td><span class="pill good">96.81%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">46</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(346 85% 65%)">S</span>
-            stinkburt
-            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
-          </td>
-          <td><span class="score">155.2</span></td>
-          <td>117</td>
-          <td>145</td>
-          <td>22777</td>
-          <td><span class="pill good">96.74%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">47</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(175 85% 65%)">I</span>
-            imtheblackgoatgod
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
-          </td>
-          <td><span class="score">155.0</span></td>
-          <td>118</td>
-          <td>141</td>
-          <td>2550</td>
-          <td><span class="pill good">96%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">48</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(198 85% 65%)">T</span>
-            thepotionist
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
-          </td>
-          <td><span class="score">154.7</span></td>
-          <td>120</td>
-          <td>159</td>
-          <td>21222</td>
-          <td><span class="pill ok">94.71%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">49</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(300 85% 65%)">I</span>
-            itsalonplayz
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
-          </td>
-          <td><span class="score">154.5</span></td>
-          <td>119</td>
-          <td>157</td>
-          <td>11918</td>
-          <td><span class="pill good">95%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">50</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(285 85% 65%)">R</span>
-            ryuthemaster
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">NOHOPE</span>
-          </td>
-          <td><span class="score">154.5</span></td>
-          <td>114</td>
-          <td>142</td>
-          <td>17120</td>
-          <td><span class="pill good">97.53%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">51</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(94 85% 65%)">M</span>
-            machikanetannhauser
-            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
-          </td>
-          <td><span class="score">154.0</span></td>
-          <td>117</td>
-          <td>141</td>
-          <td>2846</td>
-          <td><span class="pill good">95.51%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">52</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(164 85% 65%)">H</span>
-            hypertyper55
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
-          </td>
-          <td><span class="score">154.0</span></td>
-          <td>112</td>
-          <td>138</td>
-          <td>11076</td>
-          <td><span class="pill good">97.97%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">53</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(231 85% 65%)">S</span>
-            starboystellan
-            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
-          </td>
-          <td><span class="score">153.7</span></td>
-          <td>117</td>
-          <td>140</td>
-          <td>27100</td>
-          <td><span class="pill good">95.16%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">54</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(206 85% 65%)">2</span>
-            2c2677f66b1dd9de638f2f58b8134e67
-            <span class="lb-team-tag" style="background:#f5eb21;color:#0b1220">SVC</span>
-          </td>
-          <td><span class="score">153.6</span></td>
-          <td>115</td>
-          <td>161</td>
-          <td>26482</td>
-          <td><span class="pill good">96.1%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">55</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(191 85% 65%)">K</span>
-            kingie15
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
-          </td>
-          <td><span class="score">152.5</span></td>
-          <td>111</td>
-          <td>149</td>
-          <td>33600</td>
-          <td><span class="pill good">97.03%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">56</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(71 85% 65%)">5</span>
-            5c9e16e4fb1ca82e80c55687f9afd3e5
-            <span class="lb-team-tag" style="background:#f5eb21;color:#0b1220">SVC</span>
-          </td>
-          <td><span class="score">152.3</span></td>
-          <td>114</td>
-          <td>159</td>
-          <td>222</td>
-          <td><span class="pill good">95.32%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">57</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(99 85% 65%)">S</span>
-            snoop4life
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
-          </td>
-          <td><span class="score">152.1</span></td>
-          <td>110</td>
-          <td>147</td>
-          <td>87609</td>
-          <td><span class="pill good">97.1%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">58</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(210 85% 65%)">M</span>
-            mrfruitofficial
-            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
-          </td>
-          <td><span class="score">152.0</span></td>
-          <td>115</td>
-          <td>135</td>
-          <td>17750</td>
-          <td><span class="pill ok">94.46%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">59</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(177 85% 65%)">4</span>
-            4be4c714216e645976e1c429f499456a
-            <span class="lb-team-tag" style="background:#f5eb21;color:#0b1220">SVC</span>
-          </td>
-          <td><span class="score">151.8</span></td>
-          <td>111</td>
-          <td>138</td>
-          <td>898</td>
-          <td><span class="pill good">96.33%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">60</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(162 85% 65%)">7</span>
-            7f0032fd385260dbd67780a4c053a0f3
-            <span class="lb-team-tag" style="background:#5b52a3;color:#ffffff">IMT</span>
-          </td>
-          <td><span class="score">151.8</span></td>
-          <td>111</td>
-          <td>129</td>
-          <td>1279</td>
-          <td><span class="pill good">96.26%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">61</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(289 85% 65%)">B</span>
-            boooobi
-            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
-          </td>
-          <td><span class="score">151.8</span></td>
-          <td>106</td>
-          <td>134</td>
-          <td>65518</td>
-          <td><span class="pill good">98.75%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">62</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(85 85% 65%)">0</span>
-            0459376829
-            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
-          </td>
-          <td><span class="score">151.5</span></td>
-          <td>117</td>
-          <td>151</td>
-          <td>11060</td>
-          <td><span class="pill ok">92.97%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">63</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(349 85% 65%)">J</span>
-            jacem12
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
-          </td>
-          <td><span class="score">151.4</span></td>
-          <td>112</td>
-          <td>140</td>
-          <td>99997</td>
-          <td><span class="pill good">95.42%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">64</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(144 85% 65%)">E</span>
-            eyekonickatseyelver
-            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">W1NN6R</span>
-          </td>
-          <td><span class="score">151.3</span></td>
-          <td>109</td>
-          <td>169</td>
-          <td>2975</td>
-          <td><span class="pill good">96.82%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">65</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(87 85% 65%)">P</span>
-            pingu2
-            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
-          </td>
-          <td><span class="score">151.2</span></td>
-          <td>115</td>
-          <td>168</td>
-          <td>33675</td>
-          <td><span class="pill ok">93.68%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">66</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(243 85% 65%)">A</span>
-            austinl4313
-            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
-          </td>
-          <td><span class="score">151.0</span></td>
-          <td>115</td>
-          <td>148</td>
-          <td>34325</td>
-          <td><span class="pill ok">93.54%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">67</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(181 85% 65%)">A</span>
-            abdulka1471
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
-          </td>
-          <td><span class="score">150.8</span></td>
-          <td>112</td>
-          <td>147</td>
-          <td>31174</td>
-          <td><span class="pill ok">94.8%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">68</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(45 85% 65%)">M</span>
-            mathlegendrr
-            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">W1NN6R</span>
-          </td>
-          <td><span class="score">150.7</span></td>
-          <td>112</td>
-          <td>152</td>
-          <td>16498</td>
-          <td><span class="pill ok">94.68%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">69</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(133 85% 65%)">G</span>
-            geloxd
-            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
-          </td>
-          <td><span class="score">150.5</span></td>
-          <td>107</td>
-          <td>216</td>
-          <td>157275</td>
-          <td><span class="pill good">96.96%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">70</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(208 85% 65%)">A</span>
-            ark13thegoat
-            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
-          </td>
-          <td><span class="score">150.1</span></td>
-          <td>115</td>
-          <td>167</td>
-          <td>42575</td>
-          <td><span class="pill ok">92.62%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">71</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(90 85% 65%)">R</span>
-            racerkayyyyyyyyy
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">THB0S</span>
-          </td>
-          <td><span class="score">150.1</span></td>
-          <td>105</td>
-          <td>129</td>
-          <td>16466</td>
-          <td><span class="pill good">97.61%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">72</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(213 85% 65%)">C</span>
-            caleb30412
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
-          </td>
-          <td><span class="score">149.9</span></td>
-          <td>106</td>
-          <td>130</td>
-          <td>78562</td>
-          <td><span class="pill good">96.88%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">73</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(307 85% 65%)">0</span>
-            067e61db23ab39b5375339592bc11c6e
-            <span class="lb-team-tag" style="background:#f5eb21;color:#0b1220">SVC</span>
-          </td>
-          <td><span class="score">149.6</span></td>
-          <td>107</td>
-          <td>135</td>
-          <td>360</td>
-          <td><span class="pill good">96.05%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">74</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(230 85% 65%)">M</span>
-            mrw21502
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
-          </td>
-          <td><span class="score">149.6</span></td>
-          <td>106</td>
-          <td>185</td>
-          <td>46931</td>
-          <td><span class="pill good">96.55%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">75</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(315 85% 65%)">T</span>
-            typernator_nm214
-            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
-          </td>
-          <td><span class="score">149.5</span></td>
-          <td>110</td>
-          <td>156</td>
-          <td>79900</td>
-          <td><span class="pill ok">94.52%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">76</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(143 85% 65%)">T</span>
-            tiotiotiotime
-            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
-          </td>
-          <td><span class="score">149.5</span></td>
-          <td>104</td>
-          <td>127</td>
-          <td>673</td>
-          <td><span class="pill good">97.53%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">77</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(300 85% 65%)">I</span>
-            ily2thestars
-            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
-          </td>
-          <td><span class="score">149.3</span></td>
-          <td>109</td>
-          <td>159</td>
-          <td>355455</td>
-          <td><span class="pill ok">94.75%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">78</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(286 85% 65%)">1</span>
-            1aae40d4e717fbfd0765a622f5febaea
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">THB0S</span>
-          </td>
-          <td><span class="score">149.3</span></td>
-          <td>108</td>
-          <td>121</td>
-          <td>5173</td>
-          <td><span class="pill good">95.29%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">79</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(131 85% 65%)">J</span>
-            joeatvcs
-            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
-          </td>
-          <td><span class="score">149.3</span></td>
-          <td>103</td>
-          <td>139</td>
-          <td>88372</td>
-          <td><span class="pill good">97.78%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">80</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(235 85% 65%)">B</span>
-            bradbr123432858824
-            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
-          </td>
-          <td><span class="score">149.0</span></td>
-          <td>104</td>
+          <td><span class="points">4806.46</span></td>
+          <td>29</td>
           <td>137</td>
-          <td>10384</td>
-          <td><span class="pill good">97.03%</span></td>
+          <td>172</td>
+          <td><span class="pill good">97.24%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">81</span></td>
+          <td><span class="lb-rank">7</span></td>
           <td class="racer">
-            <span class="avatar" style="background:hsl(163 85% 65%)">A</span>
-            akm
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
+            <span class="avatar" style="background:hsl(4 85% 65%)">0</span>
+            0bdd468c1f35e491e3e64822e1ac5e86
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
           </td>
-          <td><span class="score">149.0</span></td>
-          <td>103</td>
-          <td>151</td>
-          <td>71758</td>
-          <td><span class="pill good">97.48%</span></td>
+          <td><span class="points">4711.98</span></td>
+          <td>42</td>
+          <td>41</td>
+          <td>80</td>
+          <td><span class="pill ok">91.69%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">82</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(196 85% 65%)">E</span>
-            eileen17
-            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
-          </td>
-          <td><span class="score">148.9</span></td>
-          <td>102</td>
-          <td>133</td>
-          <td>22419</td>
-          <td><span class="pill good">97.87%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">83</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(326 85% 65%)">J</span>
-            jckrayzie
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">THB0S</span>
-          </td>
-          <td><span class="score">148.8</span></td>
-          <td>102</td>
-          <td>135</td>
-          <td>9478</td>
-          <td><span class="pill good">97.84%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">84</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(39 85% 65%)">A</span>
-            atlasfr
-            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
-          </td>
-          <td><span class="score">148.5</span></td>
-          <td>103</td>
-          <td>129</td>
-          <td>8193</td>
-          <td><span class="pill good">96.97%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">85</span></td>
+          <td><span class="lb-rank">8</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(325 85% 65%)">R</span>
             rajrthegoat
             <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
           </td>
-          <td><span class="score">148.5</span></td>
+          <td><span class="points">4604.12</span></td>
+          <td>31</td>
           <td>99</td>
           <td>135</td>
-          <td>73660</td>
-          <td><span class="pill good">99.03%</span></td>
+          <td><span class="pill good">99.02%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">86</span></td>
+          <td><span class="lb-rank">9</span></td>
           <td class="racer">
-            <span class="avatar" style="background:hsl(251 85% 65%)">3</span>
-            3d80986b11c977babf407245691336a7
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">NOHOPE</span>
+            <span class="avatar" style="background:hsl(46 85% 65%)">K</span>
+            kyrotypes
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
           </td>
-          <td><span class="score">148.4</span></td>
-          <td>109</td>
-          <td>124</td>
-          <td>725</td>
-          <td><span class="pill ok">93.88%</span></td>
+          <td><span class="points">3629.86</span></td>
+          <td>26</td>
+          <td>85</td>
+          <td>144</td>
+          <td><span class="pill good">97.11%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">87</span></td>
+          <td><span class="lb-rank">10</span></td>
           <td class="racer">
-            <span class="avatar" style="background:hsl(170 85% 65%)">8</span>
-            8cc4421549856d295ce0a937bea1d713
-            <span class="lb-team-tag" style="background:#f5eb21;color:#0b1220">SVC</span>
-          </td>
-          <td><span class="score">148.4</span></td>
-          <td>105</td>
-          <td>119</td>
-          <td>7</td>
-          <td><span class="pill good">95.94%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">88</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(270 85% 65%)">B</span>
-            brady_6k
+            <span class="avatar" style="background:hsl(94 85% 65%)">I</span>
+            iwonyoulost19
             <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
           </td>
-          <td><span class="score">148.3</span></td>
-          <td>107</td>
-          <td>139</td>
-          <td>16120</td>
+          <td><span class="points">3564.5</span></td>
+          <td>25</td>
+          <td>92</td>
+          <td>154</td>
+          <td><span class="pill good">96.58%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">11</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(239 85% 65%)">U</span>
+            unf0rgivable
+            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
+          </td>
+          <td><span class="points">3429.5</span></td>
+          <td>25</td>
+          <td>78</td>
+          <td>115</td>
+          <td><span class="pill good">98.18%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">12</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(268 85% 65%)">2</span>
+            2027lutesr
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">W1NN6R</span>
+          </td>
+          <td><span class="points">3188.46</span></td>
+          <td>22</td>
+          <td>94</td>
+          <td>117</td>
+          <td><span class="pill good">97.93%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">13</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(116 85% 65%)">N</span>
+            nathanmduncan
+            <span class="lb-team-tag" style="background:#5b52a3;color:#ffffff">IMT</span>
+          </td>
+          <td><span class="points">3138.08</span></td>
+          <td>22</td>
+          <td>95</td>
+          <td>128</td>
+          <td><span class="pill good">95.14%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">14</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(94 85% 65%)">M</span>
+            machikanetannhauser
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
+          </td>
+          <td><span class="points">2954.5</span></td>
+          <td>19</td>
+          <td>120</td>
+          <td>141</td>
+          <td><span class="pill good">95.5%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">15</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(127 85% 65%)">L</span>
+            lansan
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">NOHOPE</span>
+          </td>
+          <td><span class="points">2237.44</span></td>
+          <td>16</td>
+          <td>90</td>
+          <td>116</td>
           <td><span class="pill ok">94.84%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">89</span></td>
+          <td><span class="lb-rank">16</span></td>
           <td class="racer">
-            <span class="avatar" style="background:hsl(187 85% 65%)">J</span>
-            jonathan711111
-            <span class="lb-team-tag" style="background:#5b52a3;color:#ffffff">IMT</span>
-          </td>
-          <td><span class="score">148.3</span></td>
-          <td>105</td>
-          <td>132</td>
-          <td>6906</td>
-          <td><span class="pill good">95.8%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">90</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(142 85% 65%)">C</span>
-            ccbb14405c083eee40d78e5451ff4b2d
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">NOHOPE</span>
-          </td>
-          <td><span class="score">148.2</span></td>
-          <td>101</td>
-          <td>118</td>
-          <td>2151</td>
-          <td><span class="pill good">97.73%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">91</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(311 85% 65%)">J</span>
-            jadon58
-            <span class="lb-team-tag" style="background:#f5eb21;color:#0b1220">SVC</span>
-          </td>
-          <td><span class="score">148.1</span></td>
-          <td>111</td>
-          <td>147</td>
-          <td>4226</td>
-          <td><span class="pill ok">92.62%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">92</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(79 85% 65%)">C</span>
-            cntrl_un1vers3
+            <span class="avatar" style="background:hsl(288 85% 65%)">M</span>
+            maiisoh
             <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
           </td>
-          <td><span class="score">148.0</span></td>
-          <td>106</td>
-          <td>190</td>
-          <td>35893</td>
-          <td><span class="pill ok">94.97%</span></td>
+          <td><span class="points">2225.92</span></td>
+          <td>16</td>
+          <td>82</td>
+          <td>123</td>
+          <td><span class="pill good">98.12%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">93</span></td>
+          <td><span class="lb-rank">17</span></td>
           <td class="racer">
-            <span class="avatar" style="background:hsl(338 85% 65%)">B</span>
-            bdk333
-            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">W1NN6R</span>
+            <span class="avatar" style="background:hsl(336 85% 65%)">A</span>
+            a4e652621b363ffb1a8d9976fb3cbddc
+            <span class="lb-team-tag" style="background:#f5eb21;color:#0b1220">SVC</span>
           </td>
-          <td><span class="score">147.8</span></td>
-          <td>101</td>
-          <td>136</td>
-          <td>8805</td>
-          <td><span class="pill good">97.31%</span></td>
+          <td><span class="points">1752.27</span></td>
+          <td>13</td>
+          <td>84</td>
+          <td>109</td>
+          <td><span class="pill ok">92.79%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">94</span></td>
+          <td><span class="lb-rank">18</span></td>
           <td class="racer">
-            <span class="avatar" style="background:hsl(149 85% 65%)">E</span>
-            e32e09bc862222a8555509279a758bd3
+            <span class="avatar" style="background:hsl(324 85% 65%)">S</span>
+            sara0010
             <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">THB0S</span>
           </td>
-          <td><span class="score">147.5</span></td>
-          <td>105</td>
-          <td>125</td>
-          <td>4321</td>
-          <td><span class="pill ok">94.98%</span></td>
+          <td><span class="points">1269.72</span></td>
+          <td>9</td>
+          <td>95</td>
+          <td>123</td>
+          <td><span class="pill ok">93.58%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">95</span></td>
+          <td><span class="lb-rank">19</span></td>
           <td class="racer">
-            <span class="avatar" style="background:hsl(2 85% 65%)">Y</span>
-            yottaqube
+            <span class="avatar" style="background:hsl(206 85% 65%)">L</span>
+            ljkafdjklafdjlkfad
             <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">NOHOPE</span>
           </td>
-          <td><span class="score">147.5</span></td>
-          <td>101</td>
-          <td>127</td>
-          <td>22560</td>
-          <td><span class="pill good">97%</span></td>
+          <td><span class="points">1246.08</span></td>
+          <td>8</td>
+          <td>118</td>
+          <td>144</td>
+          <td><span class="pill good">96.76%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">96</span></td>
+          <td><span class="lb-rank">20</span></td>
           <td class="racer">
-            <span class="avatar" style="background:hsl(162 85% 65%)">B</span>
-            baglepet000
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">THB0S</span>
+            <span class="avatar" style="background:hsl(158 85% 65%)">B</span>
+            bicentricfir8
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
           </td>
-          <td><span class="score">147.4</span></td>
-          <td>108</td>
-          <td>143</td>
-          <td>2448</td>
-          <td><span class="pill ok">93.37%</span></td>
+          <td><span class="points">1119.76</span></td>
+          <td>8</td>
+          <td>89</td>
+          <td>116</td>
+          <td><span class="pill good">95.47%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">97</span></td>
+          <td><span class="lb-rank">21</span></td>
           <td class="racer">
-            <span class="avatar" style="background:hsl(224 85% 65%)">7</span>
-            77uu
+            <span class="avatar" style="background:hsl(109 85% 65%)">D</span>
+            dodge_hornet_2024
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
+          </td>
+          <td><span class="points">1062.6</span></td>
+          <td>6</td>
+          <td>157</td>
+          <td>199</td>
+          <td><span class="pill good">98.6%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">22</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(286 85% 65%)">K</span>
+            kirsty2
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">NOHOPE</span>
+          </td>
+          <td><span class="points">937.35</span></td>
+          <td>9</td>
+          <td>24</td>
+          <td>34</td>
+          <td><span class="pill ok">92.15%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">23</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(194 85% 65%)">L</span>
+            l3g3ndary_back4more
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
+          </td>
+          <td><span class="points">853.14</span></td>
+          <td>6</td>
+          <td>93</td>
+          <td>182</td>
+          <td><span class="pill good">95.69%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">24</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(63 85% 65%)">C</span>
+            chetdavis
             <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
           </td>
-          <td><span class="score">147.4</span></td>
-          <td>106</td>
-          <td>161</td>
-          <td>280746</td>
-          <td><span class="pill ok">94.44%</span></td>
+          <td><span class="points">803.15</span></td>
+          <td>5</td>
+          <td>127</td>
+          <td>166</td>
+          <td><span class="pill good">97.13%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">98</span></td>
+          <td><span class="lb-rank">25</span></td>
           <td class="racer">
-            <span class="avatar" style="background:hsl(318 85% 65%)">6</span>
-            6eaaa4d710a552da3c29773801714bdc
+            <span class="avatar" style="background:hsl(153 85% 65%)">T</span>
+            thedestroyist
+            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
+          </td>
+          <td><span class="points">801.2</span></td>
+          <td>5</td>
+          <td>123</td>
+          <td>155</td>
+          <td><span class="pill good">98.74%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">26</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(12 85% 65%)">F</span>
+            fall3n_angell
             <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">NOHOPE</span>
           </td>
-          <td><span class="score">147.0</span></td>
-          <td>101</td>
-          <td>125</td>
-          <td>3122</td>
-          <td><span class="pill good">96.51%</span></td>
+          <td><span class="points">432.69</span></td>
+          <td>3</td>
+          <td>99</td>
+          <td>122</td>
+          <td><span class="pill ok">94.73%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">99</span></td>
+          <td><span class="lb-rank">27</span></td>
           <td class="racer">
-            <span class="avatar" style="background:hsl(219 85% 65%)">P</span>
-            prcsper
-            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
+            <span class="avatar" style="background:hsl(165 85% 65%)">W</span>
+            warden108108
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
           </td>
-          <td><span class="score">146.8</span></td>
-          <td>108</td>
-          <td>165</td>
-          <td>188462</td>
-          <td><span class="pill ok">92.8%</span></td>
+          <td><span class="points">422.58</span></td>
+          <td>3</td>
+          <td>96</td>
+          <td>144</td>
+          <td><span class="pill ok">92.86%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">100</span></td>
+          <td><span class="lb-rank">28</span></td>
           <td class="racer">
-            <span class="avatar" style="background:hsl(154 85% 65%)">H</span>
-            hieuanp
-            <span class="lb-team-tag" style="background:#f5eb21;color:#0b1220">SVC</span>
+            <span class="avatar" style="background:hsl(269 85% 65%)">A</span>
+            abyss16
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
           </td>
-          <td><span class="score">146.7</span></td>
-          <td>110</td>
-          <td>147</td>
-          <td>7595</td>
-          <td><span class="pill ok">91.66%</span></td>
+          <td><span class="points">410.46</span></td>
+          <td>3</td>
+          <td>94</td>
+          <td>186</td>
+          <td><span class="pill low">89.82%</span></td>
         </tr></tbody>
       </table>
     </div>
-    <p class="lb-score-note">Score = avg speed ÷ 2 + accuracy — a blended ranking we compute ourselves, not an official Nitro Type stat.</p></div><div class="lb-panel" data-kind="teams" data-range="alltime" hidden>
+    <p class="lb-score-note">Points = (avg speed ÷ 2 + accuracy) × races completed since the last sync, earned race by race — not an official Nitro Type stat.</p></div><div class="lb-panel" data-kind="teams" data-range="hourly" hidden>
     <div class="table-wrap">
       <table>
         <thead>
-          <tr><th>#</th><th>Team</th><th>Score</th><th>Avg speed</th><th>Top speed</th><th>Total races</th><th>Racers</th></tr>
+          <tr><th>#</th><th>Team</th><th>Points</th><th>Races tracked</th><th>Racers earning</th></tr>
         </thead>
         <tbody>
         <tr>
@@ -1757,59 +821,49 @@
             <span class="avatar" style="background:#fba51a;color:#ffffff">K</span>
             [KU] Ketsui
           </td>
-          <td><span class="score">154.1</span></td>
-          <td>115.3</td>
-          <td>217</td>
-          <td>4505775</td>
-          <td>50</td>
+          <td><span class="points">33153.44</span></td>
+          <td>224</td>
+          <td>7</td>
         </tr>
         <tr>
           <td><span class="lb-rank top2">2</span></td>
           <td class="racer">
-            <span class="avatar" style="background:#436fb6;color:#ffffff">S</span>
-            [SSH] Shell  Riders
+            <span class="avatar" style="background:#ee1f25;color:#ffffff">B</span>
+            [BN8] BENEVOLENCE
           </td>
-          <td><span class="score">143.9</span></td>
-          <td>96.9</td>
-          <td>216</td>
-          <td>3474217</td>
-          <td>49</td>
+          <td><span class="points">20125.48</span></td>
+          <td>152</td>
+          <td>8</td>
         </tr>
         <tr>
           <td><span class="lb-rank top3">3</span></td>
           <td class="racer">
-            <span class="avatar" style="background:#fba51a;color:#ffffff">N</span>
-            [NOHOPE] Maybe just a little
+            <span class="avatar" style="background:#436fb6;color:#ffffff">S</span>
+            [SSH] Shell  Riders
           </td>
-          <td><span class="score">139.0</span></td>
-          <td>87.8</td>
-          <td>224</td>
-          <td>237995</td>
-          <td>51</td>
+          <td><span class="points">18472.39</span></td>
+          <td>121</td>
+          <td>5</td>
         </tr>
         <tr>
           <td><span class="lb-rank">4</span></td>
           <td class="racer">
-            <span class="avatar" style="background:#f5eb21;color:#0b1220">S</span>
-            [SVC] -Servants of Christ-
+            <span class="avatar" style="background:#fba51a;color:#ffffff">N</span>
+            [NOHOPE] Maybe just a little
           </td>
-          <td><span class="score">138.5</span></td>
-          <td>88.3</td>
-          <td>225</td>
-          <td>131341</td>
-          <td>46</td>
+          <td><span class="points">4853.56</span></td>
+          <td>36</td>
+          <td>4</td>
         </tr>
         <tr>
           <td><span class="lb-rank">5</span></td>
           <td class="racer">
-            <span class="avatar" style="background:#5b52a3;color:#ffffff">I</span>
-            [IMTR] IMT Retired Racers
+            <span class="avatar" style="background:#ee1f25;color:#ffffff">W</span>
+            [W1NN6R] Time2Rise
           </td>
-          <td><span class="score">138.0</span></td>
-          <td>90.0</td>
-          <td>118</td>
-          <td>16211</td>
-          <td>2</td>
+          <td><span class="points">3188.46</span></td>
+          <td>22</td>
+          <td>1</td>
         </tr>
         <tr>
           <td><span class="lb-rank">6</span></td>
@@ -1817,23 +871,19 @@
             <span class="avatar" style="background:#5b52a3;color:#ffffff">I</span>
             [IMT] Immortal Legends
           </td>
-          <td><span class="score">134.4</span></td>
-          <td>81.1</td>
-          <td>228</td>
-          <td>217194</td>
-          <td>48</td>
+          <td><span class="points">3138.08</span></td>
+          <td>22</td>
+          <td>1</td>
         </tr>
         <tr>
           <td><span class="lb-rank">7</span></td>
           <td class="racer">
-            <span class="avatar" style="background:#ee1f25;color:#ffffff">B</span>
-            [BN8] BENEVOLENCE
+            <span class="avatar" style="background:#f5eb21;color:#0b1220">S</span>
+            [SVC] -Servants of Christ-
           </td>
-          <td><span class="score">132.7</span></td>
-          <td>76.9</td>
-          <td>200</td>
-          <td>487125</td>
-          <td>49</td>
+          <td><span class="points">1752.27</span></td>
+          <td>13</td>
+          <td>1</td>
         </tr>
         <tr>
           <td><span class="lb-rank">8</span></td>
@@ -1841,70 +891,1872 @@
             <span class="avatar" style="background:#fba51a;color:#ffffff">T</span>
             [THB0S] THEB0SS
           </td>
-          <td><span class="score">128.7</span></td>
-          <td>71.4</td>
-          <td>195</td>
-          <td>293180</td>
-          <td>50</td>
+          <td><span class="points">1269.72</span></td>
+          <td>9</td>
+          <td>1</td>
+        </tr></tbody>
+      </table>
+    </div>
+    <p class="lb-score-note">Points = the sum of every member's points — races completed since joining this tracker × (avg speed ÷ 2 + accuracy).</p></div><div class="lb-panel" data-kind="racers" data-range="daily" hidden>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Racer</th><th>Points</th><th>Races tracked</th><th>Avg speed</th><th>Highest speed</th><th>Accuracy</th></tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td><span class="lb-rank top1">1</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(224 85% 65%)">7</span>
+            77uu
+            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
+          </td>
+          <td><span class="points">8632.08</span></td>
+          <td>57</td>
+          <td>114</td>
+          <td>161</td>
+          <td><span class="pill ok">94.44%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank top2">2</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(261 85% 65%)">I</span>
+            ikandoit
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
+          </td>
+          <td><span class="points">7541.54</span></td>
+          <td>41</td>
+          <td>175</td>
+          <td>208</td>
+          <td><span class="pill good">96.44%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank top3">3</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(209 85% 65%)">R</span>
+            randora
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
+          </td>
+          <td><span class="points">7065.24</span></td>
+          <td>52</td>
+          <td>77</td>
+          <td>182</td>
+          <td><span class="pill good">97.37%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">4</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(156 85% 65%)">T</span>
+            t4l4n06
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
+          </td>
+          <td><span class="points">7024.16</span></td>
+          <td>52</td>
+          <td>77</td>
+          <td>107</td>
+          <td><span class="pill good">96.58%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">5</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(345 85% 65%)">O</span>
+            op_elemental
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
+          </td>
+          <td><span class="points">6088.56</span></td>
+          <td>46</td>
+          <td>73</td>
+          <td>108</td>
+          <td><span class="pill good">95.86%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">6</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(271 85% 65%)">C</span>
+            cosmickeystroke
+            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
+          </td>
+          <td><span class="points">4806.46</span></td>
+          <td>29</td>
+          <td>137</td>
+          <td>172</td>
+          <td><span class="pill good">97.24%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">7</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(4 85% 65%)">0</span>
+            0bdd468c1f35e491e3e64822e1ac5e86
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
+          </td>
+          <td><span class="points">4711.98</span></td>
+          <td>42</td>
+          <td>41</td>
+          <td>80</td>
+          <td><span class="pill ok">91.69%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">8</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(325 85% 65%)">R</span>
+            rajrthegoat
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
+          </td>
+          <td><span class="points">4604.12</span></td>
+          <td>31</td>
+          <td>99</td>
+          <td>135</td>
+          <td><span class="pill good">99.02%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">9</span></td>
           <td class="racer">
-            <span class="avatar" style="background:#ee1f25;color:#ffffff">W</span>
-            [W1NN6R] Time2Rise
+            <span class="avatar" style="background:hsl(46 85% 65%)">K</span>
+            kyrotypes
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
           </td>
-          <td><span class="score">127.9</span></td>
-          <td>69.7</td>
-          <td>185</td>
-          <td>710888</td>
-          <td>50</td>
+          <td><span class="points">3629.86</span></td>
+          <td>26</td>
+          <td>85</td>
+          <td>144</td>
+          <td><span class="pill good">97.11%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">10</span></td>
           <td class="racer">
-            <span class="avatar" style="background:#71c6a5;color:#ffffff">K</span>
-            [KEYCAT] The Keyboard Cats
+            <span class="avatar" style="background:hsl(94 85% 65%)">I</span>
+            iwonyoulost19
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
           </td>
-          <td><span class="score">121.3</span></td>
-          <td>56.4</td>
-          <td>156</td>
-          <td>102035</td>
-          <td>43</td>
+          <td><span class="points">3564.5</span></td>
+          <td>25</td>
+          <td>92</td>
+          <td>154</td>
+          <td><span class="pill good">96.58%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">11</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(239 85% 65%)">U</span>
+            unf0rgivable
+            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
+          </td>
+          <td><span class="points">3429.5</span></td>
+          <td>25</td>
+          <td>78</td>
+          <td>115</td>
+          <td><span class="pill good">98.18%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">12</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(268 85% 65%)">2</span>
+            2027lutesr
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">W1NN6R</span>
+          </td>
+          <td><span class="points">3188.46</span></td>
+          <td>22</td>
+          <td>94</td>
+          <td>117</td>
+          <td><span class="pill good">97.93%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">13</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(116 85% 65%)">N</span>
+            nathanmduncan
+            <span class="lb-team-tag" style="background:#5b52a3;color:#ffffff">IMT</span>
+          </td>
+          <td><span class="points">3138.08</span></td>
+          <td>22</td>
+          <td>95</td>
+          <td>128</td>
+          <td><span class="pill good">95.14%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">14</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(94 85% 65%)">M</span>
+            machikanetannhauser
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
+          </td>
+          <td><span class="points">2954.5</span></td>
+          <td>19</td>
+          <td>120</td>
+          <td>141</td>
+          <td><span class="pill good">95.5%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">15</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(127 85% 65%)">L</span>
+            lansan
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">NOHOPE</span>
+          </td>
+          <td><span class="points">2237.44</span></td>
+          <td>16</td>
+          <td>90</td>
+          <td>116</td>
+          <td><span class="pill ok">94.84%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">16</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(288 85% 65%)">M</span>
+            maiisoh
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
+          </td>
+          <td><span class="points">2225.92</span></td>
+          <td>16</td>
+          <td>82</td>
+          <td>123</td>
+          <td><span class="pill good">98.12%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">17</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(336 85% 65%)">A</span>
+            a4e652621b363ffb1a8d9976fb3cbddc
+            <span class="lb-team-tag" style="background:#f5eb21;color:#0b1220">SVC</span>
+          </td>
+          <td><span class="points">1752.27</span></td>
+          <td>13</td>
+          <td>84</td>
+          <td>109</td>
+          <td><span class="pill ok">92.79%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">18</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(324 85% 65%)">S</span>
+            sara0010
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">THB0S</span>
+          </td>
+          <td><span class="points">1269.72</span></td>
+          <td>9</td>
+          <td>95</td>
+          <td>123</td>
+          <td><span class="pill ok">93.58%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">19</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(206 85% 65%)">L</span>
+            ljkafdjklafdjlkfad
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">NOHOPE</span>
+          </td>
+          <td><span class="points">1246.08</span></td>
+          <td>8</td>
+          <td>118</td>
+          <td>144</td>
+          <td><span class="pill good">96.76%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">20</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(158 85% 65%)">B</span>
+            bicentricfir8
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
+          </td>
+          <td><span class="points">1119.76</span></td>
+          <td>8</td>
+          <td>89</td>
+          <td>116</td>
+          <td><span class="pill good">95.47%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">21</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(109 85% 65%)">D</span>
+            dodge_hornet_2024
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
+          </td>
+          <td><span class="points">1062.6</span></td>
+          <td>6</td>
+          <td>157</td>
+          <td>199</td>
+          <td><span class="pill good">98.6%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">22</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(286 85% 65%)">K</span>
+            kirsty2
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">NOHOPE</span>
+          </td>
+          <td><span class="points">937.35</span></td>
+          <td>9</td>
+          <td>24</td>
+          <td>34</td>
+          <td><span class="pill ok">92.15%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">23</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(194 85% 65%)">L</span>
+            l3g3ndary_back4more
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
+          </td>
+          <td><span class="points">853.14</span></td>
+          <td>6</td>
+          <td>93</td>
+          <td>182</td>
+          <td><span class="pill good">95.69%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">24</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(63 85% 65%)">C</span>
+            chetdavis
+            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
+          </td>
+          <td><span class="points">803.15</span></td>
+          <td>5</td>
+          <td>127</td>
+          <td>166</td>
+          <td><span class="pill good">97.13%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">25</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(153 85% 65%)">T</span>
+            thedestroyist
+            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
+          </td>
+          <td><span class="points">801.2</span></td>
+          <td>5</td>
+          <td>123</td>
+          <td>155</td>
+          <td><span class="pill good">98.74%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">26</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(12 85% 65%)">F</span>
+            fall3n_angell
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">NOHOPE</span>
+          </td>
+          <td><span class="points">432.69</span></td>
+          <td>3</td>
+          <td>99</td>
+          <td>122</td>
+          <td><span class="pill ok">94.73%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">27</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(165 85% 65%)">W</span>
+            warden108108
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
+          </td>
+          <td><span class="points">422.58</span></td>
+          <td>3</td>
+          <td>96</td>
+          <td>144</td>
+          <td><span class="pill ok">92.86%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">28</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(269 85% 65%)">A</span>
+            abyss16
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
+          </td>
+          <td><span class="points">410.46</span></td>
+          <td>3</td>
+          <td>94</td>
+          <td>186</td>
+          <td><span class="pill low">89.82%</span></td>
         </tr></tbody>
       </table>
     </div>
-    <p class="lb-score-note">Score = avg speed ÷ 2 + accuracy, averaged across the team's racers — our own blended ranking, not an official Nitro Type stat.</p></div><div class="lb-panel" data-kind="racers" data-range="monthly" hidden>
+    <p class="lb-score-note">Points = (avg speed ÷ 2 + accuracy) × races completed since the last sync, earned race by race — not an official Nitro Type stat.</p></div><div class="lb-panel" data-kind="teams" data-range="daily" hidden>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Team</th><th>Points</th><th>Races tracked</th><th>Racers earning</th></tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td><span class="lb-rank top1">1</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:#fba51a;color:#ffffff">K</span>
+            [KU] Ketsui
+          </td>
+          <td><span class="points">33153.44</span></td>
+          <td>224</td>
+          <td>7</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank top2">2</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:#ee1f25;color:#ffffff">B</span>
+            [BN8] BENEVOLENCE
+          </td>
+          <td><span class="points">20125.48</span></td>
+          <td>152</td>
+          <td>8</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank top3">3</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:#436fb6;color:#ffffff">S</span>
+            [SSH] Shell  Riders
+          </td>
+          <td><span class="points">18472.39</span></td>
+          <td>121</td>
+          <td>5</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">4</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:#fba51a;color:#ffffff">N</span>
+            [NOHOPE] Maybe just a little
+          </td>
+          <td><span class="points">4853.56</span></td>
+          <td>36</td>
+          <td>4</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">5</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:#ee1f25;color:#ffffff">W</span>
+            [W1NN6R] Time2Rise
+          </td>
+          <td><span class="points">3188.46</span></td>
+          <td>22</td>
+          <td>1</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">6</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:#5b52a3;color:#ffffff">I</span>
+            [IMT] Immortal Legends
+          </td>
+          <td><span class="points">3138.08</span></td>
+          <td>22</td>
+          <td>1</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">7</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:#f5eb21;color:#0b1220">S</span>
+            [SVC] -Servants of Christ-
+          </td>
+          <td><span class="points">1752.27</span></td>
+          <td>13</td>
+          <td>1</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">8</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:#fba51a;color:#ffffff">T</span>
+            [THB0S] THEB0SS
+          </td>
+          <td><span class="points">1269.72</span></td>
+          <td>9</td>
+          <td>1</td>
+        </tr></tbody>
+      </table>
+    </div>
+    <p class="lb-score-note">Points = the sum of every member's points — races completed since joining this tracker × (avg speed ÷ 2 + accuracy).</p></div><div class="lb-panel" data-kind="racers" data-range="weekly" hidden>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Racer</th><th>Points</th><th>Races tracked</th><th>Avg speed</th><th>Highest speed</th><th>Accuracy</th></tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td><span class="lb-rank top1">1</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(224 85% 65%)">7</span>
+            77uu
+            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
+          </td>
+          <td><span class="points">8632.08</span></td>
+          <td>57</td>
+          <td>114</td>
+          <td>161</td>
+          <td><span class="pill ok">94.44%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank top2">2</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(261 85% 65%)">I</span>
+            ikandoit
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
+          </td>
+          <td><span class="points">7541.54</span></td>
+          <td>41</td>
+          <td>175</td>
+          <td>208</td>
+          <td><span class="pill good">96.44%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank top3">3</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(209 85% 65%)">R</span>
+            randora
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
+          </td>
+          <td><span class="points">7065.24</span></td>
+          <td>52</td>
+          <td>77</td>
+          <td>182</td>
+          <td><span class="pill good">97.37%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">4</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(156 85% 65%)">T</span>
+            t4l4n06
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
+          </td>
+          <td><span class="points">7024.16</span></td>
+          <td>52</td>
+          <td>77</td>
+          <td>107</td>
+          <td><span class="pill good">96.58%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">5</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(345 85% 65%)">O</span>
+            op_elemental
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
+          </td>
+          <td><span class="points">6088.56</span></td>
+          <td>46</td>
+          <td>73</td>
+          <td>108</td>
+          <td><span class="pill good">95.86%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">6</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(271 85% 65%)">C</span>
+            cosmickeystroke
+            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
+          </td>
+          <td><span class="points">4806.46</span></td>
+          <td>29</td>
+          <td>137</td>
+          <td>172</td>
+          <td><span class="pill good">97.24%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">7</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(4 85% 65%)">0</span>
+            0bdd468c1f35e491e3e64822e1ac5e86
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
+          </td>
+          <td><span class="points">4711.98</span></td>
+          <td>42</td>
+          <td>41</td>
+          <td>80</td>
+          <td><span class="pill ok">91.69%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">8</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(325 85% 65%)">R</span>
+            rajrthegoat
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
+          </td>
+          <td><span class="points">4604.12</span></td>
+          <td>31</td>
+          <td>99</td>
+          <td>135</td>
+          <td><span class="pill good">99.02%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">9</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(46 85% 65%)">K</span>
+            kyrotypes
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
+          </td>
+          <td><span class="points">3629.86</span></td>
+          <td>26</td>
+          <td>85</td>
+          <td>144</td>
+          <td><span class="pill good">97.11%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">10</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(94 85% 65%)">I</span>
+            iwonyoulost19
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
+          </td>
+          <td><span class="points">3564.5</span></td>
+          <td>25</td>
+          <td>92</td>
+          <td>154</td>
+          <td><span class="pill good">96.58%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">11</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(239 85% 65%)">U</span>
+            unf0rgivable
+            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
+          </td>
+          <td><span class="points">3429.5</span></td>
+          <td>25</td>
+          <td>78</td>
+          <td>115</td>
+          <td><span class="pill good">98.18%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">12</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(268 85% 65%)">2</span>
+            2027lutesr
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">W1NN6R</span>
+          </td>
+          <td><span class="points">3188.46</span></td>
+          <td>22</td>
+          <td>94</td>
+          <td>117</td>
+          <td><span class="pill good">97.93%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">13</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(116 85% 65%)">N</span>
+            nathanmduncan
+            <span class="lb-team-tag" style="background:#5b52a3;color:#ffffff">IMT</span>
+          </td>
+          <td><span class="points">3138.08</span></td>
+          <td>22</td>
+          <td>95</td>
+          <td>128</td>
+          <td><span class="pill good">95.14%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">14</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(94 85% 65%)">M</span>
+            machikanetannhauser
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
+          </td>
+          <td><span class="points">2954.5</span></td>
+          <td>19</td>
+          <td>120</td>
+          <td>141</td>
+          <td><span class="pill good">95.5%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">15</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(127 85% 65%)">L</span>
+            lansan
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">NOHOPE</span>
+          </td>
+          <td><span class="points">2237.44</span></td>
+          <td>16</td>
+          <td>90</td>
+          <td>116</td>
+          <td><span class="pill ok">94.84%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">16</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(288 85% 65%)">M</span>
+            maiisoh
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
+          </td>
+          <td><span class="points">2225.92</span></td>
+          <td>16</td>
+          <td>82</td>
+          <td>123</td>
+          <td><span class="pill good">98.12%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">17</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(336 85% 65%)">A</span>
+            a4e652621b363ffb1a8d9976fb3cbddc
+            <span class="lb-team-tag" style="background:#f5eb21;color:#0b1220">SVC</span>
+          </td>
+          <td><span class="points">1752.27</span></td>
+          <td>13</td>
+          <td>84</td>
+          <td>109</td>
+          <td><span class="pill ok">92.79%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">18</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(324 85% 65%)">S</span>
+            sara0010
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">THB0S</span>
+          </td>
+          <td><span class="points">1269.72</span></td>
+          <td>9</td>
+          <td>95</td>
+          <td>123</td>
+          <td><span class="pill ok">93.58%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">19</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(206 85% 65%)">L</span>
+            ljkafdjklafdjlkfad
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">NOHOPE</span>
+          </td>
+          <td><span class="points">1246.08</span></td>
+          <td>8</td>
+          <td>118</td>
+          <td>144</td>
+          <td><span class="pill good">96.76%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">20</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(158 85% 65%)">B</span>
+            bicentricfir8
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
+          </td>
+          <td><span class="points">1119.76</span></td>
+          <td>8</td>
+          <td>89</td>
+          <td>116</td>
+          <td><span class="pill good">95.47%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">21</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(109 85% 65%)">D</span>
+            dodge_hornet_2024
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
+          </td>
+          <td><span class="points">1062.6</span></td>
+          <td>6</td>
+          <td>157</td>
+          <td>199</td>
+          <td><span class="pill good">98.6%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">22</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(286 85% 65%)">K</span>
+            kirsty2
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">NOHOPE</span>
+          </td>
+          <td><span class="points">937.35</span></td>
+          <td>9</td>
+          <td>24</td>
+          <td>34</td>
+          <td><span class="pill ok">92.15%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">23</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(194 85% 65%)">L</span>
+            l3g3ndary_back4more
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
+          </td>
+          <td><span class="points">853.14</span></td>
+          <td>6</td>
+          <td>93</td>
+          <td>182</td>
+          <td><span class="pill good">95.69%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">24</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(63 85% 65%)">C</span>
+            chetdavis
+            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
+          </td>
+          <td><span class="points">803.15</span></td>
+          <td>5</td>
+          <td>127</td>
+          <td>166</td>
+          <td><span class="pill good">97.13%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">25</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(153 85% 65%)">T</span>
+            thedestroyist
+            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
+          </td>
+          <td><span class="points">801.2</span></td>
+          <td>5</td>
+          <td>123</td>
+          <td>155</td>
+          <td><span class="pill good">98.74%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">26</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(12 85% 65%)">F</span>
+            fall3n_angell
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">NOHOPE</span>
+          </td>
+          <td><span class="points">432.69</span></td>
+          <td>3</td>
+          <td>99</td>
+          <td>122</td>
+          <td><span class="pill ok">94.73%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">27</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(165 85% 65%)">W</span>
+            warden108108
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
+          </td>
+          <td><span class="points">422.58</span></td>
+          <td>3</td>
+          <td>96</td>
+          <td>144</td>
+          <td><span class="pill ok">92.86%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">28</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(269 85% 65%)">A</span>
+            abyss16
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
+          </td>
+          <td><span class="points">410.46</span></td>
+          <td>3</td>
+          <td>94</td>
+          <td>186</td>
+          <td><span class="pill low">89.82%</span></td>
+        </tr></tbody>
+      </table>
+    </div>
+    <p class="lb-score-note">Points = (avg speed ÷ 2 + accuracy) × races completed since the last sync, earned race by race — not an official Nitro Type stat.</p></div><div class="lb-panel" data-kind="teams" data-range="weekly" hidden>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Team</th><th>Points</th><th>Races tracked</th><th>Racers earning</th></tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td><span class="lb-rank top1">1</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:#fba51a;color:#ffffff">K</span>
+            [KU] Ketsui
+          </td>
+          <td><span class="points">33153.44</span></td>
+          <td>224</td>
+          <td>7</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank top2">2</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:#ee1f25;color:#ffffff">B</span>
+            [BN8] BENEVOLENCE
+          </td>
+          <td><span class="points">20125.48</span></td>
+          <td>152</td>
+          <td>8</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank top3">3</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:#436fb6;color:#ffffff">S</span>
+            [SSH] Shell  Riders
+          </td>
+          <td><span class="points">18472.39</span></td>
+          <td>121</td>
+          <td>5</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">4</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:#fba51a;color:#ffffff">N</span>
+            [NOHOPE] Maybe just a little
+          </td>
+          <td><span class="points">4853.56</span></td>
+          <td>36</td>
+          <td>4</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">5</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:#ee1f25;color:#ffffff">W</span>
+            [W1NN6R] Time2Rise
+          </td>
+          <td><span class="points">3188.46</span></td>
+          <td>22</td>
+          <td>1</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">6</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:#5b52a3;color:#ffffff">I</span>
+            [IMT] Immortal Legends
+          </td>
+          <td><span class="points">3138.08</span></td>
+          <td>22</td>
+          <td>1</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">7</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:#f5eb21;color:#0b1220">S</span>
+            [SVC] -Servants of Christ-
+          </td>
+          <td><span class="points">1752.27</span></td>
+          <td>13</td>
+          <td>1</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">8</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:#fba51a;color:#ffffff">T</span>
+            [THB0S] THEB0SS
+          </td>
+          <td><span class="points">1269.72</span></td>
+          <td>9</td>
+          <td>1</td>
+        </tr></tbody>
+      </table>
+    </div>
+    <p class="lb-score-note">Points = the sum of every member's points — races completed since joining this tracker × (avg speed ÷ 2 + accuracy).</p></div><div class="lb-panel" data-kind="racers" data-range="monthly" hidden>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Racer</th><th>Points</th><th>Races tracked</th><th>Avg speed</th><th>Highest speed</th><th>Accuracy</th></tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td><span class="lb-rank top1">1</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(224 85% 65%)">7</span>
+            77uu
+            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
+          </td>
+          <td><span class="points">8632.08</span></td>
+          <td>57</td>
+          <td>114</td>
+          <td>161</td>
+          <td><span class="pill ok">94.44%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank top2">2</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(261 85% 65%)">I</span>
+            ikandoit
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
+          </td>
+          <td><span class="points">7541.54</span></td>
+          <td>41</td>
+          <td>175</td>
+          <td>208</td>
+          <td><span class="pill good">96.44%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank top3">3</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(209 85% 65%)">R</span>
+            randora
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
+          </td>
+          <td><span class="points">7065.24</span></td>
+          <td>52</td>
+          <td>77</td>
+          <td>182</td>
+          <td><span class="pill good">97.37%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">4</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(156 85% 65%)">T</span>
+            t4l4n06
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
+          </td>
+          <td><span class="points">7024.16</span></td>
+          <td>52</td>
+          <td>77</td>
+          <td>107</td>
+          <td><span class="pill good">96.58%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">5</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(345 85% 65%)">O</span>
+            op_elemental
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
+          </td>
+          <td><span class="points">6088.56</span></td>
+          <td>46</td>
+          <td>73</td>
+          <td>108</td>
+          <td><span class="pill good">95.86%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">6</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(271 85% 65%)">C</span>
+            cosmickeystroke
+            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
+          </td>
+          <td><span class="points">4806.46</span></td>
+          <td>29</td>
+          <td>137</td>
+          <td>172</td>
+          <td><span class="pill good">97.24%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">7</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(4 85% 65%)">0</span>
+            0bdd468c1f35e491e3e64822e1ac5e86
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
+          </td>
+          <td><span class="points">4711.98</span></td>
+          <td>42</td>
+          <td>41</td>
+          <td>80</td>
+          <td><span class="pill ok">91.69%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">8</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(325 85% 65%)">R</span>
+            rajrthegoat
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
+          </td>
+          <td><span class="points">4604.12</span></td>
+          <td>31</td>
+          <td>99</td>
+          <td>135</td>
+          <td><span class="pill good">99.02%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">9</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(46 85% 65%)">K</span>
+            kyrotypes
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
+          </td>
+          <td><span class="points">3629.86</span></td>
+          <td>26</td>
+          <td>85</td>
+          <td>144</td>
+          <td><span class="pill good">97.11%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">10</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(94 85% 65%)">I</span>
+            iwonyoulost19
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
+          </td>
+          <td><span class="points">3564.5</span></td>
+          <td>25</td>
+          <td>92</td>
+          <td>154</td>
+          <td><span class="pill good">96.58%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">11</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(239 85% 65%)">U</span>
+            unf0rgivable
+            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
+          </td>
+          <td><span class="points">3429.5</span></td>
+          <td>25</td>
+          <td>78</td>
+          <td>115</td>
+          <td><span class="pill good">98.18%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">12</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(268 85% 65%)">2</span>
+            2027lutesr
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">W1NN6R</span>
+          </td>
+          <td><span class="points">3188.46</span></td>
+          <td>22</td>
+          <td>94</td>
+          <td>117</td>
+          <td><span class="pill good">97.93%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">13</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(116 85% 65%)">N</span>
+            nathanmduncan
+            <span class="lb-team-tag" style="background:#5b52a3;color:#ffffff">IMT</span>
+          </td>
+          <td><span class="points">3138.08</span></td>
+          <td>22</td>
+          <td>95</td>
+          <td>128</td>
+          <td><span class="pill good">95.14%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">14</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(94 85% 65%)">M</span>
+            machikanetannhauser
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
+          </td>
+          <td><span class="points">2954.5</span></td>
+          <td>19</td>
+          <td>120</td>
+          <td>141</td>
+          <td><span class="pill good">95.5%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">15</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(127 85% 65%)">L</span>
+            lansan
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">NOHOPE</span>
+          </td>
+          <td><span class="points">2237.44</span></td>
+          <td>16</td>
+          <td>90</td>
+          <td>116</td>
+          <td><span class="pill ok">94.84%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">16</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(288 85% 65%)">M</span>
+            maiisoh
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
+          </td>
+          <td><span class="points">2225.92</span></td>
+          <td>16</td>
+          <td>82</td>
+          <td>123</td>
+          <td><span class="pill good">98.12%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">17</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(336 85% 65%)">A</span>
+            a4e652621b363ffb1a8d9976fb3cbddc
+            <span class="lb-team-tag" style="background:#f5eb21;color:#0b1220">SVC</span>
+          </td>
+          <td><span class="points">1752.27</span></td>
+          <td>13</td>
+          <td>84</td>
+          <td>109</td>
+          <td><span class="pill ok">92.79%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">18</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(324 85% 65%)">S</span>
+            sara0010
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">THB0S</span>
+          </td>
+          <td><span class="points">1269.72</span></td>
+          <td>9</td>
+          <td>95</td>
+          <td>123</td>
+          <td><span class="pill ok">93.58%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">19</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(206 85% 65%)">L</span>
+            ljkafdjklafdjlkfad
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">NOHOPE</span>
+          </td>
+          <td><span class="points">1246.08</span></td>
+          <td>8</td>
+          <td>118</td>
+          <td>144</td>
+          <td><span class="pill good">96.76%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">20</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(158 85% 65%)">B</span>
+            bicentricfir8
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
+          </td>
+          <td><span class="points">1119.76</span></td>
+          <td>8</td>
+          <td>89</td>
+          <td>116</td>
+          <td><span class="pill good">95.47%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">21</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(109 85% 65%)">D</span>
+            dodge_hornet_2024
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
+          </td>
+          <td><span class="points">1062.6</span></td>
+          <td>6</td>
+          <td>157</td>
+          <td>199</td>
+          <td><span class="pill good">98.6%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">22</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(286 85% 65%)">K</span>
+            kirsty2
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">NOHOPE</span>
+          </td>
+          <td><span class="points">937.35</span></td>
+          <td>9</td>
+          <td>24</td>
+          <td>34</td>
+          <td><span class="pill ok">92.15%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">23</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(194 85% 65%)">L</span>
+            l3g3ndary_back4more
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
+          </td>
+          <td><span class="points">853.14</span></td>
+          <td>6</td>
+          <td>93</td>
+          <td>182</td>
+          <td><span class="pill good">95.69%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">24</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(63 85% 65%)">C</span>
+            chetdavis
+            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
+          </td>
+          <td><span class="points">803.15</span></td>
+          <td>5</td>
+          <td>127</td>
+          <td>166</td>
+          <td><span class="pill good">97.13%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">25</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(153 85% 65%)">T</span>
+            thedestroyist
+            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
+          </td>
+          <td><span class="points">801.2</span></td>
+          <td>5</td>
+          <td>123</td>
+          <td>155</td>
+          <td><span class="pill good">98.74%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">26</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(12 85% 65%)">F</span>
+            fall3n_angell
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">NOHOPE</span>
+          </td>
+          <td><span class="points">432.69</span></td>
+          <td>3</td>
+          <td>99</td>
+          <td>122</td>
+          <td><span class="pill ok">94.73%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">27</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(165 85% 65%)">W</span>
+            warden108108
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
+          </td>
+          <td><span class="points">422.58</span></td>
+          <td>3</td>
+          <td>96</td>
+          <td>144</td>
+          <td><span class="pill ok">92.86%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">28</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(269 85% 65%)">A</span>
+            abyss16
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
+          </td>
+          <td><span class="points">410.46</span></td>
+          <td>3</td>
+          <td>94</td>
+          <td>186</td>
+          <td><span class="pill low">89.82%</span></td>
+        </tr></tbody>
+      </table>
+    </div>
+    <p class="lb-score-note">Points = (avg speed ÷ 2 + accuracy) × races completed since the last sync, earned race by race — not an official Nitro Type stat.</p></div><div class="lb-panel" data-kind="teams" data-range="monthly" hidden>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Team</th><th>Points</th><th>Races tracked</th><th>Racers earning</th></tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td><span class="lb-rank top1">1</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:#fba51a;color:#ffffff">K</span>
+            [KU] Ketsui
+          </td>
+          <td><span class="points">33153.44</span></td>
+          <td>224</td>
+          <td>7</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank top2">2</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:#ee1f25;color:#ffffff">B</span>
+            [BN8] BENEVOLENCE
+          </td>
+          <td><span class="points">20125.48</span></td>
+          <td>152</td>
+          <td>8</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank top3">3</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:#436fb6;color:#ffffff">S</span>
+            [SSH] Shell  Riders
+          </td>
+          <td><span class="points">18472.39</span></td>
+          <td>121</td>
+          <td>5</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">4</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:#fba51a;color:#ffffff">N</span>
+            [NOHOPE] Maybe just a little
+          </td>
+          <td><span class="points">4853.56</span></td>
+          <td>36</td>
+          <td>4</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">5</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:#ee1f25;color:#ffffff">W</span>
+            [W1NN6R] Time2Rise
+          </td>
+          <td><span class="points">3188.46</span></td>
+          <td>22</td>
+          <td>1</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">6</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:#5b52a3;color:#ffffff">I</span>
+            [IMT] Immortal Legends
+          </td>
+          <td><span class="points">3138.08</span></td>
+          <td>22</td>
+          <td>1</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">7</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:#f5eb21;color:#0b1220">S</span>
+            [SVC] -Servants of Christ-
+          </td>
+          <td><span class="points">1752.27</span></td>
+          <td>13</td>
+          <td>1</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">8</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:#fba51a;color:#ffffff">T</span>
+            [THB0S] THEB0SS
+          </td>
+          <td><span class="points">1269.72</span></td>
+          <td>9</td>
+          <td>1</td>
+        </tr></tbody>
+      </table>
+    </div>
+    <p class="lb-score-note">Points = the sum of every member's points — races completed since joining this tracker × (avg speed ÷ 2 + accuracy).</p></div><div class="lb-panel" data-kind="racers" data-range="seasonal" hidden>
     <div class="empty" style="padding:40px 24px;">
       <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px;">Coming soon</div>
-      <div>The Monthly board needs more sync history behind it before it can
-      rank anyone fairly — only All-Time (current standings) is live right now.</div>
-    </div></div><div class="lb-panel" data-kind="teams" data-range="monthly" hidden>
+      <div>The Seasonal board isn't built yet — Nitro Type's own season
+      boundaries aren't something we track, so we'd rather leave this blank than make one up.</div>
+    </div></div><div class="lb-panel" data-kind="teams" data-range="seasonal" hidden>
     <div class="empty" style="padding:40px 24px;">
       <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px;">Coming soon</div>
-      <div>The Monthly board needs more sync history behind it before it can
-      rank anyone fairly — only All-Time (current standings) is live right now.</div>
-    </div></div><div class="lb-panel" data-kind="racers" data-range="weekly" hidden>
-    <div class="empty" style="padding:40px 24px;">
-      <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px;">Coming soon</div>
-      <div>The Weekly board needs more sync history behind it before it can
-      rank anyone fairly — only All-Time (current standings) is live right now.</div>
-    </div></div><div class="lb-panel" data-kind="teams" data-range="weekly" hidden>
-    <div class="empty" style="padding:40px 24px;">
-      <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px;">Coming soon</div>
-      <div>The Weekly board needs more sync history behind it before it can
-      rank anyone fairly — only All-Time (current standings) is live right now.</div>
-    </div></div><div class="lb-panel" data-kind="racers" data-range="daily" hidden>
-    <div class="empty" style="padding:40px 24px;">
-      <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px;">Coming soon</div>
-      <div>The Daily board needs more sync history behind it before it can
-      rank anyone fairly — only All-Time (current standings) is live right now.</div>
-    </div></div><div class="lb-panel" data-kind="teams" data-range="daily" hidden>
-    <div class="empty" style="padding:40px 24px;">
-      <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px;">Coming soon</div>
-      <div>The Daily board needs more sync history behind it before it can
-      rank anyone fairly — only All-Time (current standings) is live right now.</div>
-    </div></div>
+      <div>The Seasonal board isn't built yet — Nitro Type's own season
+      boundaries aren't something we track, so we'd rather leave this blank than make one up.</div>
+    </div></div><div class="lb-panel" data-kind="racers" data-range="alltime">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Racer</th><th>Points</th><th>Races tracked</th><th>Avg speed</th><th>Highest speed</th><th>Accuracy</th></tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td><span class="lb-rank top1">1</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(224 85% 65%)">7</span>
+            77uu
+            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
+          </td>
+          <td><span class="points">8632.08</span></td>
+          <td>57</td>
+          <td>114</td>
+          <td>161</td>
+          <td><span class="pill ok">94.44%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank top2">2</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(261 85% 65%)">I</span>
+            ikandoit
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
+          </td>
+          <td><span class="points">7541.54</span></td>
+          <td>41</td>
+          <td>175</td>
+          <td>208</td>
+          <td><span class="pill good">96.44%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank top3">3</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(209 85% 65%)">R</span>
+            randora
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
+          </td>
+          <td><span class="points">7065.24</span></td>
+          <td>52</td>
+          <td>77</td>
+          <td>182</td>
+          <td><span class="pill good">97.37%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">4</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(156 85% 65%)">T</span>
+            t4l4n06
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
+          </td>
+          <td><span class="points">7024.16</span></td>
+          <td>52</td>
+          <td>77</td>
+          <td>107</td>
+          <td><span class="pill good">96.58%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">5</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(345 85% 65%)">O</span>
+            op_elemental
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
+          </td>
+          <td><span class="points">6088.56</span></td>
+          <td>46</td>
+          <td>73</td>
+          <td>108</td>
+          <td><span class="pill good">95.86%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">6</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(271 85% 65%)">C</span>
+            cosmickeystroke
+            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
+          </td>
+          <td><span class="points">4806.46</span></td>
+          <td>29</td>
+          <td>137</td>
+          <td>172</td>
+          <td><span class="pill good">97.24%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">7</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(4 85% 65%)">0</span>
+            0bdd468c1f35e491e3e64822e1ac5e86
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
+          </td>
+          <td><span class="points">4711.98</span></td>
+          <td>42</td>
+          <td>41</td>
+          <td>80</td>
+          <td><span class="pill ok">91.69%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">8</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(325 85% 65%)">R</span>
+            rajrthegoat
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
+          </td>
+          <td><span class="points">4604.12</span></td>
+          <td>31</td>
+          <td>99</td>
+          <td>135</td>
+          <td><span class="pill good">99.02%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">9</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(46 85% 65%)">K</span>
+            kyrotypes
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
+          </td>
+          <td><span class="points">3629.86</span></td>
+          <td>26</td>
+          <td>85</td>
+          <td>144</td>
+          <td><span class="pill good">97.11%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">10</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(94 85% 65%)">I</span>
+            iwonyoulost19
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
+          </td>
+          <td><span class="points">3564.5</span></td>
+          <td>25</td>
+          <td>92</td>
+          <td>154</td>
+          <td><span class="pill good">96.58%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">11</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(239 85% 65%)">U</span>
+            unf0rgivable
+            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
+          </td>
+          <td><span class="points">3429.5</span></td>
+          <td>25</td>
+          <td>78</td>
+          <td>115</td>
+          <td><span class="pill good">98.18%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">12</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(268 85% 65%)">2</span>
+            2027lutesr
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">W1NN6R</span>
+          </td>
+          <td><span class="points">3188.46</span></td>
+          <td>22</td>
+          <td>94</td>
+          <td>117</td>
+          <td><span class="pill good">97.93%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">13</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(116 85% 65%)">N</span>
+            nathanmduncan
+            <span class="lb-team-tag" style="background:#5b52a3;color:#ffffff">IMT</span>
+          </td>
+          <td><span class="points">3138.08</span></td>
+          <td>22</td>
+          <td>95</td>
+          <td>128</td>
+          <td><span class="pill good">95.14%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">14</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(94 85% 65%)">M</span>
+            machikanetannhauser
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
+          </td>
+          <td><span class="points">2954.5</span></td>
+          <td>19</td>
+          <td>120</td>
+          <td>141</td>
+          <td><span class="pill good">95.5%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">15</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(127 85% 65%)">L</span>
+            lansan
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">NOHOPE</span>
+          </td>
+          <td><span class="points">2237.44</span></td>
+          <td>16</td>
+          <td>90</td>
+          <td>116</td>
+          <td><span class="pill ok">94.84%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">16</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(288 85% 65%)">M</span>
+            maiisoh
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
+          </td>
+          <td><span class="points">2225.92</span></td>
+          <td>16</td>
+          <td>82</td>
+          <td>123</td>
+          <td><span class="pill good">98.12%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">17</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(336 85% 65%)">A</span>
+            a4e652621b363ffb1a8d9976fb3cbddc
+            <span class="lb-team-tag" style="background:#f5eb21;color:#0b1220">SVC</span>
+          </td>
+          <td><span class="points">1752.27</span></td>
+          <td>13</td>
+          <td>84</td>
+          <td>109</td>
+          <td><span class="pill ok">92.79%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">18</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(324 85% 65%)">S</span>
+            sara0010
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">THB0S</span>
+          </td>
+          <td><span class="points">1269.72</span></td>
+          <td>9</td>
+          <td>95</td>
+          <td>123</td>
+          <td><span class="pill ok">93.58%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">19</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(206 85% 65%)">L</span>
+            ljkafdjklafdjlkfad
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">NOHOPE</span>
+          </td>
+          <td><span class="points">1246.08</span></td>
+          <td>8</td>
+          <td>118</td>
+          <td>144</td>
+          <td><span class="pill good">96.76%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">20</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(158 85% 65%)">B</span>
+            bicentricfir8
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
+          </td>
+          <td><span class="points">1119.76</span></td>
+          <td>8</td>
+          <td>89</td>
+          <td>116</td>
+          <td><span class="pill good">95.47%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">21</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(109 85% 65%)">D</span>
+            dodge_hornet_2024
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">KU</span>
+          </td>
+          <td><span class="points">1062.6</span></td>
+          <td>6</td>
+          <td>157</td>
+          <td>199</td>
+          <td><span class="pill good">98.6%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">22</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(286 85% 65%)">K</span>
+            kirsty2
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">NOHOPE</span>
+          </td>
+          <td><span class="points">937.35</span></td>
+          <td>9</td>
+          <td>24</td>
+          <td>34</td>
+          <td><span class="pill ok">92.15%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">23</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(194 85% 65%)">L</span>
+            l3g3ndary_back4more
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
+          </td>
+          <td><span class="points">853.14</span></td>
+          <td>6</td>
+          <td>93</td>
+          <td>182</td>
+          <td><span class="pill good">95.69%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">24</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(63 85% 65%)">C</span>
+            chetdavis
+            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
+          </td>
+          <td><span class="points">803.15</span></td>
+          <td>5</td>
+          <td>127</td>
+          <td>166</td>
+          <td><span class="pill good">97.13%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">25</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(153 85% 65%)">T</span>
+            thedestroyist
+            <span class="lb-team-tag" style="background:#436fb6;color:#ffffff">SSH</span>
+          </td>
+          <td><span class="points">801.2</span></td>
+          <td>5</td>
+          <td>123</td>
+          <td>155</td>
+          <td><span class="pill good">98.74%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">26</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(12 85% 65%)">F</span>
+            fall3n_angell
+            <span class="lb-team-tag" style="background:#fba51a;color:#ffffff">NOHOPE</span>
+          </td>
+          <td><span class="points">432.69</span></td>
+          <td>3</td>
+          <td>99</td>
+          <td>122</td>
+          <td><span class="pill ok">94.73%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">27</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(165 85% 65%)">W</span>
+            warden108108
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
+          </td>
+          <td><span class="points">422.58</span></td>
+          <td>3</td>
+          <td>96</td>
+          <td>144</td>
+          <td><span class="pill ok">92.86%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">28</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(269 85% 65%)">A</span>
+            abyss16
+            <span class="lb-team-tag" style="background:#ee1f25;color:#ffffff">BN8</span>
+          </td>
+          <td><span class="points">410.46</span></td>
+          <td>3</td>
+          <td>94</td>
+          <td>186</td>
+          <td><span class="pill low">89.82%</span></td>
+        </tr></tbody>
+      </table>
+    </div>
+    <p class="lb-score-note">Points = (avg speed ÷ 2 + accuracy) × races completed since the last sync, earned race by race — not an official Nitro Type stat.</p></div><div class="lb-panel" data-kind="teams" data-range="alltime" hidden>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Team</th><th>Points</th><th>Races tracked</th><th>Racers earning</th></tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td><span class="lb-rank top1">1</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:#fba51a;color:#ffffff">K</span>
+            [KU] Ketsui
+          </td>
+          <td><span class="points">33153.44</span></td>
+          <td>224</td>
+          <td>7</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank top2">2</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:#ee1f25;color:#ffffff">B</span>
+            [BN8] BENEVOLENCE
+          </td>
+          <td><span class="points">20125.48</span></td>
+          <td>152</td>
+          <td>8</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank top3">3</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:#436fb6;color:#ffffff">S</span>
+            [SSH] Shell  Riders
+          </td>
+          <td><span class="points">18472.39</span></td>
+          <td>121</td>
+          <td>5</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">4</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:#fba51a;color:#ffffff">N</span>
+            [NOHOPE] Maybe just a little
+          </td>
+          <td><span class="points">4853.56</span></td>
+          <td>36</td>
+          <td>4</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">5</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:#ee1f25;color:#ffffff">W</span>
+            [W1NN6R] Time2Rise
+          </td>
+          <td><span class="points">3188.46</span></td>
+          <td>22</td>
+          <td>1</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">6</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:#5b52a3;color:#ffffff">I</span>
+            [IMT] Immortal Legends
+          </td>
+          <td><span class="points">3138.08</span></td>
+          <td>22</td>
+          <td>1</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">7</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:#f5eb21;color:#0b1220">S</span>
+            [SVC] -Servants of Christ-
+          </td>
+          <td><span class="points">1752.27</span></td>
+          <td>13</td>
+          <td>1</td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">8</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:#fba51a;color:#ffffff">T</span>
+            [THB0S] THEB0SS
+          </td>
+          <td><span class="points">1269.72</span></td>
+          <td>9</td>
+          <td>1</td>
+        </tr></tbody>
+      </table>
+    </div>
+    <p class="lb-score-note">Points = the sum of every member's points — races completed since joining this tracker × (avg speed ÷ 2 + accuracy).</p></div>
 </main>
-<footer class="site">Generated 2026-10-23T01:37:46.743Z</footer>
+<footer class="site">Generated 2026-10-23T01:55:59.229Z</footer>
 </body>
 </html>
