@@ -13,7 +13,15 @@
   "use strict";
 
   var SUPABASE_URL = "https://pbnolrgiqpnfmbvgemcy.supabase.co";
-  var SUPABASE_ANON_KEY = "sb_publishable_ltaNA7nnVozoSCOcZIjg";
+  // Legacy (JWT-format) anon key, not the new sb_publishable_... key -
+  // the project's gateway was rejecting the new-format key outright for
+  // every endpoint (Auth, REST, and Edge Functions alike) at the time this
+  // was written, most likely tied to a live Supabase platform incident
+  // ("Elevated Mgmt API Error Rates in Multiple Regions"). This legacy key
+  // is just as public/browser-safe by Supabase's own design - RLS is what
+  // actually protects the data, not which key format asks for it.
+  var SUPABASE_ANON_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBibm9scmdpcXBuZm1idmdlbWN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI2MjgwNTYsImV4cCI6MjEwODIwNDA1Nn0.YMUXinEwYRQcYOa2yXGXbcPkdN_ExjNniUeGqSz11Lw";
 
   var _client = null;
   function withClient(cb) {
