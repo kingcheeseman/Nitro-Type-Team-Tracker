@@ -310,6 +310,20 @@
   .pill.low  { background: rgba(255,107,107,0.15); color: var(--low); }
   .pill.na   { background: rgba(170,178,192,0.12); color: var(--muted); }
 
+  .notif-day { margin-bottom: 22px; }
+  .notif-date { font-weight: 800; font-size: 13.5px; margin-bottom: 8px; }
+  .notif-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    margin-bottom: 8px;
+  }
+  .notif-icon { font-size: 18px; line-height: 1; flex: none; margin-top: 1px; }
+  .notif-headline { font-size: 13.5px; color: var(--text); }
+  .notif-meta { font-size: 11.5px; color: var(--muted); margin-top: 3px; }
+
   .lb-controls {
     display: flex; justify-content: space-between; align-items: center;
     flex-wrap: wrap; gap: 10px;
@@ -402,7 +416,7 @@
     <div class="team-layout">
       
     <nav class="team-sidebar">
-      <a class="nav-item" href="../"><span class="nav-icon">👥</span>Roster</a><a class="nav-item" href="../events/"><span class="nav-icon">📅</span>Events<span class="soon-tag">Soon</span></a><a class="nav-item" href="../activity/"><span class="nav-icon">📈</span>Activity<span class="soon-tag">Soon</span></a><a class="nav-item" href="../tournaments/"><span class="nav-icon">🏆</span>Tournaments<span class="soon-tag">Soon</span></a><a class="nav-item active" href="../trackers/"><span class="nav-icon">📌</span>Trackers<span class="soon-tag">Soon</span></a><a class="nav-item" href="../notifications/"><span class="nav-icon">🔔</span>Notifications<span class="soon-tag">Soon</span></a>
+      <a class="nav-item" href="../"><span class="nav-icon">👥</span>Roster</a><a class="nav-item" href="../events/"><span class="nav-icon">📅</span>Events</a><a class="nav-item" href="../activity/"><span class="nav-icon">📈</span>Activity<span class="soon-tag">Soon</span></a><a class="nav-item" href="../tournaments/"><span class="nav-icon">🏆</span>Tournaments<span class="soon-tag">Soon</span></a><a class="nav-item active" href="../trackers/"><span class="nav-icon">📌</span>Trackers</a><a class="nav-item" href="../notifications/"><span class="nav-icon">🔔</span>Notifications</a>
       <div class="nav-section-label">Manage</div>
       <a class="nav-item" href="../admin/"><span class="nav-icon">⚙️</span>Team Admin<span class="soon-tag">Soon</span></a>
     </nav>
@@ -411,14 +425,117 @@
       <div class="tag">TEAM</div>
       <div class="name">[SVC] -Servants of Christ-</div>
       <div class="sub">
-        Captain: -Exotic19- · 46 racers tracked · last synced 10/23/2026, 2:51:37 AM</div>
+        Captain: -Exotic19- · 46 racers tracked · last synced 10/23/2026, 3:09:55 AM</div>
     </div>
-    <div class="empty" style="padding:48px 28px;">
-      <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px;">Coming soon</div>
-      <div>The Trackers section isn't built yet — only Roster is live right now.</div>
-    </div></div>
+    <h2 style="margin:28px 0 14px;">Tracker</h2>
+    <p class="meta-row">This team's own racers, ranked by points earned in each window — the same ledger behind the site-wide leaderboard, scoped to just this roster.</p>
+    
+    <div class="lb-controls">
+      <div class="seg" data-role="trk-range">
+        <button type="button" class="seg-btn active" data-range="daily">Daily</button><button type="button" class="seg-btn" data-range="weekly">Weekly</button><button type="button" class="seg-btn" data-range="seasonal">Season</button><button type="button" class="seg-btn" data-range="alltime">All-Time</button>
+      </div>
+    </div>
+    <script>
+      (function () {
+        var seg = document.querySelector('.seg[data-role="trk-range"]');
+        var panels = document.querySelectorAll(".trk-panel");
+        function sync() {
+          var range = seg.querySelector(".seg-btn.active").getAttribute("data-range");
+          panels.forEach(function (p) { p.hidden = p.getAttribute("data-range") !== range; });
+        }
+        seg.addEventListener("click", function (e) {
+          var btn = e.target.closest(".seg-btn");
+          if (!btn) return;
+          Array.prototype.slice.call(seg.querySelectorAll(".seg-btn")).forEach(function (b) {
+            b.classList.toggle("active", b === btn);
+          });
+          sync();
+        });
+      })();
+    </script>
+    <div class="trk-panel" data-range="daily">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Racer</th><th>Points</th><th>Races</th><th>Avg speed</th><th>Highest speed</th><th>Accuracy</th></tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td><span class="lb-rank top1">1</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(89 85% 65%)">B</span>
+            BabyDudeSued
+          </td>
+          <td><span class="points">3105.47</span></td>
+          <td>23</td>
+          <td>85</td>
+          <td>109</td>
+          <td><span class="pill ok">92.82%</span></td>
+        </tr></tbody>
+      </table>
+    </div></div><div class="trk-panel" data-range="weekly" hidden>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Racer</th><th>Points</th><th>Races</th><th>Avg speed</th><th>Highest speed</th><th>Accuracy</th></tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td><span class="lb-rank top1">1</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(89 85% 65%)">B</span>
+            BabyDudeSued
+          </td>
+          <td><span class="points">3105.47</span></td>
+          <td>23</td>
+          <td>85</td>
+          <td>109</td>
+          <td><span class="pill ok">92.82%</span></td>
+        </tr></tbody>
+      </table>
+    </div></div><div class="trk-panel" data-range="seasonal" hidden>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Racer</th><th>Points</th><th>Races</th><th>Avg speed</th><th>Highest speed</th><th>Accuracy</th></tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td><span class="lb-rank top1">1</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(89 85% 65%)">B</span>
+            BabyDudeSued
+          </td>
+          <td><span class="points">3105.47</span></td>
+          <td>23</td>
+          <td>85</td>
+          <td>109</td>
+          <td><span class="pill ok">92.82%</span></td>
+        </tr></tbody>
+      </table>
+    </div><p class="lb-score-note">Tracks Nitro Type's own current season, "Spirit Racers" (Oct 18 – Nov 29).</p></div><div class="trk-panel" data-range="alltime" hidden>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Racer</th><th>Points</th><th>Races</th><th>Avg speed</th><th>Highest speed</th><th>Accuracy</th></tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td><span class="lb-rank top1">1</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(89 85% 65%)">B</span>
+            BabyDudeSued
+          </td>
+          <td><span class="points">3105.47</span></td>
+          <td>23</td>
+          <td>85</td>
+          <td>109</td>
+          <td><span class="pill ok">92.82%</span></td>
+        </tr></tbody>
+      </table>
+    </div></div></div>
     </div>
 </main>
-<footer class="site">Generated 2026-10-23T03:02:01.144Z</footer>
+<footer class="site">Generated 2026-10-23T03:10:37.160Z</footer>
 </body>
 </html>

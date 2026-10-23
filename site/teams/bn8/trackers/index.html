@@ -310,6 +310,20 @@
   .pill.low  { background: rgba(255,107,107,0.15); color: var(--low); }
   .pill.na   { background: rgba(170,178,192,0.12); color: var(--muted); }
 
+  .notif-day { margin-bottom: 22px; }
+  .notif-date { font-weight: 800; font-size: 13.5px; margin-bottom: 8px; }
+  .notif-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    margin-bottom: 8px;
+  }
+  .notif-icon { font-size: 18px; line-height: 1; flex: none; margin-top: 1px; }
+  .notif-headline { font-size: 13.5px; color: var(--text); }
+  .notif-meta { font-size: 11.5px; color: var(--muted); margin-top: 3px; }
+
   .lb-controls {
     display: flex; justify-content: space-between; align-items: center;
     flex-wrap: wrap; gap: 10px;
@@ -402,7 +416,7 @@
     <div class="team-layout">
       
     <nav class="team-sidebar">
-      <a class="nav-item" href="../"><span class="nav-icon">👥</span>Roster</a><a class="nav-item" href="../events/"><span class="nav-icon">📅</span>Events<span class="soon-tag">Soon</span></a><a class="nav-item" href="../activity/"><span class="nav-icon">📈</span>Activity<span class="soon-tag">Soon</span></a><a class="nav-item" href="../tournaments/"><span class="nav-icon">🏆</span>Tournaments<span class="soon-tag">Soon</span></a><a class="nav-item active" href="../trackers/"><span class="nav-icon">📌</span>Trackers<span class="soon-tag">Soon</span></a><a class="nav-item" href="../notifications/"><span class="nav-icon">🔔</span>Notifications<span class="soon-tag">Soon</span></a>
+      <a class="nav-item" href="../"><span class="nav-icon">👥</span>Roster</a><a class="nav-item" href="../events/"><span class="nav-icon">📅</span>Events</a><a class="nav-item" href="../activity/"><span class="nav-icon">📈</span>Activity<span class="soon-tag">Soon</span></a><a class="nav-item" href="../tournaments/"><span class="nav-icon">🏆</span>Tournaments<span class="soon-tag">Soon</span></a><a class="nav-item active" href="../trackers/"><span class="nav-icon">📌</span>Trackers</a><a class="nav-item" href="../notifications/"><span class="nav-icon">🔔</span>Notifications</a>
       <div class="nav-section-label">Manage</div>
       <a class="nav-item" href="../admin/"><span class="nav-icon">⚙️</span>Team Admin<span class="soon-tag">Soon</span></a>
     </nav>
@@ -411,14 +425,741 @@
       <div class="tag">TEAM</div>
       <div class="name">[BN8] BENEVOLENCE</div>
       <div class="sub">
-        Captain: L3G3NDARY · 49 racers tracked · last synced 10/23/2026, 2:50:46 AM</div>
+        Captain: L3G3NDARY · 49 racers tracked · last synced 10/23/2026, 3:09:27 AM</div>
     </div>
-    <div class="empty" style="padding:48px 28px;">
-      <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px;">Coming soon</div>
-      <div>The Trackers section isn't built yet — only Roster is live right now.</div>
-    </div></div>
+    <h2 style="margin:28px 0 14px;">Tracker</h2>
+    <p class="meta-row">This team's own racers, ranked by points earned in each window — the same ledger behind the site-wide leaderboard, scoped to just this roster.</p>
+    
+    <div class="lb-controls">
+      <div class="seg" data-role="trk-range">
+        <button type="button" class="seg-btn active" data-range="daily">Daily</button><button type="button" class="seg-btn" data-range="weekly">Weekly</button><button type="button" class="seg-btn" data-range="seasonal">Season</button><button type="button" class="seg-btn" data-range="alltime">All-Time</button>
+      </div>
+    </div>
+    <script>
+      (function () {
+        var seg = document.querySelector('.seg[data-role="trk-range"]');
+        var panels = document.querySelectorAll(".trk-panel");
+        function sync() {
+          var range = seg.querySelector(".seg-btn.active").getAttribute("data-range");
+          panels.forEach(function (p) { p.hidden = p.getAttribute("data-range") !== range; });
+        }
+        seg.addEventListener("click", function (e) {
+          var btn = e.target.closest(".seg-btn");
+          if (!btn) return;
+          Array.prototype.slice.call(seg.querySelectorAll(".seg-btn")).forEach(function (b) {
+            b.classList.toggle("active", b === btn);
+          });
+          sync();
+        });
+      })();
+    </script>
+    <div class="trk-panel" data-range="daily">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Racer</th><th>Points</th><th>Races</th><th>Avg speed</th><th>Highest speed</th><th>Accuracy</th></tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td><span class="lb-rank top1">1</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(273 85% 65%)">V</span>
+            VortexKeyz
+          </td>
+          <td><span class="points">15125.62</span></td>
+          <td>105</td>
+          <td>94</td>
+          <td>154</td>
+          <td><span class="pill good">96.55%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank top2">2</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(12 85% 65%)">B</span>
+            BicentricFir13
+          </td>
+          <td><span class="points">10258.44</span></td>
+          <td>78</td>
+          <td>68</td>
+          <td>108</td>
+          <td><span class="pill good">95.84%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank top3">3</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(9 85% 65%)">B</span>
+            BicentricFir10
+          </td>
+          <td><span class="points">7622.45</span></td>
+          <td>55</td>
+          <td>91</td>
+          <td>124</td>
+          <td><span class="pill ok">93.99%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">4</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(120 85% 65%)">N</span>
+            NΣKØLØRD
+          </td>
+          <td><span class="points">6592.5</span></td>
+          <td>42</td>
+          <td>129</td>
+          <td>141</td>
+          <td><span class="pill good">95.5%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">5</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(189 85% 65%)">J</span>
+            Jomamasofast
+          </td>
+          <td><span class="points">5236.70</span></td>
+          <td>35</td>
+          <td>105</td>
+          <td>127</td>
+          <td><span class="pill good">97.52%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">6</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(225 85% 65%)">-</span>
+            -NeverLostInGod-3K
+          </td>
+          <td><span class="points">4824.14</span></td>
+          <td>43</td>
+          <td>41</td>
+          <td>80</td>
+          <td><span class="pill ok">91.66%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">7</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(183 85% 65%)">L</span>
+            L3G3NDARY
+          </td>
+          <td><span class="points">4373.80</span></td>
+          <td>30</td>
+          <td>102</td>
+          <td>182</td>
+          <td><span class="pill good">95.7%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">8</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(83 85% 65%)">S</span>
+            Shirley Temple
+          </td>
+          <td><span class="points">3611.52</span></td>
+          <td>27</td>
+          <td>76</td>
+          <td>91</td>
+          <td><span class="pill good">95.76%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">9</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(304 85% 65%)">C</span>
+            Colepalmer is my BFF
+          </td>
+          <td><span class="points">2075.94</span></td>
+          <td>15</td>
+          <td>87</td>
+          <td>144</td>
+          <td><span class="pill ok">92.87%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">10</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(79 85% 65%)">B</span>
+            BicentricFir9
+          </td>
+          <td><span class="points">1632.60</span></td>
+          <td>14</td>
+          <td>42</td>
+          <td>95</td>
+          <td><span class="pill good">96.32%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">11</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(78 85% 65%)">B</span>
+            BicentricFir8
+          </td>
+          <td><span class="points">1119.76</span></td>
+          <td>8</td>
+          <td>89</td>
+          <td>116</td>
+          <td><span class="pill good">95.47%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">12</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(174 85% 65%)">B</span>
+            baby abyss
+          </td>
+          <td><span class="points">547.80</span></td>
+          <td>4</td>
+          <td>95</td>
+          <td>186</td>
+          <td><span class="pill low">89.84%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">13</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(3 85% 65%)">M</span>
+            MysteR⚜️B✨
+          </td>
+          <td><span class="points">246.38</span></td>
+          <td>2</td>
+          <td>48</td>
+          <td>75</td>
+          <td><span class="pill good">99.19%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">14</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(119 85% 65%)">M</span>
+            MagicKio -_-
+          </td>
+          <td><span class="points">130.23</span></td>
+          <td>1</td>
+          <td>72</td>
+          <td>89</td>
+          <td><span class="pill ok">94.23%</span></td>
+        </tr></tbody>
+      </table>
+    </div></div><div class="trk-panel" data-range="weekly" hidden>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Racer</th><th>Points</th><th>Races</th><th>Avg speed</th><th>Highest speed</th><th>Accuracy</th></tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td><span class="lb-rank top1">1</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(273 85% 65%)">V</span>
+            VortexKeyz
+          </td>
+          <td><span class="points">15125.62</span></td>
+          <td>105</td>
+          <td>94</td>
+          <td>154</td>
+          <td><span class="pill good">96.55%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank top2">2</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(12 85% 65%)">B</span>
+            BicentricFir13
+          </td>
+          <td><span class="points">10258.44</span></td>
+          <td>78</td>
+          <td>68</td>
+          <td>108</td>
+          <td><span class="pill good">95.84%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank top3">3</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(9 85% 65%)">B</span>
+            BicentricFir10
+          </td>
+          <td><span class="points">7622.45</span></td>
+          <td>55</td>
+          <td>91</td>
+          <td>124</td>
+          <td><span class="pill ok">93.99%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">4</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(120 85% 65%)">N</span>
+            NΣKØLØRD
+          </td>
+          <td><span class="points">6592.5</span></td>
+          <td>42</td>
+          <td>129</td>
+          <td>141</td>
+          <td><span class="pill good">95.5%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">5</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(189 85% 65%)">J</span>
+            Jomamasofast
+          </td>
+          <td><span class="points">5236.70</span></td>
+          <td>35</td>
+          <td>105</td>
+          <td>127</td>
+          <td><span class="pill good">97.52%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">6</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(225 85% 65%)">-</span>
+            -NeverLostInGod-3K
+          </td>
+          <td><span class="points">4824.14</span></td>
+          <td>43</td>
+          <td>41</td>
+          <td>80</td>
+          <td><span class="pill ok">91.66%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">7</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(183 85% 65%)">L</span>
+            L3G3NDARY
+          </td>
+          <td><span class="points">4373.80</span></td>
+          <td>30</td>
+          <td>102</td>
+          <td>182</td>
+          <td><span class="pill good">95.7%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">8</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(83 85% 65%)">S</span>
+            Shirley Temple
+          </td>
+          <td><span class="points">3611.52</span></td>
+          <td>27</td>
+          <td>76</td>
+          <td>91</td>
+          <td><span class="pill good">95.76%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">9</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(304 85% 65%)">C</span>
+            Colepalmer is my BFF
+          </td>
+          <td><span class="points">2075.94</span></td>
+          <td>15</td>
+          <td>87</td>
+          <td>144</td>
+          <td><span class="pill ok">92.87%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">10</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(79 85% 65%)">B</span>
+            BicentricFir9
+          </td>
+          <td><span class="points">1632.60</span></td>
+          <td>14</td>
+          <td>42</td>
+          <td>95</td>
+          <td><span class="pill good">96.32%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">11</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(78 85% 65%)">B</span>
+            BicentricFir8
+          </td>
+          <td><span class="points">1119.76</span></td>
+          <td>8</td>
+          <td>89</td>
+          <td>116</td>
+          <td><span class="pill good">95.47%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">12</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(174 85% 65%)">B</span>
+            baby abyss
+          </td>
+          <td><span class="points">547.80</span></td>
+          <td>4</td>
+          <td>95</td>
+          <td>186</td>
+          <td><span class="pill low">89.84%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">13</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(3 85% 65%)">M</span>
+            MysteR⚜️B✨
+          </td>
+          <td><span class="points">246.38</span></td>
+          <td>2</td>
+          <td>48</td>
+          <td>75</td>
+          <td><span class="pill good">99.19%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">14</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(119 85% 65%)">M</span>
+            MagicKio -_-
+          </td>
+          <td><span class="points">130.23</span></td>
+          <td>1</td>
+          <td>72</td>
+          <td>89</td>
+          <td><span class="pill ok">94.23%</span></td>
+        </tr></tbody>
+      </table>
+    </div></div><div class="trk-panel" data-range="seasonal" hidden>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Racer</th><th>Points</th><th>Races</th><th>Avg speed</th><th>Highest speed</th><th>Accuracy</th></tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td><span class="lb-rank top1">1</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(273 85% 65%)">V</span>
+            VortexKeyz
+          </td>
+          <td><span class="points">15125.62</span></td>
+          <td>105</td>
+          <td>94</td>
+          <td>154</td>
+          <td><span class="pill good">96.55%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank top2">2</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(12 85% 65%)">B</span>
+            BicentricFir13
+          </td>
+          <td><span class="points">10258.44</span></td>
+          <td>78</td>
+          <td>68</td>
+          <td>108</td>
+          <td><span class="pill good">95.84%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank top3">3</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(9 85% 65%)">B</span>
+            BicentricFir10
+          </td>
+          <td><span class="points">7622.45</span></td>
+          <td>55</td>
+          <td>91</td>
+          <td>124</td>
+          <td><span class="pill ok">93.99%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">4</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(120 85% 65%)">N</span>
+            NΣKØLØRD
+          </td>
+          <td><span class="points">6592.5</span></td>
+          <td>42</td>
+          <td>129</td>
+          <td>141</td>
+          <td><span class="pill good">95.5%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">5</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(189 85% 65%)">J</span>
+            Jomamasofast
+          </td>
+          <td><span class="points">5236.70</span></td>
+          <td>35</td>
+          <td>105</td>
+          <td>127</td>
+          <td><span class="pill good">97.52%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">6</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(225 85% 65%)">-</span>
+            -NeverLostInGod-3K
+          </td>
+          <td><span class="points">4824.14</span></td>
+          <td>43</td>
+          <td>41</td>
+          <td>80</td>
+          <td><span class="pill ok">91.66%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">7</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(183 85% 65%)">L</span>
+            L3G3NDARY
+          </td>
+          <td><span class="points">4373.80</span></td>
+          <td>30</td>
+          <td>102</td>
+          <td>182</td>
+          <td><span class="pill good">95.7%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">8</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(83 85% 65%)">S</span>
+            Shirley Temple
+          </td>
+          <td><span class="points">3611.52</span></td>
+          <td>27</td>
+          <td>76</td>
+          <td>91</td>
+          <td><span class="pill good">95.76%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">9</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(304 85% 65%)">C</span>
+            Colepalmer is my BFF
+          </td>
+          <td><span class="points">2075.94</span></td>
+          <td>15</td>
+          <td>87</td>
+          <td>144</td>
+          <td><span class="pill ok">92.87%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">10</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(79 85% 65%)">B</span>
+            BicentricFir9
+          </td>
+          <td><span class="points">1632.60</span></td>
+          <td>14</td>
+          <td>42</td>
+          <td>95</td>
+          <td><span class="pill good">96.32%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">11</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(78 85% 65%)">B</span>
+            BicentricFir8
+          </td>
+          <td><span class="points">1119.76</span></td>
+          <td>8</td>
+          <td>89</td>
+          <td>116</td>
+          <td><span class="pill good">95.47%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">12</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(174 85% 65%)">B</span>
+            baby abyss
+          </td>
+          <td><span class="points">547.80</span></td>
+          <td>4</td>
+          <td>95</td>
+          <td>186</td>
+          <td><span class="pill low">89.84%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">13</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(3 85% 65%)">M</span>
+            MysteR⚜️B✨
+          </td>
+          <td><span class="points">246.38</span></td>
+          <td>2</td>
+          <td>48</td>
+          <td>75</td>
+          <td><span class="pill good">99.19%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">14</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(119 85% 65%)">M</span>
+            MagicKio -_-
+          </td>
+          <td><span class="points">130.23</span></td>
+          <td>1</td>
+          <td>72</td>
+          <td>89</td>
+          <td><span class="pill ok">94.23%</span></td>
+        </tr></tbody>
+      </table>
+    </div><p class="lb-score-note">Tracks Nitro Type's own current season, "Spirit Racers" (Oct 18 – Nov 29).</p></div><div class="trk-panel" data-range="alltime" hidden>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Racer</th><th>Points</th><th>Races</th><th>Avg speed</th><th>Highest speed</th><th>Accuracy</th></tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td><span class="lb-rank top1">1</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(273 85% 65%)">V</span>
+            VortexKeyz
+          </td>
+          <td><span class="points">15125.62</span></td>
+          <td>105</td>
+          <td>94</td>
+          <td>154</td>
+          <td><span class="pill good">96.55%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank top2">2</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(12 85% 65%)">B</span>
+            BicentricFir13
+          </td>
+          <td><span class="points">10258.44</span></td>
+          <td>78</td>
+          <td>68</td>
+          <td>108</td>
+          <td><span class="pill good">95.84%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank top3">3</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(9 85% 65%)">B</span>
+            BicentricFir10
+          </td>
+          <td><span class="points">7622.45</span></td>
+          <td>55</td>
+          <td>91</td>
+          <td>124</td>
+          <td><span class="pill ok">93.99%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">4</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(120 85% 65%)">N</span>
+            NΣKØLØRD
+          </td>
+          <td><span class="points">6592.5</span></td>
+          <td>42</td>
+          <td>129</td>
+          <td>141</td>
+          <td><span class="pill good">95.5%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">5</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(189 85% 65%)">J</span>
+            Jomamasofast
+          </td>
+          <td><span class="points">5236.70</span></td>
+          <td>35</td>
+          <td>105</td>
+          <td>127</td>
+          <td><span class="pill good">97.52%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">6</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(225 85% 65%)">-</span>
+            -NeverLostInGod-3K
+          </td>
+          <td><span class="points">4824.14</span></td>
+          <td>43</td>
+          <td>41</td>
+          <td>80</td>
+          <td><span class="pill ok">91.66%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">7</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(183 85% 65%)">L</span>
+            L3G3NDARY
+          </td>
+          <td><span class="points">4373.80</span></td>
+          <td>30</td>
+          <td>102</td>
+          <td>182</td>
+          <td><span class="pill good">95.7%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">8</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(83 85% 65%)">S</span>
+            Shirley Temple
+          </td>
+          <td><span class="points">3611.52</span></td>
+          <td>27</td>
+          <td>76</td>
+          <td>91</td>
+          <td><span class="pill good">95.76%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">9</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(304 85% 65%)">C</span>
+            Colepalmer is my BFF
+          </td>
+          <td><span class="points">2075.94</span></td>
+          <td>15</td>
+          <td>87</td>
+          <td>144</td>
+          <td><span class="pill ok">92.87%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">10</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(79 85% 65%)">B</span>
+            BicentricFir9
+          </td>
+          <td><span class="points">1632.60</span></td>
+          <td>14</td>
+          <td>42</td>
+          <td>95</td>
+          <td><span class="pill good">96.32%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">11</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(78 85% 65%)">B</span>
+            BicentricFir8
+          </td>
+          <td><span class="points">1119.76</span></td>
+          <td>8</td>
+          <td>89</td>
+          <td>116</td>
+          <td><span class="pill good">95.47%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">12</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(174 85% 65%)">B</span>
+            baby abyss
+          </td>
+          <td><span class="points">547.80</span></td>
+          <td>4</td>
+          <td>95</td>
+          <td>186</td>
+          <td><span class="pill low">89.84%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">13</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(3 85% 65%)">M</span>
+            MysteR⚜️B✨
+          </td>
+          <td><span class="points">246.38</span></td>
+          <td>2</td>
+          <td>48</td>
+          <td>75</td>
+          <td><span class="pill good">99.19%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">14</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(119 85% 65%)">M</span>
+            MagicKio -_-
+          </td>
+          <td><span class="points">130.23</span></td>
+          <td>1</td>
+          <td>72</td>
+          <td>89</td>
+          <td><span class="pill ok">94.23%</span></td>
+        </tr></tbody>
+      </table>
+    </div></div></div>
     </div>
 </main>
-<footer class="site">Generated 2026-10-23T03:02:00.561Z</footer>
+<footer class="site">Generated 2026-10-23T03:10:34.494Z</footer>
 </body>
 </html>
