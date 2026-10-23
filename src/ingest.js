@@ -75,16 +75,17 @@ async function upsertTeam(tag, info) {
   await pool.query(
     `insert into teams (
        tag, display_name, last_synced_at, next_sync_due_at,
-       captain_username, captain_display_name, members_count, nt_created_at,
+       captain_username, captain_display_name, captain_nt_user_id, members_count, nt_created_at,
        min_races, min_speed, min_level, enrollment, other_requirements, tag_color
      )
-     values ($1, $2, now(), now() + interval '30 minutes', $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+     values ($1, $2, now(), now() + interval '30 minutes', $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
      on conflict (tag) do update
        set display_name = excluded.display_name,
            last_synced_at = now(),
            next_sync_due_at = now() + (teams.sync_interval_minutes || ' minutes')::interval,
            captain_username = excluded.captain_username,
            captain_display_name = excluded.captain_display_name,
+           captain_nt_user_id = excluded.captain_nt_user_id,
            members_count = excluded.members_count,
            nt_created_at = excluded.nt_created_at,
            min_races = excluded.min_races,
@@ -98,6 +99,11 @@ async function upsertTeam(tag, info) {
       info.name || null,
       info.username || null,
       info.displayName || null,
+      // NT's team-info block identifies the captain by their userID
+      // directly (the same id that shows up in results.members) - this is
+      // the authoritative "who is captain" check everything else (event
+      // permissions) is built on, not the display name above.
+      info.userID ?? null,
       info.members ?? null,
       fromUnixSeconds(info.createdStamp),
       info.minRaces ?? null,

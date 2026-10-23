@@ -1,4 +1,5 @@
 require("dotenv").config();
+const path = require("path");
 const express = require("express");
 const { pool } = require("./db");
 const {
@@ -20,24 +21,33 @@ const {
 const { loadLeaderboardData, loadTeamTracker } = require("./leaderboard-data");
 const { queryNotifications } = require("./notifications");
 const { eventsForTeam } = require("./events-data");
+const { accountIndexBody, accountConnectBody } = require("./account-pages");
 
 // Built, non-roster sections render their own content - async because (unlike
 // build.js, which pre-queries everything once per build) each request here
 // hits the database live, so Trackers/Notifications can reflect a sync that
 // just ran without waiting for the next scheduled rebuild.
-async function sectionContent(key, tag) {
-  if (key === "events") return eventsBody(tag, eventsForTeam(tag));
+async function sectionContent(key, tag, captainNtUserId) {
+  if (key === "events") return eventsBody(tag, await eventsForTeam(pool, tag), captainNtUserId);
   if (key === "trackers") return trackerBody(await loadTeamTracker(pool, tag));
   if (key === "notifications") return notificationsBody(tag, await queryNotifications(pool, tag));
   return null;
 }
 
 // Express routes use fixed absolute paths (unlike build.js's relative,
-// depth-aware ones), so the nav hrefs are the same on every page here.
-const SITE_NAV = { teamsHref: "/teams", leaderboardsHref: "/leaderboards" };
+// depth-aware ones), so the nav hrefs are the same on every page here -
+// and pageShell can't derive account/assets from these the way it does
+// for build.js's relative paths, so they're spelled out explicitly.
+const SITE_NAV = {
+  teamsHref: "/teams",
+  leaderboardsHref: "/leaderboards",
+  accountHref: "/account",
+  assetsHref: "/assets/app.js",
+};
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+app.use("/assets", express.static(path.join(__dirname, "client")));
 
 // Proves the whole stack is wired correctly: app is running AND can reach
 // the real database. This is the one thing v0 has to get right before
@@ -244,7 +254,7 @@ app.get("/teams/:tag/:section", async (req, res) => {
         <div class="tag">TEAM</div>
         <div class="name">[${escapeHtml(t.tag)}] ${escapeHtml(t.display_name || "")}</div>
       </div>`;
-    const built = item.built ? await sectionContent(item.key, tag) : null;
+    const built = item.built ? await sectionContent(item.key, tag, t.captain_nt_user_id) : null;
     const linkFor = (key) => (key === "roster" ? `/teams/${encodeURIComponent(tag)}` : `/teams/${encodeURIComponent(tag)}/${key}`);
     const body = `
       <div class="team-layout">
@@ -288,6 +298,32 @@ app.get("/leaderboards", async (req, res) => {
     console.error("Leaderboards query failed:", err.message);
     res.status(500).send("Could not load leaderboards.");
   }
+});
+
+// Account pages - mirrors build.js's buildAccountPages via the shared
+// account-pages.js bodies, same reasoning as leaderboards above.
+app.get("/account", (req, res) => {
+  res.type("html").send(
+    pageShell({
+      title: "Your account — TypeTrack",
+      body: accountIndexBody({ connectHref: "/account/connect" }),
+      crumb: `<a href="/teams">← all teams</a>`,
+      ...SITE_NAV,
+      active: "account",
+    })
+  );
+});
+
+app.get("/account/connect", (req, res) => {
+  res.type("html").send(
+    pageShell({
+      title: "Connect your Nitro Type account — TypeTrack",
+      body: accountConnectBody({ accountHref: "/account" }),
+      crumb: `<a href="/account">← account</a>`,
+      ...SITE_NAV,
+      active: "account",
+    })
+  );
 });
 
 app.listen(PORT, () => {

@@ -1,30 +1,14 @@
-// Team event calendar - see data/events.json for why this is a curated
-// file instead of something synced from Nitro Type: NT doesn't publish a
-// per-team event/tournament schedule the way its season dates are public,
-// so (unlike everything else on this site) these are entered by hand.
-// Read fresh every call rather than cached, since it's a small file and
-// both build.js (one process per build) and server.js (long-running, so a
-// git pull updating this file should show up without a restart) read it.
-const fs = require("fs");
-const path = require("path");
-
-const EVENTS_FILE = path.join(__dirname, "..", "data", "events.json");
-
-function loadAllEvents() {
-  let raw;
-  try {
-    raw = fs.readFileSync(EVENTS_FILE, "utf8");
-  } catch (err) {
-    return [];
-  }
-  try {
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed.events) ? parsed.events : [];
-  } catch (err) {
-    console.error(`Could not parse ${EVENTS_FILE}: ${err.message}`);
-    return [];
-  }
-}
+// Team event calendar. Used to be a hand-curated data/events.json file
+// (Nitro Type doesn't publish a per-team event/tournament schedule the way
+// its season dates are public); now events live in the `events` table
+// (see schema.sql), writable by a verified team's real captain straight
+// from that team's Events page (src/client/app.js's renderCaptainManager),
+// so this module just queries that table instead of reading a file.
+//
+// This is still only the BUILD-TIME (or server.js per-request) snapshot,
+// rendered for a fast first paint and for anyone without JavaScript -
+// src/client/app.js re-fetches live on page load so a change a captain
+// just made is visible immediately, not just after the next site rebuild.
 
 // Pending (hasn't started), Active (happening now), or Ended - computed
 // fresh against the current time rather than stored, so it's always
@@ -37,14 +21,15 @@ function eventStatus(ev, now = new Date()) {
   return "active";
 }
 
-// Events that apply to a given team tag, newest-starting first - matches
-// the order Startrack's own Events table uses.
-function eventsForTeam(tag) {
+// Events for a given team tag, newest-starting first.
+async function eventsForTeam(pool, tag) {
   const now = new Date();
-  return loadAllEvents()
-    .filter((ev) => Array.isArray(ev.teams) && ev.teams.includes(tag))
-    .map((ev) => ({ ...ev, status: eventStatus(ev, now) }))
-    .sort((a, b) => new Date(b.start) - new Date(a.start));
+  const { rows } = await pool.query(
+    `select title, description, start_stamp as start, end_stamp as end
+     from events where team_tag = $1 order by start_stamp desc`,
+    [tag]
+  );
+  return rows.map((ev) => ({ ...ev, status: eventStatus(ev, now) }));
 }
 
-module.exports = { loadAllEvents, eventsForTeam, eventStatus };
+module.exports = { eventsForTeam, eventStatus };

@@ -25,13 +25,14 @@ const {
 const { loadLeaderboardData, loadTeamTracker } = require("./leaderboard-data");
 const { queryNotifications } = require("./notifications");
 const { eventsForTeam } = require("./events-data");
+const { accountIndexBody, accountConnectBody } = require("./account-pages");
 
 // Built, non-roster sections render their own content from already-queried
 // data; a section not in this map still falls back to comingSoonBody.
 // Shared with server.js's per-request equivalent so static and live
 // preview never render a section differently.
 function sectionContent(key, sectionData) {
-  if (key === "events") return eventsBody(sectionData.tag, sectionData.events);
+  if (key === "events") return eventsBody(sectionData.tag, sectionData.events, sectionData.captainNtUserId);
   if (key === "trackers") return trackerBody(sectionData.tracker);
   if (key === "notifications") return notificationsBody(sectionData.tag, sectionData.notifications);
   return null;
@@ -207,6 +208,40 @@ function buildLeaderboardsPage(data) {
   );
 }
 
+// Account pages (sign up/in + connect-your-Nitro-Type-account) sit at
+// site/account/ and site/account/connect/ - same "depth from site root"
+// convention as everywhere else in this file, so pageShell's teamsHref
+// derives accountHref/assetsHref for them exactly like every other page.
+function buildAccountPages() {
+  const dir = path.join(OUT_DIR, "account");
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(
+    path.join(dir, "index.html"),
+    pageShell({
+      title: "Your account — TypeTrack",
+      body: accountIndexBody(),
+      crumb: `<a href="../">← all teams</a>`,
+      teamsHref: "../",
+      leaderboardsHref: "../leaderboards/",
+      active: "account",
+    })
+  );
+
+  const connectDir = path.join(dir, "connect");
+  fs.mkdirSync(connectDir, { recursive: true });
+  fs.writeFileSync(
+    path.join(connectDir, "index.html"),
+    pageShell({
+      title: "Connect your Nitro Type account — TypeTrack",
+      body: accountConnectBody(),
+      crumb: `<a href="../">← account</a>`,
+      teamsHref: "../../",
+      leaderboardsHref: "../../leaderboards/",
+      active: "account",
+    })
+  );
+}
+
 function writeTeamSectionPage({ dir, depth, activeKey, content, crumb, title }) {
   // depth 0 = this page is teams/<tag>/index.html, so "events" lives at
   // ./events/; depth 1 = teams/<tag>/<section>/index.html, so a sibling
@@ -229,10 +264,17 @@ async function main() {
   const { rows: teams } = await pool.query(
     `select tag, display_name, last_synced_at,
             captain_username, captain_display_name, members_count, nt_created_at,
-            min_races, min_speed, min_level, enrollment, other_requirements, tag_color
+            min_races, min_speed, min_level, enrollment, other_requirements, tag_color,
+            captain_nt_user_id
      from teams order by tag`
   );
   buildTeamsIndex(teams);
+
+  // The shared browser script (auth, connect-account flow, live events +
+  // captain manager) is plain static JS - just copy it in, same idea as
+  // everything else in this build script writing files into OUT_DIR.
+  fs.mkdirSync(path.join(OUT_DIR, "assets"), { recursive: true });
+  fs.copyFileSync(path.join(__dirname, "client", "app.js"), path.join(OUT_DIR, "assets", "app.js"));
 
   for (const team of teams) {
     const { rows: racers } = await pool.query(
@@ -252,13 +294,15 @@ async function main() {
       tag: team.tag,
       tracker: await loadTeamTracker(pool, team.tag),
       notifications: await queryNotifications(pool, team.tag),
-      events: eventsForTeam(team.tag),
+      events: await eventsForTeam(pool, team.tag),
+      captainNtUserId: team.captain_nt_user_id,
     };
     buildTeamPage(team, racers, sectionData);
   }
 
   const leaderboardData = await loadLeaderboardData(pool);
   buildLeaderboardsPage(leaderboardData);
+  buildAccountPages();
 
   console.log(`Built ${teams.length} team page(s) into ${OUT_DIR}`);
   await pool.end();

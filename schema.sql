@@ -165,3 +165,119 @@ create table if not exists notifications (
 
 create index if not exists notifications_team_time
   on notifications (team_tag, created_at desc);
+
+-- Racer accounts: lets a visitor connect their TypeTrack login (Supabase
+-- Auth - email/password, never their real Nitro Type password) to a real
+-- Nitro Type identity they've PROVEN they own, so the site can tell real
+-- captains apart from anyone claiming to be one. Everything below this
+-- point is written/read by the browser directly via Supabase's client
+-- libraries (using the public anon key) rather than through our own
+-- service-role scripts, so Row Level Security is what keeps a signed-in
+-- racer from touching another team's events - see the policies at the
+-- bottom of this file.
+
+-- NT's own authoritative captain, by userID (not the display-name text
+-- already on this row) - this is what a captain's permission check is
+-- actually anchored to. Populated straight from the team API's
+-- info.userID (src/ingest.js's upsertTeam), never guessed from a name.
+alter table teams add column if not exists captain_nt_user_id bigint;
+
+-- One-to-one link between a Supabase Auth user and the Nitro Type racer
+-- they've verified ownership of (see verification_challenges below). A
+-- racer can only ever be linked to one TypeTrack account and vice versa.
+create table if not exists account_links (
+  auth_user_id uuid primary key references auth.users(id) on delete cascade,
+  nt_user_id   bigint not null unique references racers(nt_user_id) on delete cascade,
+  verified_at  timestamptz not null default now()
+);
+
+-- An in-progress "change your car to prove you own this account" check.
+-- One row per signed-in user (starting a new check replaces any old one).
+-- baseline_car_id is read live from Nitro Type at the moment the check
+-- starts; the Edge Function that confirms it re-reads live too, so this
+-- never trusts our own batch-synced (and possibly stale) racer_stats.
+create table if not exists verification_challenges (
+  auth_user_id    uuid primary key references auth.users(id) on delete cascade,
+  nt_user_id      bigint not null,
+  nt_username     text not null,
+  baseline_car_id integer not null,
+  expires_at      timestamptz not null,
+  created_at      timestamptz not null default now()
+);
+
+-- Team events - same purpose as the old data/events.json, but writable by
+-- a verified team captain directly from their team's Events page instead
+-- of being a file only changed by hand. Deliberately one team per event
+-- (not the old file's array-of-teams), since the RLS policy below checks
+-- a captain against exactly one team_tag; an event spanning several
+-- allied teams would need one row per team.
+create table if not exists events (
+  id          bigserial primary key,
+  team_tag    text not null references teams(tag) on delete cascade,
+  title       text not null,
+  description text,
+  start_stamp timestamptz not null,
+  end_stamp   timestamptz not null,
+  created_by  uuid references auth.users(id) on delete set null,
+  created_at  timestamptz not null default now()
+);
+
+create index if not exists events_team_time on events (team_tag, start_stamp desc);
+
+alter table account_links enable row level security;
+alter table verification_challenges enable row level security;
+alter table events enable row level security;
+
+-- account_links: a racer's verified-or-not status is harmless to show
+-- publicly (just "this racer owns this TypeTrack account"), so reads are
+-- open. Deliberately NO insert/update/delete policy for any client role:
+-- letting a signed-in user write their own auth_user_id here would still
+-- let them pair it with ANY nt_user_id and falsely claim to be a racer
+-- they never actually verified - the whole point of the car-swap check.
+-- The only thing allowed to write this table is the verify-car-swap Edge
+-- Function, using Supabase's service-role key (which bypasses RLS
+-- entirely, by design - it's the trusted server-side half of this flow).
+-- With RLS on and no write policy, every client-side write is denied.
+drop policy if exists "account_links are publicly readable" on account_links;
+create policy "account_links are publicly readable" on account_links
+  for select using (true);
+
+-- verification_challenges: not even publicly readable, and - like
+-- account_links above - never written by the client directly. The
+-- verify-car-swap Edge Function owns this table completely (via the
+-- service-role key): it creates the challenge when a check starts and
+-- deletes it once confirmed, and returns the challenge's state straight
+-- in its own response rather than making the browser query this table.
+-- With RLS on and no policies at all, this table is fully inaccessible
+-- to the client - exactly what we want for in-progress verification state.
+
+-- events: anyone can read (it's a public site); writes are restricted to
+-- a signed-in user who is BOTH verified as a specific racer (via
+-- account_links) AND that racer is the captain NT itself recognizes for
+-- the team_tag being written - so a captain can only ever manage events
+-- for their own team, never someone else's.
+drop policy if exists "events are publicly readable" on events;
+create policy "events are publicly readable" on events
+  for select using (true);
+
+drop policy if exists "only a team's own verified captain manages its events" on events;
+create policy "only a team's own verified captain manages its events" on events
+  for all
+  using (
+    exists (
+      select 1
+      from account_links al
+      join teams t on t.tag = events.team_tag
+      where al.auth_user_id = auth.uid()
+        and al.nt_user_id = t.captain_nt_user_id
+    )
+  )
+  with check (
+    exists (
+      select 1
+      from account_links al
+      join teams t on t.tag = events.team_tag
+      where al.auth_user_id = auth.uid()
+        and al.nt_user_id = t.captain_nt_user_id
+    )
+  );

@@ -506,40 +506,50 @@ function formatEventDate(iso) {
   return d.toLocaleString(undefined, { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" });
 }
 
-function eventsBody(tag, events) {
-  if (!events.length) {
-    return `
-      <h2 style="margin:28px 0 14px;">Events</h2>
-      <div class="empty" style="padding:40px 24px;">
-        No events scheduled for [${escapeHtml(tag)}] yet. These are entered by hand — Nitro Type doesn't publish a per-team event calendar — so just ask for one to be added.
-      </div>`;
-  }
-  const rows = events
-    .map(
-      (ev) => `
-        <tr>
-          <td>
-            <b>${escapeHtml(ev.title)}</b>
-            ${ev.description ? `<div style="color:var(--muted);font-size:12.5px;margin-top:3px;max-width:420px;white-space:normal;">${escapeHtml(ev.description)}</div>` : ""}
-          </td>
-          <td>${eventStatusPill(ev.status)}</td>
-          <td>${formatEventDate(ev.start)}</td>
-          <td>${formatEventDate(ev.end)}</td>
-          <td>${(ev.teams || []).map((t) => `[${escapeHtml(t)}]`).join(" ")}</td>
-        </tr>`
-    )
-    .join("");
+// Events moved from the hand-curated data/events.json file to the
+// Supabase-backed `events` table (see schema.sql) so a team's real,
+// NT-recognized captain can add/edit/remove events themselves, live, from
+// this page - see src/client/app.js's initEventsPage/renderCaptainManager.
+// `events`/`tag` here are still the build-time (or server.js live-query)
+// snapshot, rendered as a normal table for a fast first paint and for
+// anyone without JavaScript; the client script replaces #events-list with
+// a freshly-fetched copy on load so a change a captain just made shows up
+// immediately, without waiting for the next scheduled site rebuild, and
+// shows the manage panel underneath for the one visitor who's signed in,
+// verified, and whose linked nt_user_id matches captainNtUserId.
+function eventsBody(tag, events, captainNtUserId) {
+  const initialRows = !events.length
+    ? `<div class="empty" style="padding:40px 24px;">No events scheduled for [${escapeHtml(tag)}] yet.</div>`
+    : `<div class="table-wrap">
+         <table>
+           <thead>
+             <tr><th>Event</th><th>Status</th><th>Starts</th><th>Ends</th></tr>
+           </thead>
+           <tbody>
+             ${events
+               .map(
+                 (ev) => `
+               <tr>
+                 <td>
+                   <b>${escapeHtml(ev.title)}</b>
+                   ${ev.description ? `<div style="color:var(--muted);font-size:12.5px;margin-top:3px;max-width:420px;white-space:normal;">${escapeHtml(ev.description)}</div>` : ""}
+                 </td>
+                 <td>${eventStatusPill(ev.status)}</td>
+                 <td>${formatEventDate(ev.start)}</td>
+                 <td>${formatEventDate(ev.end)}</td>
+               </tr>`
+               )
+               .join("")}
+           </tbody>
+         </table>
+       </div>`;
   return `
-    <h2 style="margin:28px 0 14px;">Events</h2>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr><th>Event</th><th>Status</th><th>Starts</th><th>Ends</th><th>Teams</th></tr>
-        </thead>
-        <tbody>${rows}</tbody>
-      </table>
-    </div>
-    <p class="lb-score-note">Curated by hand, not scraped from Nitro Type — just ask for an event to be added or changed.</p>`;
+    <div data-events-panel data-team-tag="${escapeHtml(tag)}" data-captain-nt-user-id="${escapeHtml(captainNtUserId ?? "")}">
+      <h2 style="margin:28px 0 14px;">Events</h2>
+      <div data-events-list>${initialRows}</div>
+      <p class="lb-score-note">Signed in as this team's real captain? Sign in from the Account page, then come back here to add or edit events — changes go live immediately.</p>
+      <div data-events-manage></div>
+    </div>`;
 }
 
 // ---------------------------------------------------------------------
@@ -1001,6 +1011,40 @@ const BASE_CSS = `
     main { padding: 20px 14px 50px; }
     .hero .name { font-size: 21px; }
   }
+
+  /* Forms - account pages (sign in/up, connect) and the captain events
+     manager share this small set of classes. */
+  .form-input {
+    width: 100%;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font: inherit;
+    font-family: "Manrope", -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  .form-input:focus { outline: 1px solid var(--accent); }
+  .form-input::placeholder { color: var(--muted); }
+  label.form-input-wrap { font-size: 12px; color: var(--muted); display: flex; flex-direction: column; gap: 4px; }
+  .btn-primary, .btn-secondary, .btn-danger {
+    font: inherit;
+    font-weight: 700;
+    font-size: 13.5px;
+    border-radius: 8px;
+    padding: 10px 14px;
+    border: 1px solid transparent;
+    cursor: pointer;
+  }
+  .btn-primary { background: var(--accent); color: #06121f; }
+  .btn-primary:hover { opacity: 0.9; }
+  .btn-secondary { background: var(--panel-2); color: var(--text); border-color: var(--border); }
+  .btn-secondary:hover { border-color: var(--accent); }
+  .btn-danger { background: rgba(255,107,107,0.12); color: var(--low); border-color: rgba(255,107,107,0.3); }
+  .btn-danger:hover { background: rgba(255,107,107,0.2); }
+  .form-error { color: var(--low); font-size: 12.5px; }
+  .form-note { font-size: 12.5px; }
+  .site-nav-link[data-account-nav] { white-space: nowrap; }
 `;
 
 // teamsHref/leaderboardsHref are supplied by the caller because the two
@@ -1008,7 +1052,7 @@ const BASE_CSS = `
 // pages need a relative path back up to each top-level section (depth
 // varies per page), while server.js's Express routes just use fixed
 // absolute paths. `active` highlights whichever one the current page is.
-function siteHeader({ teamsHref = "./", leaderboardsHref = "leaderboards/", active = "" } = {}) {
+function siteHeader({ teamsHref = "./", leaderboardsHref = "leaderboards/", accountHref = "account/", active = "" } = {}) {
   return `
     <header class="site">
       <div class="mark">T</div>
@@ -1016,11 +1060,20 @@ function siteHeader({ teamsHref = "./", leaderboardsHref = "leaderboards/", acti
       <nav class="site-nav">
         <a class="site-nav-link${active === "teams" ? " active" : ""}" href="${teamsHref}">Teams</a>
         <a class="site-nav-link${active === "leaderboards" ? " active" : ""}" href="${leaderboardsHref}">Leaderboards</a>
+        <a class="site-nav-link${active === "account" ? " active" : ""}" href="${accountHref}" data-account-nav>Account</a>
       </nav>
     </header>`;
 }
 
-function pageShell({ title, body, crumb, teamsHref, leaderboardsHref, active }) {
+// build.js's teamsHref is always "however many ../ segments get back to
+// the site root", so accountHref and the shared client script's URL can
+// both be derived from it there without a caller having to pass them in.
+// server.js's routes use fixed absolute paths instead ("/teams", not a
+// relative depth), so it passes accountHref/assetsHref explicitly rather
+// than relying on this derivation.
+function pageShell({ title, body, crumb, teamsHref, leaderboardsHref, accountHref, assetsHref, active }) {
+  if (accountHref == null) accountHref = `${teamsHref}account/`;
+  if (assetsHref == null) assetsHref = `${teamsHref}assets/app.js`;
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -1033,12 +1086,13 @@ function pageShell({ title, body, crumb, teamsHref, leaderboardsHref, active }) 
   <style>${BASE_CSS}</style>
 </head>
 <body>
-${siteHeader({ teamsHref, leaderboardsHref, active })}
+${siteHeader({ teamsHref, leaderboardsHref, accountHref, active })}
 <main>
 ${crumb ? `<div class="crumb">${crumb}</div>` : ""}
 ${body}
 </main>
 <footer class="site">Generated ${new Date().toISOString()}</footer>
+<script src="${assetsHref}"></script>
 </body>
 </html>`;
 }
