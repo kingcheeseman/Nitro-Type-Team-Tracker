@@ -151,6 +151,70 @@
   .role-pill.officer { background: rgba(61,161,255,0.18); color: var(--accent); }
   .role-pill.gold { background: rgba(232,197,71,0.12); color: var(--ok); }
 
+  .team-layout {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  .team-sidebar {
+    width: 190px;
+    flex: none;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px;
+    position: sticky;
+    top: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+  .team-sidebar .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 9px 10px;
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 13.5px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  .team-sidebar .nav-item:hover { background: var(--panel-2); text-decoration: none; }
+  .team-sidebar .nav-item.active { background: rgba(61,161,255,0.15); color: var(--accent); }
+  .team-sidebar .nav-icon { font-size: 14px; flex: none; opacity: 0.9; }
+  .team-sidebar .soon-tag {
+    margin-left: auto;
+    font-size: 9px;
+    background: rgba(170,178,192,0.15);
+    color: var(--muted);
+    padding: 2px 6px;
+    border-radius: 999px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .team-sidebar .nav-section-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    font-weight: 700;
+    padding: 12px 10px 4px;
+  }
+  .team-content { flex: 1; min-width: 0; }
+
+  @media (max-width: 760px) {
+    .team-layout { flex-direction: column; }
+    .team-sidebar {
+      width: 100%;
+      position: static;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .team-sidebar .nav-section-label { display: none; }
+  }
+
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
@@ -260,6 +324,14 @@
 <main>
 <div class="crumb"><a href="../../">← all teams</a></div>
 
+    <div class="team-layout">
+      
+    <nav class="team-sidebar">
+      <a class="nav-item active" href="./"><span class="nav-icon">👥</span>Roster</a><a class="nav-item" href="events/"><span class="nav-icon">📅</span>Events<span class="soon-tag">Soon</span></a><a class="nav-item" href="activity/"><span class="nav-icon">📈</span>Activity<span class="soon-tag">Soon</span></a><a class="nav-item" href="tournaments/"><span class="nav-icon">🏆</span>Tournaments<span class="soon-tag">Soon</span></a><a class="nav-item" href="trackers/"><span class="nav-icon">📌</span>Trackers<span class="soon-tag">Soon</span></a><a class="nav-item" href="notifications/"><span class="nav-icon">🔔</span>Notifications<span class="soon-tag">Soon</span></a>
+      <div class="nav-section-label">Manage</div>
+      <a class="nav-item" href="admin/"><span class="nav-icon">⚙️</span>Team Admin<span class="soon-tag">Soon</span></a>
+    </nav>
+      <div class="team-content">
     <div class="hero" style="background:linear-gradient(135deg, hsl(157 70% 42%), hsl(197 70% 30%))">
       <div class="tag">TEAM</div>
       <div class="name">[NOHOPE] Maybe just a little</div>
@@ -838,8 +910,9 @@
         </tr>
         </tbody>
       </table>
+    </div></div>
     </div>
 </main>
-<footer class="site">Generated 2026-10-23T00:45:59.478Z</footer>
+<footer class="site">Generated 2026-10-23T00:52:36.495Z</footer>
 </body>
 </html>
