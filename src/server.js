@@ -9,6 +9,10 @@ const {
   formatDate,
   roleBadge,
   membershipBadge,
+  NAV_ITEMS,
+  MANAGE_NAV_ITEMS,
+  teamSidebar,
+  comingSoonBody,
   pageShell,
 } = require("./theme");
 
@@ -165,7 +169,7 @@ app.get("/teams/:tag", async (req, res) => {
          </div>`
       : "";
 
-    const body = `
+    const hero = `
       <div class="hero" style="background:${teamGradient(t.tag)}">
         <div class="tag">TEAM</div>
         <div class="name">[${escapeHtml(t.tag)}] ${escapeHtml(t.display_name || "")}</div>
@@ -175,7 +179,9 @@ app.get("/teams/:tag", async (req, res) => {
             : ""}${racers.rows.length} racer${racers.rows.length === 1 ? "" : "s"} tracked · last synced ${
           t.last_synced_at ? new Date(t.last_synced_at).toLocaleString() : "never"
         }</div>
-      </div>
+      </div>`;
+
+    const roster = `
       ${reqBar}
       ${specialReqs}
       <div class="table-wrap">
@@ -189,6 +195,13 @@ app.get("/teams/:tag", async (req, res) => {
         </table>
       </div>`;
 
+    const linkFor = (key) => (key === "roster" ? `/teams/${encodeURIComponent(tag)}` : `/teams/${encodeURIComponent(tag)}/${key}`);
+    const body = `
+      <div class="team-layout">
+        ${teamSidebar("roster", linkFor)}
+        <div class="team-content">${hero}${roster}</div>
+      </div>`;
+
     res.type("html").send(
       pageShell({
         title: `[${t.tag}] ${t.display_name || "team"}`,
@@ -198,6 +211,46 @@ app.get("/teams/:tag", async (req, res) => {
     );
   } catch (err) {
     console.error("Team page query failed:", err.message);
+    res.status(500).send("Could not load that team.");
+  }
+});
+
+// Sidebar sections that aren't built yet (anything but Roster) — same
+// "coming soon" placeholder the static site generates, so local preview
+// and the deployed site behave the same way when you click around.
+app.get("/teams/:tag/:section", async (req, res) => {
+  const tag = req.params.tag.toUpperCase();
+  const section = req.params.section;
+  const item = [...NAV_ITEMS, ...MANAGE_NAV_ITEMS].find((it) => it.key === section);
+  if (!item || item.built) {
+    return res.status(404).send("Not found.");
+  }
+  try {
+    const team = await pool.query("select * from teams where tag = $1", [tag]);
+    if (team.rows.length === 0) {
+      return res.status(404).send(`No team with tag "${escapeHtml(tag)}" in the database yet.`);
+    }
+    const t = team.rows[0];
+    const hero = `
+      <div class="hero" style="background:${teamGradient(t.tag)}">
+        <div class="tag">TEAM</div>
+        <div class="name">[${escapeHtml(t.tag)}] ${escapeHtml(t.display_name || "")}</div>
+      </div>`;
+    const linkFor = (key) => (key === "roster" ? `/teams/${encodeURIComponent(tag)}` : `/teams/${encodeURIComponent(tag)}/${key}`);
+    const body = `
+      <div class="team-layout">
+        ${teamSidebar(item.key, linkFor)}
+        <div class="team-content">${hero}${comingSoonBody(item.label)}</div>
+      </div>`;
+    res.type("html").send(
+      pageShell({
+        title: `[${t.tag}] ${item.label}`,
+        body,
+        crumb: `<a href="/teams">← all teams</a>`,
+      })
+    );
+  } catch (err) {
+    console.error("Team section page query failed:", err.message);
     res.status(500).send("Could not load that team.");
   }
 });

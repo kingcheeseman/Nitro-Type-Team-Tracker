@@ -65,6 +65,49 @@ function membershipBadge(membership) {
   return "";
 }
 
+// Single source of truth for a team page's section sidebar. "roster" is
+// the only one with real content right now; everything else gets a
+// generated placeholder page (see build.js) so the sidebar shows the
+// shape of where this project is headed without faking functionality -
+// clicking one of these is honest about not being built yet.
+const NAV_ITEMS = [
+  { key: "roster", label: "Roster", icon: "\u{1F465}", built: true },
+  { key: "events", label: "Events", icon: "\u{1F4C5}", built: false },
+  { key: "activity", label: "Activity", icon: "\u{1F4C8}", built: false },
+  { key: "tournaments", label: "Tournaments", icon: "\u{1F3C6}", built: false },
+  { key: "trackers", label: "Trackers", icon: "\u{1F4CC}", built: false },
+  { key: "notifications", label: "Notifications", icon: "\u{1F514}", built: false },
+];
+const MANAGE_NAV_ITEMS = [
+  { key: "admin", label: "Team Admin", icon: "⚙️", built: false },
+];
+
+// Builds the sidebar for a given team page. `linkFor(key)` supplies the
+// href for each section — the static site (nested directories, relative
+// links) and the local Express preview (flat /teams/:tag/:section routes)
+// resolve paths completely differently, so each caller passes its own.
+function teamSidebar(activeKey, linkFor) {
+  const item = (it) => {
+    const active = it.key === activeKey ? " active" : "";
+    const soon = it.built ? "" : `<span class="soon-tag">Soon</span>`;
+    return `<a class="nav-item${active}" href="${linkFor(it.key)}"><span class="nav-icon">${it.icon}</span>${escapeHtml(it.label)}${soon}</a>`;
+  };
+  return `
+    <nav class="team-sidebar">
+      ${NAV_ITEMS.map(item).join("")}
+      <div class="nav-section-label">Manage</div>
+      ${MANAGE_NAV_ITEMS.map(item).join("")}
+    </nav>`;
+}
+
+function comingSoonBody(label) {
+  return `
+    <div class="empty" style="padding:48px 28px;">
+      <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px;">Coming soon</div>
+      <div>The ${escapeHtml(label)} section isn't built yet — only Roster is live right now.</div>
+    </div>`;
+}
+
 const BASE_CSS = `
   :root {
     --bg: #0e1117;
@@ -209,6 +252,70 @@ const BASE_CSS = `
   .role-pill.officer { background: rgba(61,161,255,0.18); color: var(--accent); }
   .role-pill.gold { background: rgba(232,197,71,0.12); color: var(--ok); }
 
+  .team-layout {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  .team-sidebar {
+    width: 190px;
+    flex: none;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px;
+    position: sticky;
+    top: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+  .team-sidebar .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 9px 10px;
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 13.5px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  .team-sidebar .nav-item:hover { background: var(--panel-2); text-decoration: none; }
+  .team-sidebar .nav-item.active { background: rgba(61,161,255,0.15); color: var(--accent); }
+  .team-sidebar .nav-icon { font-size: 14px; flex: none; opacity: 0.9; }
+  .team-sidebar .soon-tag {
+    margin-left: auto;
+    font-size: 9px;
+    background: rgba(170,178,192,0.15);
+    color: var(--muted);
+    padding: 2px 6px;
+    border-radius: 999px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .team-sidebar .nav-section-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    font-weight: 700;
+    padding: 12px 10px 4px;
+  }
+  .team-content { flex: 1; min-width: 0; }
+
+  @media (max-width: 760px) {
+    .team-layout { flex-direction: column; }
+    .team-sidebar {
+      width: 100%;
+      position: static;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .team-sidebar .nav-section-label { display: none; }
+  }
+
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
@@ -349,5 +456,9 @@ module.exports = {
   formatDate,
   roleBadge,
   membershipBadge,
+  NAV_ITEMS,
+  MANAGE_NAV_ITEMS,
+  teamSidebar,
+  comingSoonBody,
   pageShell,
 };

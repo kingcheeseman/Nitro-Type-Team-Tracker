@@ -14,6 +14,10 @@ const {
   formatDate,
   roleBadge,
   membershipBadge,
+  NAV_ITEMS,
+  MANAGE_NAV_ITEMS,
+  teamSidebar,
+  comingSoonBody,
   pageShell,
 } = require("./theme");
 
@@ -121,7 +125,7 @@ function buildTeamPage(team, racers) {
        </div>`
     : "";
 
-  const body = `
+  const hero = `
     <div class="hero" style="background:${teamGradient(team.tag)}">
       <div class="tag">TEAM</div>
       <div class="name">[${escapeHtml(team.tag)}] ${escapeHtml(team.display_name || "")}</div>
@@ -131,7 +135,9 @@ function buildTeamPage(team, racers) {
           : ""}${racers.length} racer${racers.length === 1 ? "" : "s"} tracked · last synced ${
         team.last_synced_at ? new Date(team.last_synced_at).toLocaleString() : "never"
       }</div>
-    </div>
+    </div>`;
+
+  const roster = `
     ${reqBar}
     ${specialReqs}
     <div class="table-wrap">
@@ -145,14 +151,46 @@ function buildTeamPage(team, racers) {
       </table>
     </div>`;
 
-  fs.writeFileSync(
-    path.join(dir, "index.html"),
-    pageShell({
-      title: `[${team.tag}] ${team.display_name || "team"}`,
-      body,
-      crumb: `<a href="../../">← all teams</a>`,
-    })
-  );
+  writeTeamSectionPage({
+    dir,
+    depth: 0,
+    activeKey: "roster",
+    content: hero + roster,
+    crumb: `<a href="../../">← all teams</a>`,
+    title: `[${team.tag}] ${team.display_name || "team"}`,
+  });
+
+  // Everything in the sidebar besides Roster is a placeholder for now -
+  // generate a real (if thin) page for each one so the nav is honest
+  // about what it links to instead of pointing at a 404.
+  const heroForSections = hero; // same hero banner on every section page
+  for (const item of [...NAV_ITEMS, ...MANAGE_NAV_ITEMS]) {
+    if (item.built) continue;
+    const sectionDir = path.join(dir, item.key);
+    fs.mkdirSync(sectionDir, { recursive: true });
+    writeTeamSectionPage({
+      dir: sectionDir,
+      depth: 1,
+      activeKey: item.key,
+      content: heroForSections + comingSoonBody(item.label),
+      crumb: `<a href="../../../">← all teams</a>`,
+      title: `[${team.tag}] ${item.label}`,
+    });
+  }
+}
+
+function writeTeamSectionPage({ dir, depth, activeKey, content, crumb, title }) {
+  // depth 0 = this page is teams/<tag>/index.html, so "events" lives at
+  // ./events/; depth 1 = teams/<tag>/<section>/index.html, so a sibling
+  // section lives at ../<key>/ and roster is one level up.
+  const prefix = depth === 0 ? "" : "../";
+  const linkFor = (key) => (key === "roster" ? (depth === 0 ? "./" : "../") : `${prefix}${key}/`);
+  const body = `
+    <div class="team-layout">
+      ${teamSidebar(activeKey, linkFor)}
+      <div class="team-content">${content}</div>
+    </div>`;
+  fs.writeFileSync(path.join(dir, "index.html"), pageShell({ title, body, crumb }));
 }
 
 async function main() {
