@@ -182,10 +182,14 @@ function leaderboardControls() {
       (function () {
         var kindSeg = document.querySelector('.seg[data-role="kind"]');
         var rangeSeg = document.querySelector('.seg[data-role="range"]');
-        var panels = Array.prototype.slice.call(document.querySelectorAll(".lb-panel"));
+        // Queried fresh inside sync() rather than cached once here: this
+        // inline script runs the instant the parser reaches it, before the
+        // .lb-panel elements that come AFTER it in the HTML have been
+        // parsed yet, so caching them up front would always find none.
         function sync() {
           var kind = kindSeg.querySelector(".seg-btn.active").getAttribute("data-kind");
           var range = rangeSeg.querySelector(".seg-btn.active").getAttribute("data-range");
+          var panels = document.querySelectorAll(".lb-panel");
           panels.forEach(function (p) {
             p.hidden = !(p.getAttribute("data-kind") === kind && p.getAttribute("data-range") === range);
           });
