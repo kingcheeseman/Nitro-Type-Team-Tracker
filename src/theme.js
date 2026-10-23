@@ -182,9 +182,18 @@ const LEADERBOARD_RANGES = [
 ];
 
 // Shown only on the Seasonal panel, in addition to the normal points-
-// formula note - keeps "Seasonal" here from being mistaken for Nitro
-// Type's own real season boundary.
-const SEASONAL_NOTE = `A rolling 45-day window, not Nitro Type's own season boundary (which runs on its own schedule we don't have reliable access to).`;
+// formula note. `season` is Nitro Type's own currently-active season (see
+// src/season.js / leaderboard-data.js's currentSeasonBounds) - the exact
+// name and date range NT itself shows in its site banner, not a window we
+// invented. Null only transiently, before the season-sync job has run for
+// the first time.
+function seasonalNote(season) {
+  if (!season) {
+    return "Tracks Nitro Type's own current season once it's synced.";
+  }
+  const fmt = (d) => new Date(d).toLocaleDateString(undefined, { month: "short", day: "numeric" });
+  return `Tracks Nitro Type's own current season, "${escapeHtml(season.name)}" (${fmt(season.start_stamp)} – ${fmt(season.end_stamp)}).`;
+}
 
 function comingSoonLeaderboard(rangeLabel) {
   return `
@@ -197,7 +206,16 @@ function comingSoonLeaderboard(rangeLabel) {
 
 // A built range can still have nothing to show (no syncs have found new
 // races in that window yet) - different message from "not built at all".
-function emptyLeaderboard(kindLabel, rangeLabel) {
+// For Seasonal specifically, "no season synced yet" (season === null) is a
+// different, clearer situation than "synced, but no one's earned points in
+// it yet" - worth its own message rather than the generic one.
+function emptyLeaderboard(kindLabel, rangeLabel, season) {
+  if (rangeLabel === "Seasonal" && season === null) {
+    return `
+      <div class="empty" style="padding:40px 24px;">
+        Nitro Type's current season hasn't synced yet — this fills in once the season-sync job runs.
+      </div>`;
+  }
   return `
     <div class="empty" style="padding:40px 24px;">
       No ${escapeHtml(kindLabel)} earned any points in the ${escapeHtml(rangeLabel)} window yet
@@ -281,9 +299,9 @@ function nitroTypeTeamHref(tag) {
 // (build.js/server.js) because the static site's relative paths and the
 // Express preview's absolute routes resolve completely differently - same
 // pattern as teamSidebar's linkFor.
-function racersLeaderboardTable(rows, rangeLabel, teamHref) {
+function racersLeaderboardTable(rows, rangeLabel, teamHref, season) {
   if (!rows.length) {
-    return emptyLeaderboard("racers", rangeLabel);
+    return emptyLeaderboard("racers", rangeLabel, season);
   }
   const body = rows
     .map((r, i) => {
@@ -317,12 +335,12 @@ function racersLeaderboardTable(rows, rangeLabel, teamHref) {
         <tbody>${body}</tbody>
       </table>
     </div>
-    <p class="lb-score-note">Points = (avg speed ÷ 2 + accuracy) × races completed since the last sync, earned race by race — not an official Nitro Type stat.${rangeLabel === "Seasonal" ? ` ${SEASONAL_NOTE}` : ""}</p>`;
+    <p class="lb-score-note">Points = (avg speed ÷ 2 + accuracy) × races completed since the last sync, earned race by race — not an official Nitro Type stat.${rangeLabel === "Seasonal" ? ` ${seasonalNote(season)}` : ""}</p>`;
 }
 
-function teamsLeaderboardTable(rows, rangeLabel, teamHref) {
+function teamsLeaderboardTable(rows, rangeLabel, teamHref, season) {
   if (!rows.length) {
-    return emptyLeaderboard("teams", rangeLabel);
+    return emptyLeaderboard("teams", rangeLabel, season);
   }
   const body = rows
     .map((t, i) => {
@@ -353,7 +371,7 @@ function teamsLeaderboardTable(rows, rangeLabel, teamHref) {
         <tbody>${body}</tbody>
       </table>
     </div>
-    <p class="lb-score-note">Points = the sum of every member's points — races completed since joining this tracker × (avg speed ÷ 2 + accuracy). Team WPM/accuracy are races-weighted averages over this window.${rangeLabel === "Seasonal" ? ` ${SEASONAL_NOTE}` : ""}</p>`;
+    <p class="lb-score-note">Points = the sum of every member's points — races completed since joining this tracker × (avg speed ÷ 2 + accuracy). Team WPM/accuracy are races-weighted averages over this window.${rangeLabel === "Seasonal" ? ` ${seasonalNote(season)}` : ""}</p>`;
 }
 
 // Builds the full leaderboards page body (controls + all panels) from
@@ -370,8 +388,8 @@ function leaderboardsBody(data, teamHref) {
       panels.push(leaderboardPanel("teams", range.key, comingSoonLeaderboard(range.label), false));
       continue;
     }
-    panels.push(leaderboardPanel("racers", range.key, racersLeaderboardTable(data.racers[range.key] || [], range.label, teamHref), visible));
-    panels.push(leaderboardPanel("teams", range.key, teamsLeaderboardTable(data.teams[range.key] || [], range.label, teamHref), false));
+    panels.push(leaderboardPanel("racers", range.key, racersLeaderboardTable(data.racers[range.key] || [], range.label, teamHref, data.season), visible));
+    panels.push(leaderboardPanel("teams", range.key, teamsLeaderboardTable(data.teams[range.key] || [], range.label, teamHref, data.season), false));
   }
   return `
     <h1>Leaderboards</h1>

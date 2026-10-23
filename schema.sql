@@ -121,3 +121,17 @@ alter table racers add column if not exists display_name text;
 
 alter table racer_points add column if not exists avg_speed numeric;
 alter table racer_points add column if not exists accuracy numeric;
+
+-- Nitro Type's own real season boundary (e.g. "Spirit Racers", Oct 18 -
+-- Nov 29) - the exact dates shown in the banner at the top of every NT
+-- page. Scraped from NT's public, unauthenticated bootstrap.js asset (see
+-- src/season.js), NOT invented by us. One row per season NT has run since
+-- we started tracking; the Seasonal leaderboard always uses whichever row
+-- has the latest start_stamp.
+create table if not exists seasons (
+  season_id   bigint primary key,
+  name        text not null,
+  start_stamp timestamptz not null,
+  end_stamp   timestamptz not null,
+  synced_at   timestamptz not null default now()
+);

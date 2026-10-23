@@ -2,25 +2,19 @@
 // server.js (local preview) so the two never compute rankings differently
 // - only the surrounding page (pageShell call) differs between them.
 //
-// Every board here sums the racer_points ledger (see schema.sql), filtered
-// to a rolling time window ("now() - interval"), not a calendar-aligned
-// bucket (midnight-to-midnight, etc). Rolling windows sidestep timezone
-// edge cases - what counts as "today" depends on whose timezone - and are
-// simpler to verify: "last 24 hours" always means exactly that.
+// Every board here sums the racer_points ledger (see schema.sql). Most are
+// filtered to a rolling time window ("now() - interval"), not a calendar-
+// aligned bucket (midnight-to-midnight, etc) - rolling windows sidestep
+// timezone edge cases and are simpler to verify: "last 24 hours" always
+// means exactly that. "seasonal" is the one exception: it uses Nitro
+// Type's own real season boundary (see src/season.js and the `seasons`
+// table) rather than a rolling duration, since that's a real, dated
+// period NT itself publishes - not one we'd be inventing.
 const RANGE_INTERVALS = {
   hourly: "1 hour",
   daily: "1 day",
   weekly: "7 days",
   monthly: "30 days",
-  // Nitro Type does have real, dated seasons (~6 weeks each), but there's
-  // no reliable public API exposing a season's start/end dates - the
-  // season page is server-rendered with no backing JSON endpoint we could
-  // find. Rather than hand-maintain real season dates through code
-  // changes every rollover, "Seasonal" here is the same kind of rolling
-  // window as the others, just longer - explicitly NOT a claim about
-  // Nitro Type's own season boundary (see the extra note rendered with it
-  // in theme.js).
-  seasonal: "45 days",
   // Not a real "forever" - just long enough to include every row, since
   // racer_points only ever holds rows from after this feature shipped.
   alltime: "100 years",
@@ -28,7 +22,40 @@ const RANGE_INTERVALS = {
 
 const BUILT_RANGES = ["hourly", "daily", "weekly", "monthly", "seasonal", "alltime"];
 
-async function queryRacerPoints(pool, range) {
+// Nitro Type's currently active season (latest by start date), with its
+// end clipped to now() so a season that has already ended stops growing.
+// Null if src/season.js hasn't synced one yet.
+async function currentSeasonBounds(pool) {
+  const { rows } = await pool.query(
+    `select season_id, name, start_stamp, least(end_stamp, now()) as end_bound, end_stamp
+     from seasons
+     order by start_stamp desc
+     limit 1`
+  );
+  return rows[0] || null;
+}
+
+// Builds the WHERE clause + params for a range: seasonal uses the real
+// season's absolute [start, end] bounds; everything else is a rolling
+// "now() - interval" window. paramOffset lets the caller's own params
+// (already using $1, $2, ...) come first.
+function rangeFilter(range, season, paramOffset) {
+  if (range === "seasonal") {
+    if (!season) return null; // no season synced yet - caller returns empty
+    return {
+      clause: `rp.captured_at >= $${paramOffset + 1} and rp.captured_at <= $${paramOffset + 2}`,
+      params: [season.start_stamp, season.end_bound],
+    };
+  }
+  return {
+    clause: `rp.captured_at >= now() - $${paramOffset + 1}::interval`,
+    params: [RANGE_INTERVALS[range]],
+  };
+}
+
+async function queryRacerPoints(pool, range, season) {
+  const filter = rangeFilter(range, season, 0);
+  if (!filter) return [];
   const { rows } = await pool.query(
     `select r.username, r.display_name, r.team_tag, t.tag_color,
             sum(rp.points) as points,
@@ -41,12 +68,12 @@ async function queryRacerPoints(pool, range) {
        select * from racer_stats rs where rs.nt_user_id = r.nt_user_id
        order by captured_at desc limit 1
      ) s on true
-     where rp.captured_at >= now() - $1::interval
+     where ${filter.clause}
      group by r.username, r.display_name, r.team_tag, t.tag_color, s.avg_speed, s.top_speed, s.accuracy
      having sum(rp.points) > 0
      order by points desc
      limit 100`,
-    [RANGE_INTERVALS[range]]
+    filter.params
   );
   return rows;
 }
@@ -56,7 +83,9 @@ async function queryRacerPoints(pool, range) {
 // rows written before racer_points had avg_speed/accuracy (never
 // backfilled) are excluded from the average instead of nulling it out -
 // while still counting fully toward races/points.
-async function queryTeamPoints(pool, range) {
+async function queryTeamPoints(pool, range, season) {
+  const filter = rangeFilter(range, season, 0);
+  if (!filter) return [];
   const { rows } = await pool.query(
     `select t.tag, t.display_name, t.tag_color,
             sum(rp.points) as points,
@@ -72,25 +101,34 @@ async function queryTeamPoints(pool, range) {
             , 2) as accuracy
      from racer_points rp
      join teams t on t.tag = rp.team_tag
-     where rp.captured_at >= now() - $1::interval
+     where ${filter.clause}
      group by t.tag, t.display_name, t.tag_color
      having sum(rp.points) > 0
      order by points desc`,
-    [RANGE_INTERVALS[range]]
+    filter.params
   );
   return rows;
 }
 
-// { racers: { hourly: [...], daily: [...], ... }, teams: { ... } } - the
-// exact shape theme.js's leaderboardsBody() expects.
+// { racers: { hourly: [...], ... }, teams: { ... }, season: {...}|null } -
+// the exact shape theme.js's leaderboardsBody() expects. `season` is
+// passed through so the Seasonal panel can show its real name/dates.
 async function loadLeaderboardData(pool) {
+  const season = await currentSeasonBounds(pool);
   const racers = {};
   const teams = {};
   for (const range of BUILT_RANGES) {
-    racers[range] = await queryRacerPoints(pool, range);
-    teams[range] = await queryTeamPoints(pool, range);
+    racers[range] = await queryRacerPoints(pool, range, season);
+    teams[range] = await queryTeamPoints(pool, range, season);
   }
-  return { racers, teams };
+  return { racers, teams, season };
 }
 
-module.exports = { RANGE_INTERVALS, BUILT_RANGES, queryRacerPoints, queryTeamPoints, loadLeaderboardData };
+module.exports = {
+  RANGE_INTERVALS,
+  BUILT_RANGES,
+  currentSeasonBounds,
+  queryRacerPoints,
+  queryTeamPoints,
+  loadLeaderboardData,
+};

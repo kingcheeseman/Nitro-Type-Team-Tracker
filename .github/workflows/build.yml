@@ -28,6 +28,14 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Sync Nitro Type's current season
+        # Runs on this job's own 30-minute schedule (rather than only on a
+        # manual ingest) so the Seasonal board's dates stay current even
+        # when no team ingest has been triggered recently.
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: node src/season.js
+
       - name: Build static site
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}

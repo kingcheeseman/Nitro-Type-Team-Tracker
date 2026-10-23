@@ -26,6 +26,10 @@ jobs:
           node-version: '20'
       - name: Install dependencies
         run: npm install
+      - name: Sync Nitro Type's current season
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: node src/season.js
       - name: Ingest each tag
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
