@@ -93,6 +93,35 @@ function membershipBadge(membership) {
   return "";
 }
 
+// Shared by build.js (static) and server.js (local preview) so a team's
+// roster rows render identically in both - display_name is what the
+// racer currently goes by on Nitro Type; username (often an opaque id
+// string NT assigns, not a real handle) is only a fallback for a racer
+// this tracker hasn't re-synced since display_name was added.
+function racerRosterRows(racers, team) {
+  return racers
+    .map((r) => {
+      const name = r.display_name || r.username;
+      const initial = (name || "?").slice(0, 1).toUpperCase();
+      const accClass = accuracyClass(r.accuracy);
+      const accLabel = r.accuracy == null ? "—" : `${r.accuracy}%`;
+      const isCaptain = team.captain_username && r.username === team.captain_username;
+      return `
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:${avatarColor(name || team.tag)}">${escapeHtml(initial)}</span>
+            ${escapeHtml(name)}${roleBadge(r.role, isCaptain)}${membershipBadge(r.membership)}
+          </td>
+          <td>${formatDate(r.joined_at_nt)}</td>
+          <td>${r.avg_speed ?? "-"}</td>
+          <td>${r.top_speed ?? "-"}</td>
+          <td>${r.races ?? "-"}</td>
+          <td><span class="pill ${accClass}">${accLabel}</span></td>
+        </tr>`;
+    })
+    .join("");
+}
+
 // Single source of truth for a team page's section sidebar. "roster" is
 // the only one with real content right now; everything else gets a
 // generated placeholder page (see build.js) so the sidebar shows the
@@ -235,13 +264,25 @@ function rankBadgeClass(rank) {
 // formula - "Races" here means races tracked since a racer was added to
 // this site (or since the window started), not Nitro Type's own lifetime
 // racesPlayed figure.
-function racersLeaderboardTable(rows, rangeLabel) {
+// The real Nitro Type URL for a team, by tag - verified live
+// (nitrotype.com/team/<TAG>) rather than guessed, so the team-name link on
+// the leaderboard actually resolves.
+function nitroTypeTeamHref(tag) {
+  return `https://www.nitrotype.com/team/${encodeURIComponent(tag)}`;
+}
+
+// teamHref(tag) -> this site's own team page URL. Supplied by the caller
+// (build.js/server.js) because the static site's relative paths and the
+// Express preview's absolute routes resolve completely differently - same
+// pattern as teamSidebar's linkFor.
+function racersLeaderboardTable(rows, rangeLabel, teamHref) {
   if (!rows.length) {
     return emptyLeaderboard("racers", rangeLabel);
   }
   const body = rows
     .map((r, i) => {
       const rank = i + 1;
+      const name = r.display_name || r.username;
       const tagBg = teamColor(r.team_tag, r.tag_color);
       const accClass = accuracyClass(r.accuracy);
       const accLabel = r.accuracy == null ? "—" : `${r.accuracy}%`;
@@ -249,9 +290,9 @@ function racersLeaderboardTable(rows, rangeLabel) {
         <tr>
           <td><span class="lb-rank${rankBadgeClass(rank)}">${rank}</span></td>
           <td class="racer">
-            <span class="avatar" style="background:${avatarColor(r.username)}">${escapeHtml((r.username || "?").slice(0, 1).toUpperCase())}</span>
-            ${escapeHtml(r.username)}
-            <span class="lb-team-tag" style="background:${tagBg};color:${textOnColor(tagBg)}">${escapeHtml(r.team_tag)}</span>
+            <span class="avatar" style="background:${avatarColor(name)}">${escapeHtml((name || "?").slice(0, 1).toUpperCase())}</span>
+            ${escapeHtml(name)}
+            <a class="lb-team-tag" href="${teamHref(r.team_tag)}" style="background:${tagBg};color:${textOnColor(tagBg)}">${escapeHtml(r.team_tag)}</a>
           </td>
           <td><span class="points">${r.points}</span></td>
           <td>${r.races}</td>
@@ -273,7 +314,7 @@ function racersLeaderboardTable(rows, rangeLabel) {
     <p class="lb-score-note">Points = (avg speed ÷ 2 + accuracy) × races completed since the last sync, earned race by race — not an official Nitro Type stat.</p>`;
 }
 
-function teamsLeaderboardTable(rows, rangeLabel) {
+function teamsLeaderboardTable(rows, rangeLabel, teamHref) {
   if (!rows.length) {
     return emptyLeaderboard("teams", rangeLabel);
   }
@@ -286,10 +327,13 @@ function teamsLeaderboardTable(rows, rangeLabel) {
           <td><span class="lb-rank${rankBadgeClass(rank)}">${rank}</span></td>
           <td class="racer">
             <span class="avatar" style="background:${bg};color:${textOnColor(bg)}">${escapeHtml((t.tag || "?").slice(0, 1).toUpperCase())}</span>
-            [${escapeHtml(t.tag)}] ${escapeHtml(t.display_name || "")}
+            <a href="${teamHref(t.tag)}">[${escapeHtml(t.tag)}]</a>
+            <a href="${nitroTypeTeamHref(t.tag)}" target="_blank" rel="noopener">${escapeHtml(t.display_name || "")}</a>
           </td>
           <td><span class="points">${t.points}</span></td>
           <td>${t.races}</td>
+          <td>${t.avg_speed ?? "-"}</td>
+          <td>${t.accuracy == null ? "—" : `${t.accuracy}%`}</td>
           <td>${t.racer_count}</td>
         </tr>`;
     })
@@ -298,19 +342,20 @@ function teamsLeaderboardTable(rows, rangeLabel) {
     <div class="table-wrap">
       <table>
         <thead>
-          <tr><th>#</th><th>Team</th><th>Points</th><th>Races tracked</th><th>Racers earning</th></tr>
+          <tr><th>#</th><th>Team</th><th>Points</th><th>Total races</th><th>Team WPM</th><th>Team accuracy</th><th>Racers earning</th></tr>
         </thead>
         <tbody>${body}</tbody>
       </table>
     </div>
-    <p class="lb-score-note">Points = the sum of every member's points — races completed since joining this tracker × (avg speed ÷ 2 + accuracy).</p>`;
+    <p class="lb-score-note">Points = the sum of every member's points — races completed since joining this tracker × (avg speed ÷ 2 + accuracy). Team WPM/accuracy are races-weighted averages over this window.</p>`;
 }
 
 // Builds the full leaderboards page body (controls + all panels) from
 // already-queried { racers: {range: rows}, teams: {range: rows} } data
 // (see leaderboard-data.js). Shared so build.js and server.js produce
-// identical markup; only the surrounding pageShell() call differs.
-function leaderboardsBody(data) {
+// identical markup; only the surrounding pageShell() call (and teamHref,
+// which resolves our own team links differently per entrypoint) differs.
+function leaderboardsBody(data, teamHref) {
   const panels = [];
   for (const range of LEADERBOARD_RANGES) {
     const visible = range.key === "alltime";
@@ -319,8 +364,8 @@ function leaderboardsBody(data) {
       panels.push(leaderboardPanel("teams", range.key, comingSoonLeaderboard(range.label), false));
       continue;
     }
-    panels.push(leaderboardPanel("racers", range.key, racersLeaderboardTable(data.racers[range.key] || [], range.label), visible));
-    panels.push(leaderboardPanel("teams", range.key, teamsLeaderboardTable(data.teams[range.key] || [], range.label), false));
+    panels.push(leaderboardPanel("racers", range.key, racersLeaderboardTable(data.racers[range.key] || [], range.label, teamHref), visible));
+    panels.push(leaderboardPanel("teams", range.key, teamsLeaderboardTable(data.teams[range.key] || [], range.label, teamHref), false));
   }
   return `
     <h1>Leaderboards</h1>
@@ -682,7 +727,11 @@ const BASE_CSS = `
     padding: 2px 7px;
     border-radius: 6px;
     margin-left: 8px;
+    text-decoration: none;
   }
+  .lb-team-tag:hover { text-decoration: none; opacity: 0.85; }
+  td.racer a { color: inherit; }
+  td.racer a:hover { text-decoration: underline; }
 
   .points { font-weight: 800; color: var(--accent); font-size: 14px; }
   .lb-score-note {
@@ -754,6 +803,7 @@ module.exports = {
   formatDate,
   roleBadge,
   membershipBadge,
+  racerRosterRows,
   NAV_ITEMS,
   MANAGE_NAV_ITEMS,
   teamSidebar,
@@ -763,6 +813,7 @@ module.exports = {
   leaderboardPanel,
   leaderboardControls,
   rankBadgeClass,
+  nitroTypeTeamHref,
   leaderboardsBody,
   pageShell,
 };

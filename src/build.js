@@ -10,15 +10,12 @@ const {
   escapeHtml,
   teamColor,
   textOnColor,
-  avatarColor,
-  accuracyClass,
   formatDate,
-  roleBadge,
-  membershipBadge,
   NAV_ITEMS,
   MANAGE_NAV_ITEMS,
   teamSidebar,
   comingSoonBody,
+  racerRosterRows,
   leaderboardsBody,
   pageShell,
 } = require("./theme");
@@ -91,26 +88,7 @@ function buildTeamPage(team, racers) {
   const dir = path.join(OUT_DIR, "teams", team.tag.toLowerCase());
   fs.mkdirSync(dir, { recursive: true });
 
-  const rows = racers
-    .map((r) => {
-      const initial = (r.username || "?").slice(0, 1).toUpperCase();
-      const accClass = accuracyClass(r.accuracy);
-      const accLabel = r.accuracy == null ? "—" : `${r.accuracy}%`;
-      const isCaptain = team.captain_username && r.username === team.captain_username;
-      return `
-        <tr>
-          <td class="racer">
-            <span class="avatar" style="background:${avatarColor(r.username || team.tag)}">${escapeHtml(initial)}</span>
-            ${escapeHtml(r.username)}${roleBadge(r.role, isCaptain)}${membershipBadge(r.membership)}
-          </td>
-          <td>${formatDate(r.joined_at_nt)}</td>
-          <td>${r.avg_speed ?? "-"}</td>
-          <td>${r.top_speed ?? "-"}</td>
-          <td>${r.races ?? "-"}</td>
-          <td><span class="pill ${accClass}">${accLabel}</span></td>
-        </tr>`;
-    })
-    .join("");
+  const rows = racerRosterRows(racers, team);
 
   const reqBar = `
     <div class="req-bar">
@@ -193,7 +171,11 @@ function buildLeaderboardsPage(data) {
   const dir = path.join(OUT_DIR, "leaderboards");
   fs.mkdirSync(dir, { recursive: true });
 
-  const body = leaderboardsBody(data);
+  // leaderboards/index.html and teams/<tag>/index.html sit at the same
+  // depth (one directory under the site root), so a team page is reached
+  // by stepping up one level and back down into teams/.
+  const teamHref = (tag) => `../teams/${encodeURIComponent(tag.toLowerCase())}/`;
+  const body = leaderboardsBody(data, teamHref);
 
   fs.writeFileSync(
     path.join(dir, "index.html"),
@@ -237,7 +219,7 @@ async function main() {
 
   for (const team of teams) {
     const { rows: racers } = await pool.query(
-      `select r.username, r.role, r.membership, r.joined_at_nt,
+      `select r.username, r.display_name, r.role, r.membership, r.joined_at_nt,
               s.avg_speed, s.top_speed, s.races, s.accuracy
        from racers r
        left join lateral (
@@ -246,7 +228,7 @@ async function main() {
          order by captured_at desc limit 1
        ) s on true
        where r.team_tag = $1
-       order by r.username`,
+       order by coalesce(r.display_name, r.username)`,
       [team.tag]
     );
     buildTeamPage(team, racers);

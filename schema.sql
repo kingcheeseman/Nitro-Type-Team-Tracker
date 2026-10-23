@@ -36,7 +36,14 @@ create table if not exists racers (
   -- rarely and we only need the latest value, same as team_tag.
   role         text,
   membership   text,
-  joined_at_nt timestamptz
+  joined_at_nt timestamptz,
+  -- Nitro Type's API gives each member BOTH a "username" (often an opaque
+  -- id-looking string NT assigns internally, e.g. "b9454b42ad92beb74...")
+  -- AND a separate "displayName" - the actual name the racer currently
+  -- goes by on the site. We show display_name everywhere a human reads a
+  -- racer's name, falling back to username only for the rare racer this
+  -- tracker hasn't re-synced since this column was added.
+  display_name text
 );
 
 -- One row per sync per racer: snapshots, not overwrites, so history/charts
@@ -76,7 +83,15 @@ create table if not exists racer_points (
   team_tag    text references teams(tag) on delete set null,
   captured_at timestamptz not null default now(),
   races_delta integer not null,
-  points      numeric not null
+  points      numeric not null,
+  -- The avg_speed/accuracy this points award was computed from (see
+  -- ingest.js's recordRacerPoints). Stored alongside points, not just
+  -- baked into it, so a team leaderboard can show an honest races-weighted
+  -- average WPM/accuracy for a window instead of just a points total.
+  -- Nullable: rows written before this column existed have no value here
+  -- (never backfilled) and are simply excluded from that weighted average.
+  avg_speed   numeric,
+  accuracy    numeric
 );
 
 create index if not exists racer_points_user_time
@@ -102,3 +117,7 @@ alter table teams add column if not exists tag_color text;
 alter table racers add column if not exists role text;
 alter table racers add column if not exists membership text;
 alter table racers add column if not exists joined_at_nt timestamptz;
+alter table racers add column if not exists display_name text;
+
+alter table racer_points add column if not exists avg_speed numeric;
+alter table racer_points add column if not exists accuracy numeric;

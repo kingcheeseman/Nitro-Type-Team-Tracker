@@ -5,15 +5,12 @@ const {
   escapeHtml,
   teamColor,
   textOnColor,
-  avatarColor,
-  accuracyClass,
   formatDate,
-  roleBadge,
-  membershipBadge,
   NAV_ITEMS,
   MANAGE_NAV_ITEMS,
   teamSidebar,
   comingSoonBody,
+  racerRosterRows,
   leaderboardsBody,
   pageShell,
 } = require("./theme");
@@ -127,7 +124,7 @@ app.get("/teams/:tag", async (req, res) => {
       return res.status(404).send(`No team with tag "${escapeHtml(tag)}" in the database yet.`);
     }
     const racers = await pool.query(
-      `select r.username, r.role, r.membership, r.joined_at_nt,
+      `select r.username, r.display_name, r.role, r.membership, r.joined_at_nt,
               s.avg_speed, s.top_speed, s.races, s.accuracy
        from racers r
        left join lateral (
@@ -136,30 +133,11 @@ app.get("/teams/:tag", async (req, res) => {
          order by captured_at desc limit 1
        ) s on true
        where r.team_tag = $1
-       order by r.username`,
+       order by coalesce(r.display_name, r.username)`,
       [tag]
     );
     const t = team.rows[0];
-    const rowsHtml = racers.rows
-      .map((r) => {
-        const initial = (r.username || "?").slice(0, 1).toUpperCase();
-        const accClass = accuracyClass(r.accuracy);
-        const accLabel = r.accuracy == null ? "—" : `${r.accuracy}%`;
-        const isCaptain = t.captain_username && r.username === t.captain_username;
-        return `
-          <tr>
-            <td class="racer">
-              <span class="avatar" style="background:${avatarColor(r.username || tag)}">${escapeHtml(initial)}</span>
-              ${escapeHtml(r.username)}${roleBadge(r.role, isCaptain)}${membershipBadge(r.membership)}
-            </td>
-            <td>${formatDate(r.joined_at_nt)}</td>
-            <td>${r.avg_speed ?? "-"}</td>
-            <td>${r.top_speed ?? "-"}</td>
-            <td>${r.races ?? "-"}</td>
-            <td><span class="pill ${accClass}">${accLabel}</span></td>
-          </tr>`;
-      })
-      .join("");
+    const rowsHtml = racerRosterRows(racers.rows, t);
 
     const reqBar = `
       <div class="req-bar">
@@ -278,10 +256,11 @@ app.get("/teams/:tag/:section", async (req, res) => {
 app.get("/leaderboards", async (req, res) => {
   try {
     const data = await loadLeaderboardData(pool);
+    const teamHref = (tag) => `/teams/${encodeURIComponent(tag)}`;
     res.type("html").send(
       pageShell({
         title: "Leaderboards — TypeTrack",
-        body: leaderboardsBody(data),
+        body: leaderboardsBody(data, teamHref),
         crumb: `<a href="/teams">← all teams</a>`,
         ...SITE_NAV,
         active: "leaderboards",

@@ -105,15 +105,16 @@ async function upsertTeam(tag, info) {
 
 async function upsertRacer(member, teamTag) {
   await pool.query(
-    `insert into racers (nt_user_id, username, team_tag, updated_at, role, membership, joined_at_nt)
-     values ($1, $2, $3, now(), $4, $5, $6)
+    `insert into racers (nt_user_id, username, team_tag, updated_at, role, membership, joined_at_nt, display_name)
+     values ($1, $2, $3, now(), $4, $5, $6, $7)
      on conflict (nt_user_id) do update
        set username = excluded.username,
            team_tag = excluded.team_tag,
            updated_at = now(),
            role = excluded.role,
            membership = excluded.membership,
-           joined_at_nt = excluded.joined_at_nt`,
+           joined_at_nt = excluded.joined_at_nt,
+           display_name = excluded.display_name`,
     [
       member.userID,
       member.username,
@@ -121,6 +122,11 @@ async function upsertRacer(member, teamTag) {
       member.role || null,
       member.membership || null,
       fromUnixSeconds(member.joinStamp),
+      // The API's "username" is often an opaque id-looking string, not
+      // what the racer actually goes by - "displayName" is their real
+      // current name. Fall back to username only if displayName is ever
+      // missing, so the column is never left null outright.
+      member.displayName || member.username || null,
     ]
   );
 }
@@ -155,9 +161,12 @@ async function recordRacerPoints(userId, teamTag, { avgSpeed, accuracy, racesPla
   const racesDelta = racesPlayed - previousRaces;
   if (!(racesDelta > 0) || avgSpeed == null || accuracy == null) return;
   const points = Math.round((avgSpeed / 2 + accuracy) * racesDelta * 100) / 100;
+  // avg_speed/accuracy are stored alongside points (not just baked into
+  // it) so a team leaderboard can later compute a races-weighted average
+  // WPM/accuracy for a time window, not just a points total.
   await pool.query(
-    `insert into racer_points (nt_user_id, team_tag, races_delta, points) values ($1, $2, $3, $4)`,
-    [userId, teamTag, racesDelta, points]
+    `insert into racer_points (nt_user_id, team_tag, races_delta, points, avg_speed, accuracy) values ($1, $2, $3, $4, $5, $6)`,
+    [userId, teamTag, racesDelta, points, avgSpeed, accuracy]
   );
 }
 

@@ -24,7 +24,7 @@ const BUILT_RANGES = ["hourly", "daily", "weekly", "monthly", "alltime"];
 
 async function queryRacerPoints(pool, range) {
   const { rows } = await pool.query(
-    `select r.username, r.team_tag, t.tag_color,
+    `select r.username, r.display_name, r.team_tag, t.tag_color,
             sum(rp.points) as points,
             sum(rp.races_delta) as races,
             s.avg_speed, s.top_speed, s.accuracy
@@ -36,7 +36,7 @@ async function queryRacerPoints(pool, range) {
        order by captured_at desc limit 1
      ) s on true
      where rp.captured_at >= now() - $1::interval
-     group by r.username, r.team_tag, t.tag_color, s.avg_speed, s.top_speed, s.accuracy
+     group by r.username, r.display_name, r.team_tag, t.tag_color, s.avg_speed, s.top_speed, s.accuracy
      having sum(rp.points) > 0
      order by points desc
      limit 100`,
@@ -45,12 +45,25 @@ async function queryRacerPoints(pool, range) {
   return rows;
 }
 
+// Team WPM/Accuracy are races-weighted averages over the window (each
+// sync's rate counted once per race it covered), computed with FILTER so
+// rows written before racer_points had avg_speed/accuracy (never
+// backfilled) are excluded from the average instead of nulling it out -
+// while still counting fully toward races/points.
 async function queryTeamPoints(pool, range) {
   const { rows } = await pool.query(
     `select t.tag, t.display_name, t.tag_color,
             sum(rp.points) as points,
             sum(rp.races_delta) as races,
-            count(distinct rp.nt_user_id) as racer_count
+            count(distinct rp.nt_user_id) as racer_count,
+            round(
+              sum(rp.races_delta * rp.avg_speed) filter (where rp.avg_speed is not null)
+              / nullif(sum(rp.races_delta) filter (where rp.avg_speed is not null), 0)
+            , 1) as avg_speed,
+            round(
+              sum(rp.races_delta * rp.accuracy) filter (where rp.accuracy is not null)
+              / nullif(sum(rp.races_delta) filter (where rp.accuracy is not null), 0)
+            , 2) as accuracy
      from racer_points rp
      join teams t on t.tag = rp.team_tag
      where rp.captured_at >= now() - $1::interval
