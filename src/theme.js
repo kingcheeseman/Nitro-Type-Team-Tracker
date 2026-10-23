@@ -44,6 +44,27 @@ function accuracyClass(accuracy) {
   return "low";
 }
 
+function formatDate(value) {
+  if (!value) return "—";
+  return new Date(value).toLocaleDateString(undefined, {
+    year: "numeric", month: "short", day: "numeric",
+  });
+}
+
+// "officer"/"member"/captain -> a small colored pill, the same visual
+// slot a tier badge fills on a roster table: a quick, scannable status
+// signal next to each name.
+function roleBadge(role, isCaptain) {
+  if (isCaptain) return `<span class="role-pill captain">Captain</span>`;
+  if (role === "officer") return `<span class="role-pill officer">Officer</span>`;
+  return "";
+}
+
+function membershipBadge(membership) {
+  if (membership === "gold") return `<span class="role-pill gold">Gold</span>`;
+  return "";
+}
+
 const BASE_CSS = `
   :root {
     --bg: #0e1117;
@@ -110,6 +131,83 @@ const BASE_CSS = `
   .hero .tag { font-size: 13px; opacity: 0.85; font-weight: 700; letter-spacing: 0.4px; }
   .hero .name { font-size: 26px; font-weight: 800; margin-top: 2px; }
   .hero .sub { margin-top: 10px; font-size: 13px; opacity: 0.9; }
+  .hero .meta-stats {
+    display: flex; gap: 28px; margin-top: 14px; flex-wrap: wrap;
+  }
+  .hero .meta-stats .stat { font-size: 12px; opacity: 0.85; }
+  .hero .meta-stats .stat b { display: block; font-size: 15px; font-weight: 800; opacity: 1; margin-top: 2px; }
+
+  .req-bar {
+    display: flex; gap: 28px; flex-wrap: wrap; align-items: center;
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 20px;
+    margin-bottom: 14px;
+    font-size: 13px;
+  }
+  .req-bar .req { color: var(--muted); }
+  .req-bar .req b { color: var(--text); font-weight: 700; }
+
+  .special-reqs {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 20px;
+    margin-bottom: 22px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .special-reqs .label {
+    text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px;
+    color: var(--muted); font-weight: 700; margin-bottom: 6px;
+  }
+  .special-reqs .text { color: var(--text); line-height: 1.5; word-break: break-word; }
+
+  .index-header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    flex-wrap: wrap; gap: 12px; margin-bottom: 18px;
+  }
+  .search-box input {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-family: inherit;
+    font-size: 13px;
+    width: 220px;
+  }
+  .search-box input:focus { outline: 1px solid var(--accent); }
+  .search-box input::placeholder { color: var(--muted); }
+
+  .card .req-line { font-size: 12px; color: var(--muted); }
+  .card .req-line b { color: var(--text); }
+  .card .view-btn {
+    margin-top: 4px;
+    display: inline-block;
+    background: var(--accent);
+    color: #0b1220;
+    font-weight: 700;
+    font-size: 12.5px;
+    padding: 7px 12px;
+    border-radius: 8px;
+    align-self: flex-start;
+  }
+
+  .role-pill {
+    display: inline-block;
+    font-size: 10.5px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    padding: 1px 6px;
+    border-radius: 5px;
+    margin-left: 7px;
+    vertical-align: middle;
+  }
+  .role-pill.captain { background: rgba(232,197,71,0.18); color: var(--ok); }
+  .role-pill.officer { background: rgba(61,161,255,0.18); color: var(--accent); }
+  .role-pill.gold { background: rgba(232,197,71,0.12); color: var(--ok); }
 
   .grid {
     display: grid;
@@ -248,5 +346,8 @@ module.exports = {
   teamGradient,
   teamBadgeColor,
   accuracyClass,
+  formatDate,
+  roleBadge,
+  membershipBadge,
   pageShell,
 };

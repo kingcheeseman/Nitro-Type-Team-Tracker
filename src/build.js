@@ -11,6 +11,9 @@ const {
   teamGradient,
   teamBadgeColor,
   accuracyClass,
+  formatDate,
+  roleBadge,
+  membershipBadge,
   pageShell,
 } = require("./theme");
 
@@ -20,14 +23,22 @@ function buildTeamsIndex(teams) {
   fs.mkdirSync(OUT_DIR, { recursive: true });
 
   const body = teams.length
-    ? `<h1>Tracked teams</h1>
-       <p class="meta-row">${teams.length} team${teams.length === 1 ? "" : "s"} tracked</p>
-       <div class="grid">
+    ? `<div class="index-header">
+         <div>
+           <h1>Browse teams</h1>
+           <p class="meta-row">${teams.length} team${teams.length === 1 ? "" : "s"} tracked</p>
+         </div>
+         <div class="search-box">
+           <input id="teamSearch" type="text" placeholder="Search teams…" autocomplete="off">
+         </div>
+       </div>
+       <div class="grid" id="teamGrid">
          ${teams
            .map((t) => {
              const initial = (t.tag || "?").slice(0, 1).toUpperCase();
+             const searchKey = `${t.tag} ${t.display_name || ""} ${t.captain_username || ""}`.toLowerCase();
              return `
-             <a class="card" href="teams/${encodeURIComponent(t.tag.toLowerCase())}/" style="text-decoration:none;color:inherit;">
+             <div class="card" data-search="${escapeHtml(searchKey)}">
                <div class="top">
                  <div class="badge" style="background:${teamGradient(t.tag)}">${escapeHtml(initial)}</div>
                  <div>
@@ -35,12 +46,31 @@ function buildTeamsIndex(teams) {
                    <div class="display-name">${escapeHtml(t.display_name || "(unsynced)")}</div>
                  </div>
                </div>
+               ${t.captain_username ? `<div class="req-line">Captain: <b>${escapeHtml(t.captain_display_name || t.captain_username)}</b></div>` : ""}
+               <div class="req-line">Members: <b>${t.members_count ?? "—"}</b> &nbsp;·&nbsp; Formed: <b>${formatDate(t.nt_created_at)}</b></div>
+               ${t.min_races != null || t.min_speed != null
+                 ? `<div class="req-line">Min: <b>${t.min_races ?? "—"} races</b> / <b>${t.min_speed ?? "—"} wpm</b></div>`
+                 : ""}
+               <a class="view-btn" href="teams/${encodeURIComponent(t.tag.toLowerCase())}/">View team →</a>
                <div class="footer">${t.last_synced_at ? `Synced ${new Date(t.last_synced_at).toLocaleString()}` : "Not synced yet"}</div>
-             </a>`;
+             </div>`;
            })
            .join("")}
-       </div>`
-    : `<h1>Tracked teams</h1>
+       </div>
+       <script>
+         (function () {
+           var input = document.getElementById("teamSearch");
+           var cards = Array.prototype.slice.call(document.querySelectorAll("#teamGrid .card"));
+           input.addEventListener("input", function () {
+             var q = input.value.trim().toLowerCase();
+             cards.forEach(function (card) {
+               var match = !q || card.getAttribute("data-search").indexOf(q) !== -1;
+               card.style.display = match ? "" : "none";
+             });
+           });
+         })();
+       </script>`
+    : `<h1>Browse teams</h1>
        <div class="empty">No teams yet — that's expected until the ingestion job adds some.</div>`;
 
   fs.writeFileSync(
@@ -58,12 +88,14 @@ function buildTeamPage(team, racers) {
       const initial = (r.username || "?").slice(0, 1).toUpperCase();
       const accClass = accuracyClass(r.accuracy);
       const accLabel = r.accuracy == null ? "—" : `${r.accuracy}%`;
+      const isCaptain = team.captain_username && r.username === team.captain_username;
       return `
         <tr>
           <td class="racer">
             <span class="avatar" style="background:${teamBadgeColor(r.username || team.tag)}">${escapeHtml(initial)}</span>
-            ${escapeHtml(r.username)}
+            ${escapeHtml(r.username)}${roleBadge(r.role, isCaptain)}${membershipBadge(r.membership)}
           </td>
+          <td>${formatDate(r.joined_at_nt)}</td>
           <td>${r.avg_speed ?? "-"}</td>
           <td>${r.top_speed ?? "-"}</td>
           <td>${r.races ?? "-"}</td>
@@ -72,21 +104,43 @@ function buildTeamPage(team, racers) {
     })
     .join("");
 
+  const reqBar = `
+    <div class="req-bar">
+      <div class="req">Members <b>${team.members_count ?? racers.length}</b></div>
+      <div class="req">Formed <b>${formatDate(team.nt_created_at)}</b></div>
+      <div class="req">Enrollment <b>${escapeHtml(team.enrollment || "—")}</b></div>
+      <div class="req">Min races <b>${team.min_races ?? "—"}</b></div>
+      <div class="req">Min speed <b>${team.min_speed ?? "—"} wpm</b></div>
+      ${team.min_level != null ? `<div class="req">Min level <b>${team.min_level}</b></div>` : ""}
+    </div>`;
+
+  const specialReqs = team.other_requirements
+    ? `<div class="special-reqs">
+         <div class="label">Special requirements</div>
+         <div class="text">${escapeHtml(team.other_requirements)}</div>
+       </div>`
+    : "";
+
   const body = `
     <div class="hero" style="background:${teamGradient(team.tag)}">
       <div class="tag">TEAM</div>
       <div class="name">[${escapeHtml(team.tag)}] ${escapeHtml(team.display_name || "")}</div>
-      <div class="sub">${racers.length} racer${racers.length === 1 ? "" : "s"} tracked · last synced ${
+      <div class="sub">
+        ${team.captain_display_name || team.captain_username
+          ? `Captain: ${escapeHtml(team.captain_display_name || team.captain_username)} · `
+          : ""}${racers.length} racer${racers.length === 1 ? "" : "s"} tracked · last synced ${
         team.last_synced_at ? new Date(team.last_synced_at).toLocaleString() : "never"
       }</div>
     </div>
+    ${reqBar}
+    ${specialReqs}
     <div class="table-wrap">
       <table>
         <thead>
-          <tr><th>Racer</th><th>Avg speed</th><th>Top speed</th><th>Races</th><th>Accuracy</th></tr>
+          <tr><th>Racer</th><th>Joined</th><th>Avg speed</th><th>Highest speed</th><th>Lifetime races</th><th>Accuracy</th></tr>
         </thead>
         <tbody>
-          ${rows || `<tr><td colspan="5" style="color:var(--muted);">No racers synced yet.</td></tr>`}
+          ${rows || `<tr><td colspan="6" style="color:var(--muted);">No racers synced yet.</td></tr>`}
         </tbody>
       </table>
     </div>`;
@@ -103,13 +157,17 @@ function buildTeamPage(team, racers) {
 
 async function main() {
   const { rows: teams } = await pool.query(
-    "select tag, display_name, last_synced_at from teams order by tag"
+    `select tag, display_name, last_synced_at,
+            captain_username, captain_display_name, members_count, nt_created_at,
+            min_races, min_speed, min_level, enrollment, other_requirements
+     from teams order by tag`
   );
   buildTeamsIndex(teams);
 
   for (const team of teams) {
     const { rows: racers } = await pool.query(
-      `select r.username, s.avg_speed, s.top_speed, s.races, s.accuracy
+      `select r.username, r.role, r.membership, r.joined_at_nt,
+              s.avg_speed, s.top_speed, s.races, s.accuracy
        from racers r
        left join lateral (
          select * from racer_stats rs

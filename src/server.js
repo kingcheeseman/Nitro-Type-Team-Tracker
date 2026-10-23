@@ -6,6 +6,9 @@ const {
   teamGradient,
   teamBadgeColor,
   accuracyClass,
+  formatDate,
+  roleBadge,
+  membershipBadge,
   pageShell,
 } = require("./theme");
 
@@ -40,17 +43,28 @@ app.get("/", async (req, res) => {
 app.get("/teams", async (req, res) => {
   try {
     const { rows } = await pool.query(
-      "select tag, display_name, last_synced_at from teams order by tag"
+      `select tag, display_name, last_synced_at,
+              captain_username, captain_display_name, members_count, nt_created_at,
+              min_races, min_speed
+       from teams order by tag`
     );
     const body = rows.length
-      ? `<h1>Tracked teams</h1>
-         <p class="meta-row">${rows.length} team${rows.length === 1 ? "" : "s"} tracked</p>
-         <div class="grid">
+      ? `<div class="index-header">
+           <div>
+             <h1>Browse teams</h1>
+             <p class="meta-row">${rows.length} team${rows.length === 1 ? "" : "s"} tracked</p>
+           </div>
+           <div class="search-box">
+             <input id="teamSearch" type="text" placeholder="Search teams…" autocomplete="off">
+           </div>
+         </div>
+         <div class="grid" id="teamGrid">
            ${rows
              .map((t) => {
                const initial = (t.tag || "?").slice(0, 1).toUpperCase();
+               const searchKey = `${t.tag} ${t.display_name || ""} ${t.captain_username || ""}`.toLowerCase();
                return `
-               <a class="card" href="/teams/${encodeURIComponent(t.tag)}" style="text-decoration:none;color:inherit;">
+               <div class="card" data-search="${escapeHtml(searchKey)}">
                  <div class="top">
                    <div class="badge" style="background:${teamGradient(t.tag)}">${escapeHtml(initial)}</div>
                    <div>
@@ -58,12 +72,31 @@ app.get("/teams", async (req, res) => {
                      <div class="display-name">${escapeHtml(t.display_name || "(unsynced)")}</div>
                    </div>
                  </div>
+                 ${t.captain_username ? `<div class="req-line">Captain: <b>${escapeHtml(t.captain_display_name || t.captain_username)}</b></div>` : ""}
+                 <div class="req-line">Members: <b>${t.members_count ?? "—"}</b> &nbsp;·&nbsp; Formed: <b>${formatDate(t.nt_created_at)}</b></div>
+                 ${t.min_races != null || t.min_speed != null
+                   ? `<div class="req-line">Min: <b>${t.min_races ?? "—"} races</b> / <b>${t.min_speed ?? "—"} wpm</b></div>`
+                   : ""}
+                 <a class="view-btn" href="/teams/${encodeURIComponent(t.tag)}">View team →</a>
                  <div class="footer">${t.last_synced_at ? `Synced ${new Date(t.last_synced_at).toLocaleString()}` : "Not synced yet"}</div>
-               </a>`;
+               </div>`;
              })
              .join("")}
-         </div>`
-      : `<h1>Tracked teams</h1><div class="empty">No teams yet — run the ingestion script to add some.</div>`;
+         </div>
+         <script>
+           (function () {
+             var input = document.getElementById("teamSearch");
+             var cards = Array.prototype.slice.call(document.querySelectorAll("#teamGrid .card"));
+             input.addEventListener("input", function () {
+               var q = input.value.trim().toLowerCase();
+               cards.forEach(function (card) {
+                 var match = !q || card.getAttribute("data-search").indexOf(q) !== -1;
+                 card.style.display = match ? "" : "none";
+               });
+             });
+           })();
+         </script>`
+      : `<h1>Browse teams</h1><div class="empty">No teams yet — run the ingestion script to add some.</div>`;
     res.type("html").send(pageShell({ title: "Tracked teams", body, crumb: `<a href="/">← back</a>` }));
   } catch (err) {
     console.error("Teams query failed:", err.message);
@@ -81,7 +114,8 @@ app.get("/teams/:tag", async (req, res) => {
       return res.status(404).send(`No team with tag "${escapeHtml(tag)}" in the database yet.`);
     }
     const racers = await pool.query(
-      `select r.username, s.avg_speed, s.top_speed, s.races, s.accuracy
+      `select r.username, r.role, r.membership, r.joined_at_nt,
+              s.avg_speed, s.top_speed, s.races, s.accuracy
        from racers r
        left join lateral (
          select * from racer_stats rs
@@ -98,12 +132,14 @@ app.get("/teams/:tag", async (req, res) => {
         const initial = (r.username || "?").slice(0, 1).toUpperCase();
         const accClass = accuracyClass(r.accuracy);
         const accLabel = r.accuracy == null ? "—" : `${r.accuracy}%`;
+        const isCaptain = t.captain_username && r.username === t.captain_username;
         return `
           <tr>
             <td class="racer">
               <span class="avatar" style="background:${teamBadgeColor(r.username || tag)}">${escapeHtml(initial)}</span>
-              ${escapeHtml(r.username)}
+              ${escapeHtml(r.username)}${roleBadge(r.role, isCaptain)}${membershipBadge(r.membership)}
             </td>
+            <td>${formatDate(r.joined_at_nt)}</td>
             <td>${r.avg_speed ?? "-"}</td>
             <td>${r.top_speed ?? "-"}</td>
             <td>${r.races ?? "-"}</td>
@@ -112,21 +148,43 @@ app.get("/teams/:tag", async (req, res) => {
       })
       .join("");
 
+    const reqBar = `
+      <div class="req-bar">
+        <div class="req">Members <b>${t.members_count ?? racers.rows.length}</b></div>
+        <div class="req">Formed <b>${formatDate(t.nt_created_at)}</b></div>
+        <div class="req">Enrollment <b>${escapeHtml(t.enrollment || "—")}</b></div>
+        <div class="req">Min races <b>${t.min_races ?? "—"}</b></div>
+        <div class="req">Min speed <b>${t.min_speed ?? "—"} wpm</b></div>
+        ${t.min_level != null ? `<div class="req">Min level <b>${t.min_level}</b></div>` : ""}
+      </div>`;
+
+    const specialReqs = t.other_requirements
+      ? `<div class="special-reqs">
+           <div class="label">Special requirements</div>
+           <div class="text">${escapeHtml(t.other_requirements)}</div>
+         </div>`
+      : "";
+
     const body = `
       <div class="hero" style="background:${teamGradient(t.tag)}">
         <div class="tag">TEAM</div>
         <div class="name">[${escapeHtml(t.tag)}] ${escapeHtml(t.display_name || "")}</div>
-        <div class="sub">${racers.rows.length} racer${racers.rows.length === 1 ? "" : "s"} tracked · last synced ${
+        <div class="sub">
+          ${t.captain_display_name || t.captain_username
+            ? `Captain: ${escapeHtml(t.captain_display_name || t.captain_username)} · `
+            : ""}${racers.rows.length} racer${racers.rows.length === 1 ? "" : "s"} tracked · last synced ${
           t.last_synced_at ? new Date(t.last_synced_at).toLocaleString() : "never"
         }</div>
       </div>
+      ${reqBar}
+      ${specialReqs}
       <div class="table-wrap">
         <table>
           <thead>
-            <tr><th>Racer</th><th>Avg speed</th><th>Top speed</th><th>Races</th><th>Accuracy</th></tr>
+            <tr><th>Racer</th><th>Joined</th><th>Avg speed</th><th>Highest speed</th><th>Lifetime races</th><th>Accuracy</th></tr>
           </thead>
           <tbody>
-            ${rowsHtml || `<tr><td colspan="5" style="color:var(--muted);">No racers synced yet.</td></tr>`}
+            ${rowsHtml || `<tr><td colspan="6" style="color:var(--muted);">No racers synced yet.</td></tr>`}
           </tbody>
         </table>
       </div>`;
