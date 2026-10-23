@@ -1,0 +1,77 @@
+// Shared leaderboard queries, used by both build.js (static site) and
+// server.js (local preview) so the two never compute rankings differently
+// - only the surrounding page (pageShell call) differs between them.
+//
+// Every board here sums the racer_points ledger (see schema.sql), filtered
+// to a rolling time window ("now() - interval"), not a calendar-aligned
+// bucket (midnight-to-midnight, etc). Rolling windows sidestep timezone
+// edge cases - what counts as "today" depends on whose timezone - and are
+// simpler to verify: "last 24 hours" always means exactly that.
+const RANGE_INTERVALS = {
+  hourly: "1 hour",
+  daily: "1 day",
+  weekly: "7 days",
+  monthly: "30 days",
+  // Not a real "forever" - just long enough to include every row, since
+  // racer_points only ever holds rows from after this feature shipped.
+  alltime: "100 years",
+};
+
+// "seasonal" is deliberately absent: Nitro Type has its own season/
+// tournament boundaries we don't track, so making one up (a rolling
+// quarter, say) would be a fabricated period dressed up as a real one.
+const BUILT_RANGES = ["hourly", "daily", "weekly", "monthly", "alltime"];
+
+async function queryRacerPoints(pool, range) {
+  const { rows } = await pool.query(
+    `select r.username, r.team_tag, t.tag_color,
+            sum(rp.points) as points,
+            sum(rp.races_delta) as races,
+            s.avg_speed, s.top_speed, s.accuracy
+     from racer_points rp
+     join racers r on r.nt_user_id = rp.nt_user_id
+     join teams t on t.tag = r.team_tag
+     left join lateral (
+       select * from racer_stats rs where rs.nt_user_id = r.nt_user_id
+       order by captured_at desc limit 1
+     ) s on true
+     where rp.captured_at >= now() - $1::interval
+     group by r.username, r.team_tag, t.tag_color, s.avg_speed, s.top_speed, s.accuracy
+     having sum(rp.points) > 0
+     order by points desc
+     limit 100`,
+    [RANGE_INTERVALS[range]]
+  );
+  return rows;
+}
+
+async function queryTeamPoints(pool, range) {
+  const { rows } = await pool.query(
+    `select t.tag, t.display_name, t.tag_color,
+            sum(rp.points) as points,
+            sum(rp.races_delta) as races,
+            count(distinct rp.nt_user_id) as racer_count
+     from racer_points rp
+     join teams t on t.tag = rp.team_tag
+     where rp.captured_at >= now() - $1::interval
+     group by t.tag, t.display_name, t.tag_color
+     having sum(rp.points) > 0
+     order by points desc`,
+    [RANGE_INTERVALS[range]]
+  );
+  return rows;
+}
+
+// { racers: { hourly: [...], daily: [...], ... }, teams: { ... } } - the
+// exact shape theme.js's leaderboardsBody() expects.
+async function loadLeaderboardData(pool) {
+  const racers = {};
+  const teams = {};
+  for (const range of BUILT_RANGES) {
+    racers[range] = await queryRacerPoints(pool, range);
+    teams[range] = await queryTeamPoints(pool, range);
+  }
+  return { racers, teams };
+}
+
+module.exports = { RANGE_INTERVALS, BUILT_RANGES, queryRacerPoints, queryTeamPoints, loadLeaderboardData };

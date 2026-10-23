@@ -133,6 +133,34 @@ async function insertRacerStats(userId, { avgSpeed, topSpeed, races, accuracy })
   );
 }
 
+// The racesPlayed figure from the racer's PREVIOUS sync (null if this is
+// their first-ever sync) - the baseline recordRacerPoints diffs against.
+async function fetchPreviousRaces(userId) {
+  const { rows } = await pool.query(
+    `select races from racer_stats where nt_user_id = $1 order by captured_at desc limit 1`,
+    [userId]
+  );
+  return rows[0] ? rows[0].races : null;
+}
+
+// Awards points for races completed since the racer's last sync: races
+// completed * (avg_speed/2 + accuracy), using this sync's cumulative
+// avg_speed/accuracy as an approximation of the per-race rate over that
+// interval (NT's API doesn't expose individual races to compute this
+// exactly). Writes nothing on a racer's first sync (no baseline yet) or
+// when no new races were found - so a racer only starts earning points
+// from the sync after they're first added to this tracker.
+async function recordRacerPoints(userId, teamTag, { avgSpeed, accuracy, racesPlayed, previousRaces }) {
+  if (previousRaces == null || racesPlayed == null) return;
+  const racesDelta = racesPlayed - previousRaces;
+  if (!(racesDelta > 0) || avgSpeed == null || accuracy == null) return;
+  const points = Math.round((avgSpeed / 2 + accuracy) * racesDelta * 100) / 100;
+  await pool.query(
+    `insert into racer_points (nt_user_id, team_tag, races_delta, points) values ($1, $2, $3, $4)`,
+    [userId, teamTag, racesDelta, points]
+  );
+}
+
 async function ingestTeam(tag) {
   const results = await fetchTeam(tag);
   const { info, members } = results;
@@ -145,11 +173,21 @@ async function ingestTeam(tag) {
   let count = 0;
   for (const m of members || []) {
     await upsertRacer(m, normalizedTag);
+    // Must read the previous races count BEFORE inserting this sync's new
+    // racer_stats row, or the "previous" row would just be this one.
+    const previousRaces = await fetchPreviousRaces(m.userID);
+    const accuracy = computeAccuracy(m.typed, m.errs);
     await insertRacerStats(m.userID, {
       avgSpeed: m.avgSpeed ?? null,
       topSpeed: m.highestSpeed ?? null,
       races: m.racesPlayed ?? null,
-      accuracy: computeAccuracy(m.typed, m.errs),
+      accuracy,
+    });
+    await recordRacerPoints(m.userID, normalizedTag, {
+      avgSpeed: m.avgSpeed ?? null,
+      accuracy,
+      racesPlayed: m.racesPlayed ?? null,
+      previousRaces,
     });
     count++;
   }

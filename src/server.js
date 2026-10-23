@@ -17,6 +17,7 @@ const {
   leaderboardsBody,
   pageShell,
 } = require("./theme");
+const { loadLeaderboardData } = require("./leaderboard-data");
 
 // Express routes use fixed absolute paths (unlike build.js's relative,
 // depth-aware ones), so the nav hrefs are the same on every page here.
@@ -276,43 +277,11 @@ app.get("/teams/:tag/:section", async (req, res) => {
 // drift apart.
 app.get("/leaderboards", async (req, res) => {
   try {
-    // "score" is our own blended progress metric (avg speed / 2 + accuracy),
-    // not anything Nitro Type itself reports - mirrors build.js's query.
-    const { rows: racerRows } = await pool.query(
-      `select r.username, r.team_tag, t.tag_color,
-              s.avg_speed, s.top_speed, s.races, s.accuracy,
-              case when s.avg_speed is not null and s.accuracy is not null
-                   then round(s.avg_speed / 2 + s.accuracy, 1) end as score
-       from racers r
-       join teams t on t.tag = r.team_tag
-       left join lateral (
-         select * from racer_stats rs where rs.nt_user_id = r.nt_user_id
-         order by captured_at desc limit 1
-       ) s on true
-       where s.avg_speed is not null
-       order by score desc nulls last, s.avg_speed desc
-       limit 100`
-    );
-    const { rows: teamRows } = await pool.query(
-      `select t.tag, t.display_name, t.tag_color,
-              round(avg(s.avg_speed), 1) as avg_speed,
-              max(s.top_speed) as top_speed,
-              sum(s.races) as total_races,
-              count(s.avg_speed) as racer_count,
-              round(avg(s.avg_speed) / 2 + avg(s.accuracy), 1) as score
-       from teams t
-       join racers r on r.team_tag = t.tag
-       left join lateral (
-         select * from racer_stats rs where rs.nt_user_id = r.nt_user_id
-         order by captured_at desc limit 1
-       ) s on true
-       group by t.tag, t.display_name, t.tag_color
-       order by score desc nulls last`
-    );
+    const data = await loadLeaderboardData(pool);
     res.type("html").send(
       pageShell({
         title: "Leaderboards — TypeTrack",
-        body: leaderboardsBody(racerRows, teamRows),
+        body: leaderboardsBody(data),
         crumb: `<a href="/teams">← all teams</a>`,
         ...SITE_NAV,
         active: "leaderboards",

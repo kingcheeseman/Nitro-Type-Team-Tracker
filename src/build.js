@@ -22,6 +22,7 @@ const {
   leaderboardsBody,
   pageShell,
 } = require("./theme");
+const { loadLeaderboardData } = require("./leaderboard-data");
 
 const OUT_DIR = path.join(__dirname, "..", "site");
 
@@ -188,11 +189,11 @@ function buildTeamPage(team, racers) {
 // since switching board/range shouldn't reload the page. Only All-Time is
 // real data today - the rest are honest "coming soon" panels, same
 // pattern as the team sidebar's unbuilt sections.
-function buildLeaderboardsPage(racerRows, teamRows) {
+function buildLeaderboardsPage(data) {
   const dir = path.join(OUT_DIR, "leaderboards");
   fs.mkdirSync(dir, { recursive: true });
 
-  const body = leaderboardsBody(racerRows, teamRows);
+  const body = leaderboardsBody(data);
 
   fs.writeFileSync(
     path.join(dir, "index.html"),
@@ -251,44 +252,8 @@ async function main() {
     buildTeamPage(team, racers);
   }
 
-  // "score" is our own blended progress metric (avg speed / 2 + accuracy),
-  // not anything Nitro Type itself reports - chosen so the two terms land
-  // in comparable ranges (speed/2 roughly 25-90, accuracy roughly 90-99)
-  // instead of speed alone drowning out accuracy.
-  const { rows: racerLeaderboard } = await pool.query(
-    `select r.username, r.team_tag, t.tag_color,
-            s.avg_speed, s.top_speed, s.races, s.accuracy,
-            case when s.avg_speed is not null and s.accuracy is not null
-                 then round(s.avg_speed / 2 + s.accuracy, 1) end as score
-     from racers r
-     join teams t on t.tag = r.team_tag
-     left join lateral (
-       select * from racer_stats rs where rs.nt_user_id = r.nt_user_id
-       order by captured_at desc limit 1
-     ) s on true
-     where s.avg_speed is not null
-     order by score desc nulls last, s.avg_speed desc
-     limit 100`
-  );
-
-  const { rows: teamLeaderboard } = await pool.query(
-    `select t.tag, t.display_name, t.tag_color,
-            round(avg(s.avg_speed), 1) as avg_speed,
-            max(s.top_speed) as top_speed,
-            sum(s.races) as total_races,
-            count(s.avg_speed) as racer_count,
-            round(avg(s.avg_speed) / 2 + avg(s.accuracy), 1) as score
-     from teams t
-     join racers r on r.team_tag = t.tag
-     left join lateral (
-       select * from racer_stats rs where rs.nt_user_id = r.nt_user_id
-       order by captured_at desc limit 1
-     ) s on true
-     group by t.tag, t.display_name, t.tag_color
-     order by score desc nulls last`
-  );
-
-  buildLeaderboardsPage(racerLeaderboard, teamLeaderboard);
+  const leaderboardData = await loadLeaderboardData(pool);
+  buildLeaderboardsPage(leaderboardData);
 
   console.log(`Built ${teams.length} team page(s) into ${OUT_DIR}`);
   await pool.end();

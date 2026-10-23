@@ -136,24 +136,37 @@ function comingSoonBody(label) {
     </div>`;
 }
 
-// Leaderboard time-range boards we show tabs for. Only "alltime" has real
-// data right now (it's computed from each racer's latest snapshot) -
-// Daily/Weekly/Monthly need enough snapshot history behind them to compute
-// honestly, so they're real tabs that load a real "coming soon" panel
-// instead of silently missing or faking numbers.
+// Leaderboard time-range boards we show tabs for. All five of these are
+// real - each sums the racer_points ledger over a rolling window (see
+// leaderboard-data.js) - except Seasonal, which stays a "coming soon"
+// stub: Nitro Type has its own season/tournament boundaries we don't
+// track, and making one up would be a fabricated period dressed up as a
+// real one.
 const LEADERBOARD_RANGES = [
+  { key: "hourly", label: "Hourly", built: true },
+  { key: "daily", label: "Daily", built: true },
+  { key: "weekly", label: "Weekly", built: true },
+  { key: "monthly", label: "Monthly", built: true },
+  { key: "seasonal", label: "Seasonal", built: false },
   { key: "alltime", label: "All-Time", built: true },
-  { key: "monthly", label: "Monthly", built: false },
-  { key: "weekly", label: "Weekly", built: false },
-  { key: "daily", label: "Daily", built: false },
 ];
 
 function comingSoonLeaderboard(rangeLabel) {
   return `
     <div class="empty" style="padding:40px 24px;">
       <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px;">Coming soon</div>
-      <div>The ${escapeHtml(rangeLabel)} board needs more sync history behind it before it can
-      rank anyone fairly — only All-Time (current standings) is live right now.</div>
+      <div>The ${escapeHtml(rangeLabel)} board isn't built yet — Nitro Type's own season
+      boundaries aren't something we track, so we'd rather leave this blank than make one up.</div>
+    </div>`;
+}
+
+// A built range can still have nothing to show (no syncs have found new
+// races in that window yet) - different message from "not built at all".
+function emptyLeaderboard(kindLabel, rangeLabel) {
+  return `
+    <div class="empty" style="padding:40px 24px;">
+      No ${escapeHtml(kindLabel)} earned any points in the ${escapeHtml(rangeLabel)} window yet
+      — this fills in as more syncs run.
     </div>`;
 }
 
@@ -217,10 +230,14 @@ function rankBadgeClass(rank) {
 
 // Shared by build.js (static) and server.js (local preview) so the two
 // never render the leaderboard tables differently - pure HTML rendering
-// from already-queried rows, no DB access here.
-function racersLeaderboardTable(rows) {
+// from already-queried rows, no DB access here. "Points" is earned race
+// by race (see racer_points in schema.sql / ingest.js), not a snapshot
+// formula - "Races" here means races tracked since a racer was added to
+// this site (or since the window started), not Nitro Type's own lifetime
+// racesPlayed figure.
+function racersLeaderboardTable(rows, rangeLabel) {
   if (!rows.length) {
-    return `<div class="empty">No racer stats synced yet.</div>`;
+    return emptyLeaderboard("racers", rangeLabel);
   }
   const body = rows
     .map((r, i) => {
@@ -236,10 +253,10 @@ function racersLeaderboardTable(rows) {
             ${escapeHtml(r.username)}
             <span class="lb-team-tag" style="background:${tagBg};color:${textOnColor(tagBg)}">${escapeHtml(r.team_tag)}</span>
           </td>
-          <td><span class="score">${r.score ?? "—"}</span></td>
+          <td><span class="points">${r.points}</span></td>
+          <td>${r.races}</td>
           <td>${r.avg_speed ?? "-"}</td>
           <td>${r.top_speed ?? "-"}</td>
-          <td>${r.races ?? "-"}</td>
           <td><span class="pill ${accClass}">${accLabel}</span></td>
         </tr>`;
     })
@@ -248,17 +265,17 @@ function racersLeaderboardTable(rows) {
     <div class="table-wrap">
       <table>
         <thead>
-          <tr><th>#</th><th>Racer</th><th>Score</th><th>Avg speed</th><th>Highest speed</th><th>Lifetime races</th><th>Accuracy</th></tr>
+          <tr><th>#</th><th>Racer</th><th>Points</th><th>Races tracked</th><th>Avg speed</th><th>Highest speed</th><th>Accuracy</th></tr>
         </thead>
         <tbody>${body}</tbody>
       </table>
     </div>
-    <p class="lb-score-note">Score = avg speed ÷ 2 + accuracy — a blended ranking we compute ourselves, not an official Nitro Type stat.</p>`;
+    <p class="lb-score-note">Points = (avg speed ÷ 2 + accuracy) × races completed since the last sync, earned race by race — not an official Nitro Type stat.</p>`;
 }
 
-function teamsLeaderboardTable(rows) {
+function teamsLeaderboardTable(rows, rangeLabel) {
   if (!rows.length) {
-    return `<div class="empty">No team stats synced yet.</div>`;
+    return emptyLeaderboard("teams", rangeLabel);
   }
   const body = rows
     .map((t, i) => {
@@ -271,11 +288,9 @@ function teamsLeaderboardTable(rows) {
             <span class="avatar" style="background:${bg};color:${textOnColor(bg)}">${escapeHtml((t.tag || "?").slice(0, 1).toUpperCase())}</span>
             [${escapeHtml(t.tag)}] ${escapeHtml(t.display_name || "")}
           </td>
-          <td><span class="score">${t.score ?? "—"}</span></td>
-          <td>${t.avg_speed ?? "-"}</td>
-          <td>${t.top_speed ?? "-"}</td>
-          <td>${t.total_races ?? "-"}</td>
-          <td>${t.racer_count ?? "-"}</td>
+          <td><span class="points">${t.points}</span></td>
+          <td>${t.races}</td>
+          <td>${t.racer_count}</td>
         </tr>`;
     })
     .join("");
@@ -283,26 +298,29 @@ function teamsLeaderboardTable(rows) {
     <div class="table-wrap">
       <table>
         <thead>
-          <tr><th>#</th><th>Team</th><th>Score</th><th>Avg speed</th><th>Top speed</th><th>Total races</th><th>Racers</th></tr>
+          <tr><th>#</th><th>Team</th><th>Points</th><th>Races tracked</th><th>Racers earning</th></tr>
         </thead>
         <tbody>${body}</tbody>
       </table>
     </div>
-    <p class="lb-score-note">Score = avg speed ÷ 2 + accuracy, averaged across the team's racers — our own blended ranking, not an official Nitro Type stat.</p>`;
+    <p class="lb-score-note">Points = the sum of every member's points — races completed since joining this tracker × (avg speed ÷ 2 + accuracy).</p>`;
 }
 
-// Builds the full leaderboards page body (controls + all 8 panels) from
-// already-queried rows. Shared so build.js and server.js produce
+// Builds the full leaderboards page body (controls + all panels) from
+// already-queried { racers: {range: rows}, teams: {range: rows} } data
+// (see leaderboard-data.js). Shared so build.js and server.js produce
 // identical markup; only the surrounding pageShell() call differs.
-function leaderboardsBody(racerRows, teamRows) {
-  const panels = [
-    leaderboardPanel("racers", "alltime", racersLeaderboardTable(racerRows), true),
-    leaderboardPanel("teams", "alltime", teamsLeaderboardTable(teamRows), false),
-  ];
+function leaderboardsBody(data) {
+  const panels = [];
   for (const range of LEADERBOARD_RANGES) {
-    if (range.built) continue;
-    panels.push(leaderboardPanel("racers", range.key, comingSoonLeaderboard(range.label), false));
-    panels.push(leaderboardPanel("teams", range.key, comingSoonLeaderboard(range.label), false));
+    const visible = range.key === "alltime";
+    if (!range.built) {
+      panels.push(leaderboardPanel("racers", range.key, comingSoonLeaderboard(range.label), visible));
+      panels.push(leaderboardPanel("teams", range.key, comingSoonLeaderboard(range.label), false));
+      continue;
+    }
+    panels.push(leaderboardPanel("racers", range.key, racersLeaderboardTable(data.racers[range.key] || [], range.label), visible));
+    panels.push(leaderboardPanel("teams", range.key, teamsLeaderboardTable(data.teams[range.key] || [], range.label), false));
   }
   return `
     <h1>Leaderboards</h1>
@@ -666,7 +684,7 @@ const BASE_CSS = `
     margin-left: 8px;
   }
 
-  .score { font-weight: 800; color: var(--accent); font-size: 14px; }
+  .points { font-weight: 800; color: var(--accent); font-size: 14px; }
   .lb-score-note {
     color: var(--muted);
     font-size: 12px;

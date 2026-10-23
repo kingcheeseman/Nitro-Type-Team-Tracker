@@ -57,6 +57,34 @@ create index if not exists racer_stats_user_time
 create index if not exists racers_team
   on racers (team_tag);
 
+-- The leaderboard's real scoring ledger: one row per sync per racer, but
+-- ONLY when that sync found new races completed since the previous one
+-- (races_delta > 0). Each row's points = (avg_speed/2 + accuracy) at that
+-- sync, times races_delta - an approximation of "points per race this
+-- interval" using the racer's current cumulative speed/accuracy as the
+-- per-race rate, since Nitro Type's API doesn't expose individual races.
+-- A racer's first-ever sync writes no row (there's no previous races
+-- count to diff against), so points start accumulating from whenever a
+-- racer was first added to this tracker - never backfilled from NT's own
+-- history, same as racer_stats. team_tag is captured at insert time (not
+-- looked up from racers.team_tag) so a later team switch doesn't rewrite
+-- history. Summing this table (optionally windowed by captured_at) is
+-- what the Hourly/Daily/Weekly/Monthly/All-Time leaderboards are.
+create table if not exists racer_points (
+  id          bigserial primary key,
+  nt_user_id  bigint not null references racers(nt_user_id) on delete cascade,
+  team_tag    text references teams(tag) on delete set null,
+  captured_at timestamptz not null default now(),
+  races_delta integer not null,
+  points      numeric not null
+);
+
+create index if not exists racer_points_user_time
+  on racer_points (nt_user_id, captured_at desc);
+
+create index if not exists racer_points_team_time
+  on racer_points (team_tag, captured_at desc);
+
 -- Explicit ALTERs (not just CREATE TABLE IF NOT EXISTS) so re-running this
 -- file against a database that already has teams/racers from before these
 -- columns existed still brings it up to date, instead of silently no-op'ing.
