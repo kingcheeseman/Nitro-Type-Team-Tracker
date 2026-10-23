@@ -1,0 +1,36 @@
+name: Sync due teams
+
+# Runs often, but only actually re-ingests whichever teams are due per their
+# OWN sync_interval_minutes (teams table, see schema.sql) - a quiet team set
+# to 60 minutes isn't pulled on every one of these runs just because an
+# active team needs a shorter interval. Set a team's interval with
+# src/set-sync-interval.js (ask for this - it's intentionally not exposed
+# anywhere on the live site, see that script's header).
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: npm install
+      - name: Sync Nitro Type's current season
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: node src/season.js
+      - name: Sync due teams
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: node src/sync-due.js

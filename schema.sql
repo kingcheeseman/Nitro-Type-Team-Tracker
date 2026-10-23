@@ -122,6 +122,15 @@ alter table racers add column if not exists display_name text;
 alter table racer_points add column if not exists avg_speed numeric;
 alter table racer_points add column if not exists accuracy numeric;
 
+-- How often THIS team gets re-synced, independent of every other team - a
+-- quiet team that rarely races can be set to 60+ minutes instead of the
+-- default 30, so it isn't pulled as often as an active one. Changed with
+-- src/set-sync-interval.js, which is never exposed on the live site or any
+-- workflow a visitor can trigger - the only way to change it is to ask
+-- (same model as data/events.json), which is what keeps this "admin-only"
+-- for now without needing to build real authentication.
+alter table teams add column if not exists sync_interval_minutes integer not null default 30;
+
 -- Nitro Type's own real season boundary (e.g. "Spirit Racers", Oct 18 -
 -- Nov 29) - the exact dates shown in the banner at the top of every NT
 -- page. Scraped from NT's public, unauthenticated bootstrap.js asset (see

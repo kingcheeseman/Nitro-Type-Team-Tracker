@@ -66,6 +66,12 @@ function fromUnixSeconds(stamp) {
 }
 
 async function upsertTeam(tag, info) {
+  // next_sync_due_at uses THIS team's own sync_interval_minutes, not a fixed
+  // 30 minutes - a brand-new team gets the column's default (30) since it's
+  // omitted from the insert list below; an existing team's admin-set value
+  // (never touched by this upsert) is read back via `teams.sync_interval_minutes`,
+  // which in an ON CONFLICT DO UPDATE refers to the row as it stood BEFORE
+  // this update - so a sync can never reset an interval someone configured.
   await pool.query(
     `insert into teams (
        tag, display_name, last_synced_at, next_sync_due_at,
@@ -76,7 +82,7 @@ async function upsertTeam(tag, info) {
      on conflict (tag) do update
        set display_name = excluded.display_name,
            last_synced_at = now(),
-           next_sync_due_at = now() + interval '30 minutes',
+           next_sync_due_at = now() + (teams.sync_interval_minutes || ' minutes')::interval,
            captain_username = excluded.captain_username,
            captain_display_name = excluded.captain_display_name,
            members_count = excluded.members_count,
