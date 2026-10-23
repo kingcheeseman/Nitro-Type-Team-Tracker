@@ -1,0 +1,1007 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>[TBZ] Trailblazers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+  :root {
+    --bg: #0e1117;
+    --panel: #151a23;
+    --panel-2: #1b2230;
+    --border: #2a3140;
+    --text: #f3f5f9;
+    --muted: #aab2c0;
+    --accent: #3da1ff;
+    --good: #3ddc84;
+    --ok: #e8c547;
+    --low: #ff6b6b;
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Manrope", -apple-system, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  header.site {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--panel);
+  }
+  header.site .mark {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: linear-gradient(135deg, #3da1ff, #8a5cff);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 14px; color: #0b1220;
+    flex: none;
+  }
+  header.site .name { font-weight: 800; font-size: 17px; letter-spacing: 0.2px; margin-right: 10px; }
+  header.site .tagline { color: var(--muted); font-size: 13px; margin-left: 4px; }
+  .site-nav { display: flex; gap: 4px; margin-left: 6px; }
+  .site-nav-link {
+    color: var(--muted);
+    font-weight: 700;
+    font-size: 13.5px;
+    padding: 6px 11px;
+    border-radius: 7px;
+  }
+  .site-nav-link:hover { color: var(--text); text-decoration: none; background: var(--panel-2); }
+  .site-nav-link.active { color: var(--accent); background: rgba(61,161,255,0.12); }
+
+  main { max-width: 1040px; margin: 0 auto; padding: 28px 20px 60px; }
+
+  .crumb { color: var(--muted); font-size: 13px; margin-bottom: 18px; }
+
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  h1 .tag-badge { padding: 2px 9px; border-radius: 6px; font-size: 14px; font-weight: 800; margin-right: 8px; }
+
+  .meta-row {
+    display: flex; gap: 22px; flex-wrap: wrap;
+    color: var(--muted); font-size: 13px; margin: 10px 0 22px;
+  }
+  .meta-row strong { color: var(--text); }
+
+  .hero {
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    margin-bottom: 22px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+  }
+  .hero .tag { font-size: 13px; opacity: 0.85; font-weight: 700; letter-spacing: 0.4px; }
+  .hero .name { font-size: 26px; font-weight: 800; margin-top: 2px; }
+  .hero .sub { margin-top: 10px; font-size: 13px; opacity: 0.9; }
+  .hero .meta-stats {
+    display: flex; gap: 28px; margin-top: 14px; flex-wrap: wrap;
+  }
+  .hero .meta-stats .stat { font-size: 12px; opacity: 0.85; }
+  .hero .meta-stats .stat b { display: block; font-size: 15px; font-weight: 800; opacity: 1; margin-top: 2px; }
+
+  .req-bar {
+    display: flex; gap: 28px; flex-wrap: wrap; align-items: center;
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 20px;
+    margin-bottom: 14px;
+    font-size: 13px;
+  }
+  .req-bar .req { color: var(--muted); }
+  .req-bar .req b { color: var(--text); font-weight: 700; }
+
+  .special-reqs {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 20px;
+    margin-bottom: 22px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .special-reqs .label {
+    text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px;
+    color: var(--muted); font-weight: 700; margin-bottom: 6px;
+  }
+  .special-reqs .text { color: var(--text); line-height: 1.5; word-break: break-word; }
+
+  .index-header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    flex-wrap: wrap; gap: 12px; margin-bottom: 18px;
+  }
+  .search-box input {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-family: inherit;
+    font-size: 13px;
+    width: 220px;
+  }
+  .search-box input:focus { outline: 1px solid var(--accent); }
+  .search-box input::placeholder { color: var(--muted); }
+
+  .card .req-line { font-size: 12px; color: var(--muted); }
+  .card .req-line b { color: var(--text); }
+  .card .view-btn {
+    margin-top: 4px;
+    display: inline-block;
+    background: var(--accent);
+    color: #0b1220;
+    font-weight: 700;
+    font-size: 12.5px;
+    padding: 7px 12px;
+    border-radius: 8px;
+    align-self: flex-start;
+  }
+
+  .role-pill {
+    display: inline-block;
+    font-size: 10.5px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    padding: 1px 6px;
+    border-radius: 5px;
+    margin-left: 7px;
+    vertical-align: middle;
+  }
+  .role-pill.captain { background: rgba(232,197,71,0.18); color: var(--ok); }
+  .role-pill.officer { background: rgba(61,161,255,0.18); color: var(--accent); }
+  .role-pill.gold { background: rgba(232,197,71,0.12); color: var(--ok); }
+
+  .team-layout {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  .team-sidebar {
+    width: 190px;
+    flex: none;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px;
+    position: sticky;
+    top: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+  .team-sidebar .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 9px 10px;
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 13.5px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  .team-sidebar .nav-item:hover { background: var(--panel-2); text-decoration: none; }
+  .team-sidebar .nav-item.active { background: rgba(61,161,255,0.15); color: var(--accent); }
+  .team-sidebar .nav-icon { font-size: 14px; flex: none; opacity: 0.9; }
+  .team-sidebar .soon-tag {
+    margin-left: auto;
+    font-size: 9px;
+    background: rgba(170,178,192,0.15);
+    color: var(--muted);
+    padding: 2px 6px;
+    border-radius: 999px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .team-sidebar .nav-section-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    font-weight: 700;
+    padding: 12px 10px 4px;
+  }
+  .team-content { flex: 1; min-width: 0; }
+
+  @media (max-width: 760px) {
+    .team-layout { flex-direction: column; }
+    .team-sidebar {
+      width: 100%;
+      position: static;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .team-sidebar .nav-section-label { display: none; }
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 14px;
+  }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: border-color 0.15s ease;
+  }
+  .card:hover { border-color: var(--accent); }
+  .card .top { display: flex; align-items: center; gap: 10px; }
+  .card .badge {
+    width: 38px; height: 38px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 12px;
+    flex: none;
+  }
+  .card .tag { font-weight: 800; font-size: 14px; }
+  .card .display-name { color: var(--muted); font-size: 13px; }
+  .card .footer { margin-top: auto; font-size: 11.5px; color: var(--muted); }
+  .card a.cover { position: static; }
+  .card a.view { align-self: flex-start; font-size: 12.5px; font-weight: 700; }
+
+  .empty {
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    color: var(--muted);
+    text-align: center;
+    font-size: 14px;
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--panel);
+  }
+  table { width: 100%; border-collapse: collapse; min-width: 560px; }
+  thead th {
+    text-align: left;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    font-weight: 700;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    background: var(--panel-2);
+    position: sticky; top: 0;
+  }
+  tbody td {
+    padding: 11px 14px;
+    font-size: 13.5px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:nth-child(even) { background: rgba(255,255,255,0.015); }
+  tbody tr:hover { background: rgba(61,161,255,0.06); }
+  td.racer { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+  .avatar {
+    width: 26px; height: 26px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 800; color: #0b1220;
+    flex: none;
+  }
+
+  .pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .pill.good { background: rgba(61,220,132,0.15); color: var(--good); }
+  .pill.ok   { background: rgba(232,197,71,0.15); color: var(--ok); }
+  .pill.low  { background: rgba(255,107,107,0.15); color: var(--low); }
+  .pill.na   { background: rgba(170,178,192,0.12); color: var(--muted); }
+
+  .notif-day { margin-bottom: 22px; }
+  .notif-date { font-weight: 800; font-size: 13.5px; margin-bottom: 8px; }
+  .notif-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    margin-bottom: 8px;
+  }
+  .notif-icon { font-size: 18px; line-height: 1; flex: none; margin-top: 1px; }
+  .notif-headline { font-size: 13.5px; color: var(--text); }
+  .notif-meta { font-size: 11.5px; color: var(--muted); margin-top: 3px; }
+
+  .lb-controls {
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 10px;
+    margin-bottom: 18px;
+  }
+  .seg {
+    display: inline-flex;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    padding: 3px;
+    gap: 2px;
+  }
+  .seg-btn {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 12.5px;
+    padding: 7px 13px;
+    border-radius: 7px;
+    cursor: pointer;
+  }
+  .seg-btn:hover { color: var(--text); }
+  .seg-btn.active { background: var(--accent); color: #0b1220; }
+  .seg-btn .soon-tag { vertical-align: 1px; }
+
+  .lb-rank {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px; height: 24px;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 800;
+    background: var(--panel-2);
+    color: var(--muted);
+  }
+  .lb-rank.top1 { background: rgba(232,197,71,0.18); color: var(--ok); }
+  .lb-rank.top2 { background: rgba(170,178,192,0.22); color: #d8dee8; }
+  .lb-rank.top3 { background: rgba(255,142,96,0.18); color: #ff8e60; }
+
+  .lb-team-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 6px;
+    margin-left: 8px;
+    text-decoration: none;
+  }
+  .lb-team-tag:hover { text-decoration: none; opacity: 0.85; }
+  td.racer a { color: inherit; }
+  td.racer a:hover { text-decoration: underline; }
+
+  .points { font-weight: 800; color: var(--accent); font-size: 14px; }
+  .lb-score-note {
+    color: var(--muted);
+    font-size: 12px;
+    margin: 10px 2px 0;
+  }
+
+  footer.site {
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    padding: 30px 20px 50px;
+  }
+
+  @media (max-width: 560px) {
+    main { padding: 20px 14px 50px; }
+    .hero .name { font-size: 21px; }
+  }
+</style>
+</head>
+<body>
+
+    <header class="site">
+      <div class="mark">T</div>
+      <div class="name">TypeTrack</div>
+      <nav class="site-nav">
+        <a class="site-nav-link active" href="../../">Teams</a>
+        <a class="site-nav-link" href="../../leaderboards/">Leaderboards</a>
+      </nav>
+    </header>
+<main>
+<div class="crumb"><a href="../../">← all teams</a></div>
+
+    <div class="team-layout">
+      
+    <nav class="team-sidebar">
+      <a class="nav-item active" href="./"><span class="nav-icon">👥</span>Roster</a><a class="nav-item" href="events/"><span class="nav-icon">📅</span>Events</a><a class="nav-item" href="activity/"><span class="nav-icon">📈</span>Activity<span class="soon-tag">Soon</span></a><a class="nav-item" href="tournaments/"><span class="nav-icon">🏆</span>Tournaments<span class="soon-tag">Soon</span></a><a class="nav-item" href="trackers/"><span class="nav-icon">📌</span>Trackers</a><a class="nav-item" href="notifications/"><span class="nav-icon">🔔</span>Notifications</a>
+      <div class="nav-section-label">Manage</div>
+      <a class="nav-item" href="admin/"><span class="nav-icon">⚙️</span>Team Admin<span class="soon-tag">Soon</span></a>
+    </nav>
+      <div class="team-content">
+    <div class="hero" style="background:#ee1f25;color:#ffffff">
+      <div class="tag">TEAM</div>
+      <div class="name">[TBZ] Trailblazers</div>
+      <div class="sub">
+        Captain: monster_iii · 50 racers tracked · last synced 10/23/2026, 3:17:55 AM</div>
+    </div>
+    
+    <div class="req-bar">
+      <div class="req">Members <b>50</b></div>
+      <div class="req">Formed <b>Apr 11, 2026</b></div>
+      <div class="req">Enrollment <b>open</b></div>
+      <div class="req">Min races <b>500</b></div>
+      <div class="req">Min speed <b>50 wpm</b></div>
+      <div class="req">Min level <b>0</b></div>
+    </div>
+    <div class="special-reqs">
+         <div class="label">Special requirements</div>
+         <div class="text">250r/week - officers = loyal + consistent - 1000tr/gold - 100r/day for 2M - disc-MtwNJD3AAH - 100+Golds gifted/1B+ NTC - Founders tendons/monster_iii</div>
+       </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Racer</th><th>Joined</th><th>Avg speed</th><th>Highest speed</th><th>Lifetime races</th><th>Accuracy</th></tr>
+        </thead>
+        <tbody>
+          
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(45 85% 65%)">_</span>
+            _ShadowPulse_
+          </td>
+          <td>Oct 20, 2026</td>
+          <td>67</td>
+          <td>96</td>
+          <td>11809</td>
+          <td><span class="pill ok">92.41%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(115 85% 65%)">-</span>
+            - A E T E R N U M -<span class="role-pill officer">Officer</span><span class="role-pill gold">Gold</span>
+          </td>
+          <td>May 26, 2026</td>
+          <td>102</td>
+          <td>139</td>
+          <td>29691</td>
+          <td><span class="pill good">95.21%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(101 85% 65%)">-</span>
+            -BaggyCarpet-<span class="role-pill gold">Gold</span>
+          </td>
+          <td>Aug 29, 2026</td>
+          <td>130</td>
+          <td>171</td>
+          <td>44350</td>
+          <td><span class="pill ok">94.72%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(268 85% 65%)">-</span>
+            -cold-
+          </td>
+          <td>Oct 22, 2026</td>
+          <td>81</td>
+          <td>144</td>
+          <td>1230</td>
+          <td><span class="pill ok">94.99%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(160 85% 65%)">-</span>
+            -F I X T- 4k<span class="role-pill gold">Gold</span>
+          </td>
+          <td>Sep 29, 2026</td>
+          <td>92</td>
+          <td>127</td>
+          <td>3592</td>
+          <td><span class="pill good">96.22%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(217 85% 65%)">-</span>
+            -Lynx-
+          </td>
+          <td>Oct 21, 2026</td>
+          <td>118</td>
+          <td>155</td>
+          <td>24331</td>
+          <td><span class="pill good">97.42%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(350 85% 65%)">-</span>
+            -sleepywilson-<span class="role-pill gold">Gold</span>
+          </td>
+          <td>Sep 18, 2026</td>
+          <td>68</td>
+          <td>101</td>
+          <td>11922</td>
+          <td><span class="pill ok">94.7%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(245 85% 65%)">0</span>
+            0_0_J I T E S H_-_-<span class="role-pill gold">Gold</span>
+          </td>
+          <td>Oct 9, 2026</td>
+          <td>84</td>
+          <td>141</td>
+          <td>8040</td>
+          <td><span class="pill ok">92.65%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(281 85% 65%)">A</span>
+            AddMeAsFriend<span class="role-pill gold">Gold</span>
+          </td>
+          <td>Jul 2, 2026</td>
+          <td>107</td>
+          <td>157</td>
+          <td>6682</td>
+          <td><span class="pill good">95.94%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(200 85% 65%)">A</span>
+            Applez
+          </td>
+          <td>Oct 21, 2026</td>
+          <td>108</td>
+          <td>137</td>
+          <td>5188</td>
+          <td><span class="pill good">99.07%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(65 85% 65%)">C</span>
+            captinrex12121<span class="role-pill gold">Gold</span>
+          </td>
+          <td>Aug 5, 2026</td>
+          <td>114</td>
+          <td>144</td>
+          <td>108722</td>
+          <td><span class="pill good">96.98%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(256 85% 65%)">D</span>
+            darkknight 20k<span class="role-pill officer">Officer</span><span class="role-pill gold">Gold</span>
+          </td>
+          <td>Aug 28, 2026</td>
+          <td>114</td>
+          <td>140</td>
+          <td>19737</td>
+          <td><span class="pill good">96.53%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(76 85% 65%)">D</span>
+            DeeplyFlawed<span class="role-pill gold">Gold</span>
+          </td>
+          <td>Sep 23, 2026</td>
+          <td>72</td>
+          <td>91</td>
+          <td>5407</td>
+          <td><span class="pill ok">92.88%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(249 85% 65%)">E</span>
+            eleven<span class="role-pill gold">Gold</span>
+          </td>
+          <td>Aug 10, 2026</td>
+          <td>72</td>
+          <td>129</td>
+          <td>8234</td>
+          <td><span class="pill ok">93.12%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(304 85% 65%)">E</span>
+            Eystreem
+          </td>
+          <td>Oct 22, 2026</td>
+          <td>51</td>
+          <td>59</td>
+          <td>1155</td>
+          <td><span class="pill low">88.3%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(81 85% 65%)">F</span>
+            Farmbell<span class="role-pill officer">Officer</span><span class="role-pill gold">Gold</span>
+          </td>
+          <td>Aug 31, 2026</td>
+          <td>98</td>
+          <td>132</td>
+          <td>15200</td>
+          <td><span class="pill good">95.83%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(65 85% 65%)">F</span>
+            FuchsiaOliveAlligator
+          </td>
+          <td>Oct 14, 2026</td>
+          <td>87</td>
+          <td>112</td>
+          <td>1143</td>
+          <td><span class="pill ok">93.06%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(119 85% 65%)">G</span>
+            Greanbean<span class="role-pill gold">Gold</span>
+          </td>
+          <td>Aug 5, 2026</td>
+          <td>94</td>
+          <td>120</td>
+          <td>4723</td>
+          <td><span class="pill good">95.59%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(190 85% 65%)">H</span>
+            harley0502
+          </td>
+          <td>Oct 21, 2026</td>
+          <td>79</td>
+          <td>101</td>
+          <td>5336</td>
+          <td><span class="pill good">97.53%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(128 85% 65%)">H</span>
+            heavenly<span class="role-pill gold">Gold</span>
+          </td>
+          <td>Oct 22, 2026</td>
+          <td>109</td>
+          <td>120</td>
+          <td>7324</td>
+          <td><span class="pill good">96.61%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(267 85% 65%)">H</span>
+            hihihi
+          </td>
+          <td>Oct 20, 2026</td>
+          <td>81</td>
+          <td>105</td>
+          <td>3126</td>
+          <td><span class="pill ok">93.84%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(306 85% 65%)">I</span>
+            IForgor
+          </td>
+          <td>Oct 19, 2026</td>
+          <td>102</td>
+          <td>125</td>
+          <td>4182</td>
+          <td><span class="pill good">95.45%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(219 85% 65%)">I</span>
+            illyvanilly<span class="role-pill gold">Gold</span>
+          </td>
+          <td>Aug 10, 2026</td>
+          <td>92</td>
+          <td>122</td>
+          <td>6877</td>
+          <td><span class="pill good">97.78%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(282 85% 65%)">L</span>
+            LV      <span class="role-pill gold">Gold</span>
+          </td>
+          <td>Oct 11, 2026</td>
+          <td>76</td>
+          <td>102</td>
+          <td>1922</td>
+          <td><span class="pill ok">93.66%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(125 85% 65%)">M</span>
+            Monster_ii<span class="role-pill gold">Gold</span>
+          </td>
+          <td>Jul 22, 2026</td>
+          <td>88</td>
+          <td>111</td>
+          <td>15393</td>
+          <td><span class="pill ok">94.6%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(356 85% 65%)">M</span>
+            monster_iii<span class="role-pill captain">Captain</span><span class="role-pill gold">Gold</span>
+          </td>
+          <td>Apr 11, 2026</td>
+          <td>134</td>
+          <td>175</td>
+          <td>81000</td>
+          <td><span class="pill good">97.98%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(197 85% 65%)">M</span>
+            MuLann<span class="role-pill gold">Gold</span>
+          </td>
+          <td>Aug 17, 2026</td>
+          <td>46</td>
+          <td>92</td>
+          <td>20721</td>
+          <td><span class="pill good">95.79%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(200 85% 65%)">N</span>
+            NeonDrifter<span class="role-pill gold">Gold</span>
+          </td>
+          <td>Oct 20, 2026</td>
+          <td>107</td>
+          <td>165</td>
+          <td>17360</td>
+          <td><span class="pill good">97.3%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(280 85% 65%)">N</span>
+            Nightfall-5K<span class="role-pill gold">Gold</span>
+          </td>
+          <td>Oct 8, 2026</td>
+          <td>96</td>
+          <td>123</td>
+          <td>4968</td>
+          <td><span class="pill ok">93.54%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(182 85% 65%)">N</span>
+            noobtyper123
+          </td>
+          <td>Oct 16, 2026</td>
+          <td>95</td>
+          <td>148</td>
+          <td>1018</td>
+          <td><span class="pill ok">94.7%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(119 85% 65%)">N</span>
+            NoRetreatNoSurrender<span class="role-pill officer">Officer</span><span class="role-pill gold">Gold</span>
+          </td>
+          <td>Oct 18, 2026</td>
+          <td>132</td>
+          <td>189</td>
+          <td>243405</td>
+          <td><span class="pill good">97.46%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(90 85% 65%)">O</span>
+            oblivious<span class="role-pill gold">Gold</span>
+          </td>
+          <td>Sep 13, 2026</td>
+          <td>116</td>
+          <td>160</td>
+          <td>15786</td>
+          <td><span class="pill good">95.13%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(212 85% 65%)">P</span>
+            PaigeGM
+          </td>
+          <td>Oct 20, 2026</td>
+          <td>76</td>
+          <td>91</td>
+          <td>3889</td>
+          <td><span class="pill good">95.21%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(22 85% 65%)">P</span>
+            pinkpanthor<span class="role-pill officer">Officer</span><span class="role-pill gold">Gold</span>
+          </td>
+          <td>Sep 10, 2026</td>
+          <td>161</td>
+          <td>202</td>
+          <td>6551</td>
+          <td><span class="pill good">95.01%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(282 85% 65%)">P</span>
+            pls_i_need_1mill<span class="role-pill gold">Gold</span>
+          </td>
+          <td>Sep 29, 2026</td>
+          <td>76</td>
+          <td>102</td>
+          <td>6307</td>
+          <td><span class="pill low">89.9%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(41 85% 65%)">P</span>
+            PUTJESUSFIRST
+          </td>
+          <td>Oct 20, 2026</td>
+          <td>77</td>
+          <td>98</td>
+          <td>5912</td>
+          <td><span class="pill ok">92.01%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(38 85% 65%)">R</span>
+            r omeo
+          </td>
+          <td>Oct 22, 2026</td>
+          <td>123</td>
+          <td>176</td>
+          <td>26864</td>
+          <td><span class="pill good">97.65%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(150 85% 65%)">R</span>
+            Rustbucket<span class="role-pill gold">Gold</span>
+          </td>
+          <td>Sep 16, 2026</td>
+          <td>150</td>
+          <td>191</td>
+          <td>19930</td>
+          <td><span class="pill good">96%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(319 85% 65%)">S</span>
+            Score   <span class="role-pill gold">Gold</span>
+          </td>
+          <td>May 13, 2026</td>
+          <td>64</td>
+          <td>85</td>
+          <td>5501</td>
+          <td><span class="pill ok">94.32%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(319 85% 65%)">S</span>
+            sir bluberry
+          </td>
+          <td>Jun 25, 2026</td>
+          <td>89</td>
+          <td>143</td>
+          <td>174696</td>
+          <td><span class="pill na">—</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(260 85% 65%)">S</span>
+            SirWatson
+          </td>
+          <td>Oct 19, 2026</td>
+          <td>46</td>
+          <td>142</td>
+          <td>1667</td>
+          <td><span class="pill ok">90.37%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(78 85% 65%)">S</span>
+            Starstruck<span class="role-pill gold">Gold</span>
+          </td>
+          <td>Jul 6, 2026</td>
+          <td>124</td>
+          <td>159</td>
+          <td>27820</td>
+          <td><span class="pill ok">93.17%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(204 85% 65%)">S</span>
+            syndicate
+          </td>
+          <td>Oct 14, 2026</td>
+          <td>63</td>
+          <td>145</td>
+          <td>4466</td>
+          <td><span class="pill ok">94.34%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(258 85% 65%)">T</span>
+            TBZ-PK_Gaming
+          </td>
+          <td>Oct 12, 2026</td>
+          <td>81</td>
+          <td>128</td>
+          <td>5332</td>
+          <td><span class="pill good">95.7%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(144 85% 65%)">T</span>
+            TBZRocket<span class="role-pill gold">Gold</span>
+          </td>
+          <td>Sep 29, 2026</td>
+          <td>52</td>
+          <td>74</td>
+          <td>2262</td>
+          <td><span class="pill ok">93.88%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(269 85% 65%)">V</span>
+            VexizYT
+          </td>
+          <td>Jul 6, 2026</td>
+          <td>80</td>
+          <td>181</td>
+          <td>139235</td>
+          <td><span class="pill good">95.45%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(244 85% 65%)">W</span>
+            Wanaaaa<span class="role-pill gold">Gold</span>
+          </td>
+          <td>Aug 19, 2026</td>
+          <td>101</td>
+          <td>132</td>
+          <td>8536</td>
+          <td><span class="pill good">96.38%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(77 85% 65%)">X</span>
+            Xuct4s
+          </td>
+          <td>Oct 17, 2026</td>
+          <td>81</td>
+          <td>101</td>
+          <td>6252</td>
+          <td><span class="pill ok">94.4%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(292 85% 65%)">X</span>
+            Xuctus<span class="role-pill gold">Gold</span>
+          </td>
+          <td>Oct 9, 2026</td>
+          <td>115</td>
+          <td>154</td>
+          <td>5441</td>
+          <td><span class="pill ok">93.47%</span></td>
+        </tr>
+        <tr>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(10 85% 65%)">Y</span>
+            You owe me 2mil<span class="role-pill gold">Gold</span>
+          </td>
+          <td>Sep 16, 2026</td>
+          <td>82</td>
+          <td>109</td>
+          <td>14271</td>
+          <td><span class="pill ok">94.13%</span></td>
+        </tr>
+        </tbody>
+      </table>
+    </div></div>
+    </div>
+</main>
+<footer class="site">Generated 2026-10-23T03:24:20.126Z</footer>
+</body>
+</html>
