@@ -79,7 +79,7 @@ function buildTeamsIndex(teams) {
 
   fs.writeFileSync(
     path.join(OUT_DIR, "index.html"),
-    pageShell({ title: "Nitro Tracker Platform", body })
+    pageShell({ title: "TypeTrack", body })
   );
 }
 

@@ -27,7 +27,7 @@ app.get("/", async (req, res) => {
     const { rows } = await pool.query("select now() as db_time");
     res.type("html").send(
       pageShell({
-        title: "Nitro Tracker Platform",
+        title: "TypeTrack",
         body: `
           <h1>It's alive.</h1>
           <p class="meta-row">App is running and the database connection works.</p>

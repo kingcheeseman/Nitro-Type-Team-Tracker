@@ -418,8 +418,8 @@ const BASE_CSS = `
 function siteHeader() {
   return `
     <header class="site">
-      <div class="mark">N</div>
-      <div class="name">Nitro Tracker</div>
+      <div class="mark">T</div>
+      <div class="name">TypeTrack</div>
       <div class="tagline">multi-team stats</div>
     </header>`;
 }

@@ -1,4 +1,4 @@
-# Nitro Tracker Platform (v0 walking skeleton)
+# TypeTrack (v0 walking skeleton)
 
 Multi-team Nitro Type tracker. This is Step 1 of the build plan: prove the
 database and the deploy pipeline work together before building any real
