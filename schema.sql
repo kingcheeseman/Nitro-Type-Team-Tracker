@@ -205,6 +205,45 @@ create table if not exists verification_challenges (
   created_at      timestamptz not null default now()
 );
 
+-- Relay table for "live" Nitro Type lookups triggered from outside a
+-- GitHub Actions runner (right now: the verify-car-swap Edge Function).
+--
+-- Why this exists: Nitro Type's API returns HTTP 403 for requests coming
+-- from Supabase's Edge Function network (confirmed directly - same URL,
+-- same honest User-Agent that src/ingest.js already uses successfully on
+-- its GitHub Actions schedule, blocked only from Supabase's IPs). This
+-- isn't a User-Agent problem, so the fix isn't to disguise the request -
+-- it's to make the live fetch happen from a network that Nitro Type
+-- already accepts. The Edge Function dispatches
+-- .github/workflows/live-fetch.yml (src/live-fetch.js) with a fresh
+-- request_id, that runner calls the exact same fetchTeam() ingest.js
+-- already uses and writes the result here, and the Edge Function polls
+-- this row until it shows up (or times out).
+--
+-- Nothing a client ever reads or writes directly - RLS is on with no
+-- policies at all, so every anon/authenticated access is denied. The
+-- GitHub Actions runner writes via DATABASE_URL (the direct Postgres
+-- connection already used by ingest.js, which bypasses RLS entirely, same
+-- as every other scheduled sync job); the Edge Function reads/cleans up
+-- via the service-role key (also bypasses RLS). Rows are short-lived -
+-- the Edge Function deletes the one it's waiting on once it's read, and
+-- opportunistically sweeps anything older than an hour (a result that
+-- arrives after the Edge Function gave up and nobody ever claims).
+create table if not exists live_fetch_requests (
+  request_id   uuid primary key,
+  team_tag     text not null,
+  members      jsonb,
+  error        text,
+  requested_at timestamptz not null default now(),
+  completed_at timestamptz
+);
+
+create index if not exists live_fetch_requests_requested_at
+  on live_fetch_requests (requested_at);
+
+alter table live_fetch_requests enable row level security;
+-- Deliberately zero policies - see comment above the table.
+
 -- Team events - same purpose as the old data/events.json, but writable by
 -- a verified team captain directly from their team's Events page instead
 -- of being a file only changed by hand. Deliberately one team per event

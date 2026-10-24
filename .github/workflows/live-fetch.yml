@@ -1,0 +1,43 @@
+name: Live team fetch
+
+# Dispatched on demand by the verify-car-swap Edge Function (never by a
+# person) - see schema.sql's comment above live_fetch_requests for why.
+# Nitro Type's API blocks requests from Supabase's network with an HTTP
+# 403; this workflow does the same fetch from GitHub Actions' network,
+# where it already works (src/ingest.js uses the identical request on its
+# own schedule), and hands the result back via the database.
+
+on:
+  workflow_dispatch:
+    inputs:
+      request_id:
+        description: "UUID the Edge Function is polling live_fetch_requests for"
+        required: true
+      team_tag:
+        description: "Team tag to fetch"
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  # A flood of verification attempts shouldn't queue behind each other -
+  # each request_id is independent, so let runs overlap freely.
+  group: live-fetch-${{ inputs.request_id }}
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm install
+      - name: Fetch team and write result
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: node src/live-fetch.js "${{ inputs.request_id }}" "${{ inputs.team_tag }}"

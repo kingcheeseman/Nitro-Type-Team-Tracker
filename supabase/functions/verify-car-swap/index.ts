@@ -28,22 +28,60 @@ function json(body: unknown, status = 200) {
   });
 }
 
-// Same honest, identified fetch pattern as src/ingest.js - this is the
-// exact same public, unauthenticated team endpoint that script already
-// polls on a schedule; this function just needs a LIVE read at the moment
-// of the check, not whatever was last batch-synced.
-async function fetchTeamMembers(tag: string) {
-  const res = await fetch(`https://www.nitrotype.com/api/v2/teams/${encodeURIComponent(tag)}`, {
-    headers: {
-      "User-Agent": "nitro-type-team-tracker/0.1 (+https://github.com/thevoidracer/nitro-type-team-tracker)",
-    },
-  });
-  if (!res.ok) throw new Error(`Nitro Type API returned HTTP ${res.status} for tag "${tag}"`);
-  const data = await res.json();
-  if (data.status !== "OK" || !data.results) {
-    throw new Error(`Nitro Type API did not return a valid team for tag "${tag}"`);
+// This function used to fetch Nitro Type's team API directly - same
+// honest, identified request src/ingest.js already makes on its GitHub
+// Actions schedule. Confirmed live that Nitro Type's API returns HTTP 403
+// specifically for requests from Supabase's Edge Function network (same
+// URL, same User-Agent, works fine from GitHub Actions) - not a
+// User-Agent problem, so the fix isn't to disguise the request. Instead,
+// the live read happens on the network that already works: this
+// dispatches .github/workflows/live-fetch.yml (src/live-fetch.js, which
+// calls the exact same fetchTeam() ingest.js uses) and polls
+// live_fetch_requests (schema.sql has the full rationale) for its result.
+const GITHUB_REPO = "thevoidracer/thevoidracer.github.io";
+const GITHUB_WORKFLOW = "live-fetch.yml";
+const LIVE_FETCH_POLL_MS = 1500;
+const LIVE_FETCH_TIMEOUT_MS = 45000;
+
+async function liveFetchTeamMembers(tag: string, db: ReturnType<typeof createClient>) {
+  const githubToken = Deno.env.get("GITHUB_DISPATCH_TOKEN");
+  if (!githubToken) {
+    throw new Error("Live fetch isn't configured (missing GITHUB_DISPATCH_TOKEN secret).");
   }
-  return data.results.members || [];
+
+  const requestId = crypto.randomUUID();
+  const dispatchRes = await fetch(
+    `https://api.github.com/repos/${GITHUB_REPO}/actions/workflows/${GITHUB_WORKFLOW}/dispatches`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${githubToken}`,
+        Accept: "application/vnd.github+json",
+        "Content-Type": "application/json",
+        "User-Agent": "nitro-type-team-tracker/0.1 (+https://github.com/thevoidracer/thevoidracer.github.io)",
+      },
+      body: JSON.stringify({ ref: "main", inputs: { request_id: requestId, team_tag: tag } }),
+    }
+  );
+  if (!dispatchRes.ok) {
+    throw new Error(`Could not start live fetch (GitHub returned HTTP ${dispatchRes.status})`);
+  }
+
+  const deadline = Date.now() + LIVE_FETCH_TIMEOUT_MS;
+  while (Date.now() < deadline) {
+    await new Promise((resolve) => setTimeout(resolve, LIVE_FETCH_POLL_MS));
+    const { data: row } = await db
+      .from("live_fetch_requests")
+      .select("members, error")
+      .eq("request_id", requestId)
+      .maybeSingle();
+    if (row && (row.members !== null || row.error !== null)) {
+      await db.from("live_fetch_requests").delete().eq("request_id", requestId);
+      if (row.error) throw new Error(row.error);
+      return (row.members as any[]) || [];
+    }
+  }
+  throw new Error("Live fetch timed out waiting on GitHub Actions.");
 }
 
 function findMemberCarId(members: any[], nt_user_id: number): number | null {
@@ -123,9 +161,9 @@ Deno.serve(async (req: Request) => {
 
     let members: any[];
     try {
-      members = await fetchTeamMembers(racer.team_tag);
+      members = await liveFetchTeamMembers(racer.team_tag, db);
     } catch (err) {
-      console.error("fetchTeamMembers failed (start):", err && (err as Error).message);
+      console.error("liveFetchTeamMembers failed (start):", err && (err as Error).message);
       return json({ error: "Couldn't reach Nitro Type right now - try again shortly." }, 502);
     }
     const baselineCarId = findMemberCarId(members, racer.nt_user_id);
@@ -176,9 +214,9 @@ Deno.serve(async (req: Request) => {
 
     let members: any[];
     try {
-      members = await fetchTeamMembers(racer.team_tag);
+      members = await liveFetchTeamMembers(racer.team_tag, db);
     } catch (err) {
-      console.error("fetchTeamMembers failed (check):", err && (err as Error).message);
+      console.error("liveFetchTeamMembers failed (check):", err && (err as Error).message);
       return json({ error: "Couldn't reach Nitro Type right now - try again shortly." }, 502);
     }
     const currentCarId = findMemberCarId(members, challenge.nt_user_id);
