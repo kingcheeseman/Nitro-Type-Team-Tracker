@@ -136,7 +136,7 @@ const NAV_ITEMS = [
   { key: "notifications", label: "Notifications", icon: "\u{1F514}", built: true },
 ];
 const MANAGE_NAV_ITEMS = [
-  { key: "admin", label: "Team Admin", icon: "⚙️", built: false },
+  { key: "admin", label: "Team Admin", icon: "⚙️", built: true },
 ];
 
 // Builds the sidebar for a given team page. `linkFor(key)` supplies the
@@ -549,6 +549,41 @@ function eventsBody(tag, events, captainNtUserId) {
       <div data-events-list>${initialRows}</div>
       <p class="lb-score-note">Signed in as this team's real captain? Sign in from the Account page, then come back here to add or edit events — changes go live immediately.</p>
       <div data-events-manage></div>
+    </div>`;
+}
+
+// Team Admin: captain-only editing (appoint/remove officers), officer-only
+// viewing, no access at all for anyone else - the three-tier permission
+// model from the latest design. Unlike events/notifications/trackers
+// above, this section's content is NEVER rendered into the static HTML
+// (there's nothing here a build-time snapshot should show to every
+// visitor) - the whole panel starts hidden and src/client/app.js's
+// initTeamAdminPage() decides what, if anything, to reveal once it knows
+// who's actually looking at the page. racers is the already-queried
+// roster (build.js passes the same list roster.js renders), used only to
+// label each officer-toggle row with a name instead of a bare nt_user_id.
+function teamAdminBody(tag, captainNtUserId, racers) {
+  const rosterOptions = (racers || [])
+    .map((r) => `<option value="${escapeHtml(r.nt_user_id)}">${escapeHtml(r.display_name || r.username)}</option>`)
+    .join("");
+  return `
+    <div data-admin-panel data-team-tag="${escapeHtml(tag)}" data-captain-nt-user-id="${escapeHtml(captainNtUserId ?? "")}">
+      <h2 style="margin:28px 0 14px;">Team Admin</h2>
+      <div data-admin-gate style="color:var(--muted);font-size:13.5px;">Checking your access…</div>
+      <div data-admin-content style="display:none;">
+        <p class="meta-row" data-admin-role-note></p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Officer</th><th></th></tr></thead>
+            <tbody data-admin-officer-rows><tr><td colspan="2" style="color:var(--muted);">No officers appointed yet.</td></tr></tbody>
+          </table>
+        </div>
+        <form data-admin-appoint-form style="display:none;margin-top:14px;gap:8px;max-width:420px;">
+          <select class="form-input" name="nt_user_id" style="flex:1;">${rosterOptions}</select>
+          <button type="submit" class="btn-primary">Make officer</button>
+        </form>
+        <div data-admin-error class="form-error" style="display:none;margin-top:10px;"></div>
+      </div>
     </div>`;
 }
 
@@ -1110,6 +1145,7 @@ module.exports = {
   racerRosterRows,
   NAV_ITEMS,
   MANAGE_NAV_ITEMS,
+  teamAdminBody,
   teamSidebar,
   comingSoonBody,
   LEADERBOARD_RANGES,

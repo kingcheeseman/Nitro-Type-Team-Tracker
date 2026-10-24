@@ -16,12 +16,13 @@ const {
   trackerBody,
   eventsBody,
   notificationsBody,
+  teamAdminBody,
   pageShell,
 } = require("./theme");
 const { loadLeaderboardData, loadTeamTracker } = require("./leaderboard-data");
 const { queryNotifications } = require("./notifications");
 const { eventsForTeam } = require("./events-data");
-const { accountIndexBody, accountConnectBody } = require("./account-pages");
+const { accountIndexBody, accountConnectBody, signInBody } = require("./account-pages");
 
 // Built, non-roster sections render their own content - async because (unlike
 // build.js, which pre-queries everything once per build) each request here
@@ -31,6 +32,10 @@ async function sectionContent(key, tag, captainNtUserId) {
   if (key === "events") return eventsBody(tag, await eventsForTeam(pool, tag), captainNtUserId);
   if (key === "trackers") return trackerBody(await loadTeamTracker(pool, tag));
   if (key === "notifications") return notificationsBody(tag, await queryNotifications(pool, tag));
+  if (key === "admin") {
+    const racers = await pool.query("select nt_user_id, username, display_name from racers where team_tag = $1", [tag]);
+    return teamAdminBody(tag, captainNtUserId, racers.rows);
+  }
   return null;
 }
 
@@ -306,8 +311,20 @@ app.get("/account", (req, res) => {
   res.type("html").send(
     pageShell({
       title: "Your account — TypeTrack",
-      body: accountIndexBody({ connectHref: "/account/connect" }),
+      body: accountIndexBody({ signInHref: "/account/sign-in" }),
       crumb: `<a href="/teams">← all teams</a>`,
+      ...SITE_NAV,
+      active: "account",
+    })
+  );
+});
+
+app.get("/account/sign-in", (req, res) => {
+  res.type("html").send(
+    pageShell({
+      title: "Sign in — TypeTrack",
+      body: signInBody({ accountHref: "/account" }),
+      crumb: `<a href="/account">← account</a>`,
       ...SITE_NAV,
       active: "account",
     })

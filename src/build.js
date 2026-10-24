@@ -20,12 +20,13 @@ const {
   trackerBody,
   eventsBody,
   notificationsBody,
+  teamAdminBody,
   pageShell,
 } = require("./theme");
 const { loadLeaderboardData, loadTeamTracker } = require("./leaderboard-data");
 const { queryNotifications } = require("./notifications");
 const { eventsForTeam } = require("./events-data");
-const { accountIndexBody, accountConnectBody } = require("./account-pages");
+const { accountIndexBody, accountConnectBody, signInBody } = require("./account-pages");
 
 // Built, non-roster sections render their own content from already-queried
 // data; a section not in this map still falls back to comingSoonBody.
@@ -35,6 +36,7 @@ function sectionContent(key, sectionData) {
   if (key === "events") return eventsBody(sectionData.tag, sectionData.events, sectionData.captainNtUserId);
   if (key === "trackers") return trackerBody(sectionData.tracker);
   if (key === "notifications") return notificationsBody(sectionData.tag, sectionData.notifications);
+  if (key === "admin") return teamAdminBody(sectionData.tag, sectionData.captainNtUserId, sectionData.racers || []);
   return null;
 }
 
@@ -219,7 +221,7 @@ function buildAccountPages() {
     path.join(dir, "index.html"),
     pageShell({
       title: "Your account — TypeTrack",
-      body: accountIndexBody(),
+      body: accountIndexBody({ signInHref: "sign-in/" }),
       crumb: `<a href="../">← all teams</a>`,
       teamsHref: "../",
       leaderboardsHref: "../leaderboards/",
@@ -227,13 +229,29 @@ function buildAccountPages() {
     })
   );
 
+  const signInDir = path.join(dir, "sign-in");
+  fs.mkdirSync(signInDir, { recursive: true });
+  fs.writeFileSync(
+    path.join(signInDir, "index.html"),
+    pageShell({
+      title: "Sign in — TypeTrack",
+      body: signInBody({ accountHref: "../" }),
+      crumb: `<a href="../">← account</a>`,
+      teamsHref: "../../",
+      leaderboardsHref: "../../leaderboards/",
+      active: "account",
+    })
+  );
+
+  // Kept only so an old /account/connect/ link still lands somewhere
+  // sensible - see account-pages.js's accountConnectBody comment.
   const connectDir = path.join(dir, "connect");
   fs.mkdirSync(connectDir, { recursive: true });
   fs.writeFileSync(
     path.join(connectDir, "index.html"),
     pageShell({
       title: "Connect your Nitro Type account — TypeTrack",
-      body: accountConnectBody(),
+      body: accountConnectBody({ accountHref: "../" }),
       crumb: `<a href="../">← account</a>`,
       teamsHref: "../../",
       leaderboardsHref: "../../leaderboards/",
@@ -296,6 +314,7 @@ async function main() {
       notifications: await queryNotifications(pool, team.tag),
       events: await eventsForTeam(pool, team.tag),
       captainNtUserId: team.captain_nt_user_id,
+      racers,
     };
     buildTeamPage(team, racers, sectionData);
   }
