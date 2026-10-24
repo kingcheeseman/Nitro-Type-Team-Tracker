@@ -224,6 +224,25 @@
   .role-pill.officer { background: rgba(41,211,255,0.16); color: var(--velocity); }
   .role-pill.gold { background: rgba(255,176,32,0.12); color: var(--ok); }
 
+  .squad-pill {
+    display: inline-block;
+    font-size: 10.5px;
+    font-weight: 800;
+    padding: 1px 7px;
+    border-radius: 5px;
+    margin-left: 7px;
+    vertical-align: middle;
+    border: 1px solid;
+  }
+  .squad-swatch {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
   .team-layout {
     display: flex;
     gap: 20px;
@@ -572,7 +591,7 @@
     <div class="hero" style="background:#ea1979;color:#ffffff">
       <div class="name">[PR2W] P1nks R2 W1ld</div>
       <div class="sub">
-        Captain: pinkyboo · 49 racers tracked · last synced 10/24/2026, 4:07:51 PM</div>
+        Captain: pinkyboo · 49 racers tracked · last synced 10/24/2026, 4:35:02 PM</div>
     </div>
     <div data-admin-panel data-team-tag="PR2W" data-captain-nt-user-id="43305303">
       <h2 style="margin:28px 0 14px;">Team Admin</h2>
@@ -581,6 +600,7 @@
         <p class="meta-row" data-admin-role-note></p>
         <div class="seg" style="margin-bottom:16px;">
           <button type="button" class="seg-btn active" data-admin-tab-btn="officers">Officers</button>
+          <button type="button" class="seg-btn" data-admin-tab-btn="squads">Squads</button>
           <button type="button" class="seg-btn" data-admin-tab-btn="settings">Settings</button>
         </div>
 
@@ -592,9 +612,328 @@
             </table>
           </div>
           <form data-admin-appoint-form style="display:none;margin-top:14px;gap:8px;max-width:420px;">
-            <select class="form-input" name="nt_user_id" style="flex:1;"><option value=""> hope </option><option value="">-Blade-</option><option value="">-Danny-</option><option value="">^_--B-L-I-N-G--_^</option><option value="">✨꧁⚽WF⚽꧂✨</option><option value="">AllstateRacing4Ava</option><option value="">Andrew_10</option><option value="">andrewleslieparker</option><option value="">ArbysNT_PR2W</option><option value="">Arctic</option><option value="">Arentix -Drip-</option><option value="">atrg                                              </option><option value="">bigmushroom</option><option value="">carrot typz__</option><option value="">Chungito-5</option><option value="">Deidred</option><option value="">EytanPlayz road 2 8K</option><option value="">Fravs22</option><option value="">GREEK BANANA</option><option value="">I_Rainbow_I</option><option value="">ILoveKT</option><option value="">jackybo</option><option value="">Koenigsegg Gemera</option><option value="">LESLIE KNOPE</option><option value="">Lesotho</option><option value="">Luciano</option><option value="">MacadamianNuts</option><option value="">mistic</option><option value="">Mr.李</option><option value="">Navin.</option><option value="">nighttmareツ</option><option value="">Omicron</option><option value="">OnePetalLeft</option><option value="">pinkyboo</option><option value="">poochyboo</option><option value="">Pressure</option><option value="">RKS_R0AD_2_10K</option><option value="">Rocket league pro</option><option value="">SalmonBlast</option><option value="">Snappy</option><option value="">Speedy_TyperJJ</option><option value="">Static</option><option value="">Strider</option><option value="">THE ALPHA</option><option value="">Time2Talk</option><option value="">Wholemeal</option><option value="">Wraptor</option><option value="">Yaffle</option><option value="">ykitsmizu</option></select>
+            <select class="form-input" name="nt_user_id" style="flex:1;"><option value="36084678"> hope </option><option value="85698179">-Blade-</option><option value="43129644">-Danny-</option><option value="41387300">^_--B-L-I-N-G--_^</option><option value="10774891">✨꧁⚽WF⚽꧂✨</option><option value="46005323">AllstateRacing4Ava</option><option value="22515703">Andrew_10</option><option value="34623430">andrewleslieparker</option><option value="68845663">ArbysNT_PR2W</option><option value="33766712">Arctic</option><option value="44014303">Arentix -Drip-</option><option value="21317904">atrg                                              </option><option value="26444523">bigmushroom</option><option value="42638685">carrot typz__</option><option value="88027286">Chungito-5</option><option value="22405637">Deidred</option><option value="59216730">EytanPlayz road 2 8K</option><option value="51109266">Fravs22</option><option value="51354442">GREEK BANANA</option><option value="59981364">I_Rainbow_I</option><option value="90020307">ILoveKT</option><option value="73617981">jackybo</option><option value="44119102">Koenigsegg Gemera</option><option value="60198790">LESLIE KNOPE</option><option value="50436896">Lesotho</option><option value="37391379">Luciano</option><option value="8182141">MacadamianNuts</option><option value="37129023">mistic</option><option value="42534604">Mr.李</option><option value="25069776">Navin.</option><option value="2714617">nighttmareツ</option><option value="34904984">Omicron</option><option value="68026745">OnePetalLeft</option><option value="43305303">pinkyboo</option><option value="83577074">poochyboo</option><option value="36635154">Pressure</option><option value="64166910">RKS_R0AD_2_10K</option><option value="55945892">Rocket league pro</option><option value="66279417">SalmonBlast</option><option value="12153396">Snappy</option><option value="84122165">Speedy_TyperJJ</option><option value="86125496">Static</option><option value="53951028">Strider</option><option value="79574070">THE ALPHA</option><option value="79234103">Time2Talk</option><option value="23908275">Wholemeal</option><option value="29939639">Wraptor</option><option value="43464299">Yaffle</option><option value="87381464">ykitsmizu</option></select>
             <button type="submit" class="btn-primary">Make officer</button>
           </form>
+        </div>
+
+        <div data-admin-tabpanel="squads" style="display:none;">
+          <div style="color:var(--muted);font-size:13px;margin-bottom:14px;">
+            Group racers within [PR2W] — site-only, doesn't affect anything on Nitro Type itself.
+          </div>
+          <div class="table-wrap" style="max-width:480px;">
+            <table>
+              <thead><tr><th>Squad</th><th>Racers</th><th></th></tr></thead>
+              <tbody data-admin-squad-rows><tr><td colspan="3" style="color:var(--muted);">No squads yet.</td></tr></tbody>
+            </table>
+          </div>
+          <form data-admin-squad-form style="display:none;margin-top:14px;gap:8px;max-width:480px;align-items:center;">
+            <input class="form-input" type="color" name="squad_color" value="#29d3ff" style="flex:none;width:44px;padding:4px;">
+            <input class="form-input" type="text" name="squad_name" placeholder="Squad name" maxlength="40" style="flex:1;">
+            <button type="submit" class="btn-primary">Create squad</button>
+          </form>
+
+          <h3 style="margin:26px 0 10px;font-size:14.5px;">Assign racers</h3>
+          <div class="table-wrap" style="max-width:480px;">
+            <table>
+              <thead><tr><th>Racer</th><th>Squad</th></tr></thead>
+              <tbody data-admin-squad-roster-rows>
+          <tr data-squad-roster-row="36084678">
+            <td> hope </td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="85698179">
+            <td>-Blade-</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="43129644">
+            <td>-Danny-</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="41387300">
+            <td>^_--B-L-I-N-G--_^</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="10774891">
+            <td>✨꧁⚽WF⚽꧂✨</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="46005323">
+            <td>AllstateRacing4Ava</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="22515703">
+            <td>Andrew_10</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="34623430">
+            <td>andrewleslieparker</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="68845663">
+            <td>ArbysNT_PR2W</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="33766712">
+            <td>Arctic</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="44014303">
+            <td>Arentix -Drip-</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="21317904">
+            <td>atrg                                              </td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="26444523">
+            <td>bigmushroom</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="42638685">
+            <td>carrot typz__</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="88027286">
+            <td>Chungito-5</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="22405637">
+            <td>Deidred</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="59216730">
+            <td>EytanPlayz road 2 8K</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="51109266">
+            <td>Fravs22</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="51354442">
+            <td>GREEK BANANA</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="59981364">
+            <td>I_Rainbow_I</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="90020307">
+            <td>ILoveKT</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="73617981">
+            <td>jackybo</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="44119102">
+            <td>Koenigsegg Gemera</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="60198790">
+            <td>LESLIE KNOPE</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="50436896">
+            <td>Lesotho</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="37391379">
+            <td>Luciano</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="8182141">
+            <td>MacadamianNuts</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="37129023">
+            <td>mistic</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="42534604">
+            <td>Mr.李</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="25069776">
+            <td>Navin.</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="2714617">
+            <td>nighttmareツ</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="34904984">
+            <td>Omicron</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="68026745">
+            <td>OnePetalLeft</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="43305303">
+            <td>pinkyboo</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="83577074">
+            <td>poochyboo</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="36635154">
+            <td>Pressure</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="64166910">
+            <td>RKS_R0AD_2_10K</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="55945892">
+            <td>Rocket league pro</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="66279417">
+            <td>SalmonBlast</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="12153396">
+            <td>Snappy</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="84122165">
+            <td>Speedy_TyperJJ</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="86125496">
+            <td>Static</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="53951028">
+            <td>Strider</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="79574070">
+            <td>THE ALPHA</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="79234103">
+            <td>Time2Talk</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="23908275">
+            <td>Wholemeal</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="29939639">
+            <td>Wraptor</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="43464299">
+            <td>Yaffle</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr>
+          <tr data-squad-roster-row="87381464">
+            <td>ykitsmizu</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled><option value="">No squad</option></select>
+            </td>
+          </tr></tbody>
+            </table>
+          </div>
         </div>
 
         <div data-admin-tabpanel="settings" style="display:none;max-width:480px;">
@@ -619,6 +958,6 @@
     </div></div>
     </div>
 </main>
-<footer class="site">Generated 2026-10-24T16:31:40.594Z</footer>
+<footer class="site">Generated 2026-10-24T16:49:58.616Z</footer>
 </body>
 </html>

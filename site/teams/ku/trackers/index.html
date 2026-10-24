@@ -224,6 +224,25 @@
   .role-pill.officer { background: rgba(41,211,255,0.16); color: var(--velocity); }
   .role-pill.gold { background: rgba(255,176,32,0.12); color: var(--ok); }
 
+  .squad-pill {
+    display: inline-block;
+    font-size: 10.5px;
+    font-weight: 800;
+    padding: 1px 7px;
+    border-radius: 5px;
+    margin-left: 7px;
+    vertical-align: middle;
+    border: 1px solid;
+  }
+  .squad-swatch {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
   .team-layout {
     display: flex;
     gap: 20px;
@@ -572,7 +591,7 @@
     <div class="hero" style="background:#fba51a;color:#ffffff">
       <div class="name">[KU] Ketsui</div>
       <div class="sub">
-        Captain: Ketsui · 52 racers tracked · last synced 10/24/2026, 4:06:46 PM</div>
+        Captain: Ketsui · 52 racers tracked · last synced 10/24/2026, 4:34:22 PM</div>
     </div>
     <h2 style="margin:28px 0 14px;">Tracker</h2>
     <p class="meta-row">This team's own racers, ranked by points earned in each window — the same ledger behind the site-wide leaderboard, scoped to just this roster.</p>
@@ -614,9 +633,9 @@
             
             Calhoun
           </td>
-          <td><span class="points">161,441.33</span></td>
-          <td>1,105</td>
-          <td>98</td>
+          <td><span class="points">167,605.27</span></td>
+          <td>1,146</td>
+          <td>112</td>
           <td>167</td>
           <td><span class="pill ok">94.34%</span></td>
         </tr>
@@ -640,11 +659,11 @@
             
             LovelyLyrica
           </td>
-          <td><span class="points">96,094.39</span></td>
-          <td>695</td>
-          <td>85</td>
+          <td><span class="points">100,545.59</span></td>
+          <td>727</td>
+          <td>82</td>
           <td>123</td>
-          <td><span class="pill good">98.09%</span></td>
+          <td><span class="pill good">98.1%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">4</span></td>
@@ -666,11 +685,11 @@
             
             A1    
           </td>
-          <td><span class="points">54,131.45</span></td>
-          <td>360</td>
-          <td>104</td>
+          <td><span class="points">59,454.25</span></td>
+          <td>395</td>
+          <td>110</td>
           <td>196</td>
-          <td><span class="pill good">97.07%</span></td>
+          <td><span class="pill good">97.08%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">6</span></td>
@@ -688,6 +707,19 @@
         <tr>
           <td><span class="lb-rank">7</span></td>
           <td class="racer">
+            <span class="avatar" style="background:hsl(23 85% 65%)">E</span>
+            <img class="car-thumb" src="../../../assets/cars/shadow_dragon_small.png" alt="" loading="lazy" onerror="this.remove()">
+            EL    
+          </td>
+          <td><span class="points">36,495.94</span></td>
+          <td>203</td>
+          <td>154</td>
+          <td>199</td>
+          <td><span class="pill good">98.63%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">8</span></td>
+          <td class="racer">
             <span class="avatar" style="background:hsl(133 85% 65%)">B</span>
             <img class="car-thumb" src="../../../assets/cars/ksmith_small.png" alt="" loading="lazy" onerror="this.remove()">
             Brysons back
@@ -699,7 +731,7 @@
           <td><span class="pill good">96.21%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">8</span></td>
+          <td><span class="lb-rank">9</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(336 85% 65%)"> </span>
             
@@ -712,7 +744,7 @@
           <td><span class="pill good">99%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">9</span></td>
+          <td><span class="lb-rank">10</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(29 85% 65%)">T</span>
             
@@ -725,7 +757,7 @@
           <td><span class="pill good">97.88%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">10</span></td>
+          <td><span class="lb-rank">11</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(34 85% 65%)">$</span>
             <img class="car-thumb" src="../../../assets/cars/painted-ksmith_small_340.png" alt="" loading="lazy" onerror="this.remove()">
@@ -736,19 +768,6 @@
           <td>134</td>
           <td>178</td>
           <td><span class="pill good">95.86%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">11</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(23 85% 65%)">E</span>
-            <img class="car-thumb" src="../../../assets/cars/shadow_dragon_small.png" alt="" loading="lazy" onerror="this.remove()">
-            EL    
-          </td>
-          <td><span class="points">31,929.56</span></td>
-          <td>177</td>
-          <td>164</td>
-          <td>199</td>
-          <td><span class="pill good">98.63%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">12</span></td>
@@ -905,6 +924,19 @@
           <td>76</td>
           <td>90</td>
           <td><span class="pill ok">93.77%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">24</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(53 85% 65%)">T</span>
+            
+            tru of macedonia
+          </td>
+          <td><span class="points">305.44</span></td>
+          <td>2</td>
+          <td>116</td>
+          <td>159</td>
+          <td><span class="pill ok">94.72%</span></td>
         </tr></tbody>
       </table>
     </div></div><div class="trk-panel" data-range="weekly" hidden>
@@ -934,9 +966,9 @@
             
             Calhoun
           </td>
-          <td><span class="points">163,846.45</span></td>
-          <td>1,121</td>
-          <td>98</td>
+          <td><span class="points">170,010.39</span></td>
+          <td>1,162</td>
+          <td>112</td>
           <td>167</td>
           <td><span class="pill ok">94.34%</span></td>
         </tr>
@@ -947,11 +979,11 @@
             
             LovelyLyrica
           </td>
-          <td><span class="points">135,203.73</span></td>
-          <td>977</td>
-          <td>85</td>
+          <td><span class="points">139,654.93</span></td>
+          <td>1,009</td>
+          <td>82</td>
           <td>123</td>
-          <td><span class="pill good">98.09%</span></td>
+          <td><span class="pill good">98.1%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">4</span></td>
@@ -969,6 +1001,19 @@
         <tr>
           <td><span class="lb-rank">5</span></td>
           <td class="racer">
+            <span class="avatar" style="background:hsl(112 85% 65%)">A</span>
+            
+            A1    
+          </td>
+          <td><span class="points">70,653.7</span></td>
+          <td>468</td>
+          <td>110</td>
+          <td>196</td>
+          <td><span class="pill good">97.08%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">6</span></td>
+          <td class="racer">
             <span class="avatar" style="background:hsl(29 85% 65%)">T</span>
             
             Trip                                              
@@ -978,19 +1023,6 @@
           <td>136</td>
           <td>185</td>
           <td><span class="pill good">97.88%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">6</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(112 85% 65%)">A</span>
-            
-            A1    
-          </td>
-          <td><span class="points">65,330.9</span></td>
-          <td>433</td>
-          <td>104</td>
-          <td>196</td>
-          <td><span class="pill good">97.07%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">7</span></td>
@@ -1021,6 +1053,19 @@
         <tr>
           <td><span class="lb-rank">9</span></td>
           <td class="racer">
+            <span class="avatar" style="background:hsl(23 85% 65%)">E</span>
+            <img class="car-thumb" src="../../../assets/cars/shadow_dragon_small.png" alt="" loading="lazy" onerror="this.remove()">
+            EL    
+          </td>
+          <td><span class="points">42,900.27</span></td>
+          <td>239</td>
+          <td>154</td>
+          <td>199</td>
+          <td><span class="pill good">98.63%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">10</span></td>
+          <td class="racer">
             <span class="avatar" style="background:hsl(133 85% 65%)">B</span>
             <img class="car-thumb" src="../../../assets/cars/ksmith_small.png" alt="" loading="lazy" onerror="this.remove()">
             Brysons back
@@ -1030,19 +1075,6 @@
           <td>86</td>
           <td>147</td>
           <td><span class="pill good">96.21%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">10</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(23 85% 65%)">E</span>
-            <img class="car-thumb" src="../../../assets/cars/shadow_dragon_small.png" alt="" loading="lazy" onerror="this.remove()">
-            EL    
-          </td>
-          <td><span class="points">38,333.89</span></td>
-          <td>213</td>
-          <td>164</td>
-          <td>199</td>
-          <td><span class="pill good">98.63%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">11</span></td>
@@ -1138,6 +1170,19 @@
         <tr>
           <td><span class="lb-rank">18</span></td>
           <td class="racer">
+            <span class="avatar" style="background:hsl(53 85% 65%)">T</span>
+            
+            tru of macedonia
+          </td>
+          <td><span class="points">4,583.99</span></td>
+          <td>30</td>
+          <td>116</td>
+          <td>159</td>
+          <td><span class="pill ok">94.72%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">19</span></td>
+          <td class="racer">
             <span class="avatar" style="background:hsl(189 85% 65%)">士</span>
             
             士Karacter士
@@ -1147,19 +1192,6 @@
           <td>129</td>
           <td>166</td>
           <td><span class="pill good">98.28%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">19</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(53 85% 65%)">T</span>
-            
-            tru of macedonia
-          </td>
-          <td><span class="points">4,278.55</span></td>
-          <td>28</td>
-          <td>115</td>
-          <td>159</td>
-          <td><span class="pill ok">94.72%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">20</span></td>
@@ -1280,9 +1312,9 @@
             
             Calhoun
           </td>
-          <td><span class="points">163,846.45</span></td>
-          <td>1,121</td>
-          <td>98</td>
+          <td><span class="points">170,010.39</span></td>
+          <td>1,162</td>
+          <td>112</td>
           <td>167</td>
           <td><span class="pill ok">94.34%</span></td>
         </tr>
@@ -1293,11 +1325,11 @@
             
             LovelyLyrica
           </td>
-          <td><span class="points">135,203.73</span></td>
-          <td>977</td>
-          <td>85</td>
+          <td><span class="points">139,654.93</span></td>
+          <td>1,009</td>
+          <td>82</td>
           <td>123</td>
-          <td><span class="pill good">98.09%</span></td>
+          <td><span class="pill good">98.1%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">4</span></td>
@@ -1315,6 +1347,19 @@
         <tr>
           <td><span class="lb-rank">5</span></td>
           <td class="racer">
+            <span class="avatar" style="background:hsl(112 85% 65%)">A</span>
+            
+            A1    
+          </td>
+          <td><span class="points">70,653.7</span></td>
+          <td>468</td>
+          <td>110</td>
+          <td>196</td>
+          <td><span class="pill good">97.08%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">6</span></td>
+          <td class="racer">
             <span class="avatar" style="background:hsl(29 85% 65%)">T</span>
             
             Trip                                              
@@ -1324,19 +1369,6 @@
           <td>136</td>
           <td>185</td>
           <td><span class="pill good">97.88%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">6</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(112 85% 65%)">A</span>
-            
-            A1    
-          </td>
-          <td><span class="points">65,330.9</span></td>
-          <td>433</td>
-          <td>104</td>
-          <td>196</td>
-          <td><span class="pill good">97.07%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">7</span></td>
@@ -1367,6 +1399,19 @@
         <tr>
           <td><span class="lb-rank">9</span></td>
           <td class="racer">
+            <span class="avatar" style="background:hsl(23 85% 65%)">E</span>
+            <img class="car-thumb" src="../../../assets/cars/shadow_dragon_small.png" alt="" loading="lazy" onerror="this.remove()">
+            EL    
+          </td>
+          <td><span class="points">42,900.27</span></td>
+          <td>239</td>
+          <td>154</td>
+          <td>199</td>
+          <td><span class="pill good">98.63%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">10</span></td>
+          <td class="racer">
             <span class="avatar" style="background:hsl(133 85% 65%)">B</span>
             <img class="car-thumb" src="../../../assets/cars/ksmith_small.png" alt="" loading="lazy" onerror="this.remove()">
             Brysons back
@@ -1376,19 +1421,6 @@
           <td>86</td>
           <td>147</td>
           <td><span class="pill good">96.21%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">10</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(23 85% 65%)">E</span>
-            <img class="car-thumb" src="../../../assets/cars/shadow_dragon_small.png" alt="" loading="lazy" onerror="this.remove()">
-            EL    
-          </td>
-          <td><span class="points">38,333.89</span></td>
-          <td>213</td>
-          <td>164</td>
-          <td>199</td>
-          <td><span class="pill good">98.63%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">11</span></td>
@@ -1484,6 +1516,19 @@
         <tr>
           <td><span class="lb-rank">18</span></td>
           <td class="racer">
+            <span class="avatar" style="background:hsl(53 85% 65%)">T</span>
+            
+            tru of macedonia
+          </td>
+          <td><span class="points">4,583.99</span></td>
+          <td>30</td>
+          <td>116</td>
+          <td>159</td>
+          <td><span class="pill ok">94.72%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">19</span></td>
+          <td class="racer">
             <span class="avatar" style="background:hsl(189 85% 65%)">士</span>
             
             士Karacter士
@@ -1493,19 +1538,6 @@
           <td>129</td>
           <td>166</td>
           <td><span class="pill good">98.28%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">19</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(53 85% 65%)">T</span>
-            
-            tru of macedonia
-          </td>
-          <td><span class="points">4,278.55</span></td>
-          <td>28</td>
-          <td>115</td>
-          <td>159</td>
-          <td><span class="pill ok">94.72%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">20</span></td>
@@ -1626,9 +1658,9 @@
             
             Calhoun
           </td>
-          <td><span class="points">163,846.45</span></td>
-          <td>1,121</td>
-          <td>98</td>
+          <td><span class="points">170,010.39</span></td>
+          <td>1,162</td>
+          <td>112</td>
           <td>167</td>
           <td><span class="pill ok">94.34%</span></td>
         </tr>
@@ -1639,11 +1671,11 @@
             
             LovelyLyrica
           </td>
-          <td><span class="points">135,203.73</span></td>
-          <td>977</td>
-          <td>85</td>
+          <td><span class="points">139,654.93</span></td>
+          <td>1,009</td>
+          <td>82</td>
           <td>123</td>
-          <td><span class="pill good">98.09%</span></td>
+          <td><span class="pill good">98.1%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">4</span></td>
@@ -1661,6 +1693,19 @@
         <tr>
           <td><span class="lb-rank">5</span></td>
           <td class="racer">
+            <span class="avatar" style="background:hsl(112 85% 65%)">A</span>
+            
+            A1    
+          </td>
+          <td><span class="points">70,653.7</span></td>
+          <td>468</td>
+          <td>110</td>
+          <td>196</td>
+          <td><span class="pill good">97.08%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">6</span></td>
+          <td class="racer">
             <span class="avatar" style="background:hsl(29 85% 65%)">T</span>
             
             Trip                                              
@@ -1670,19 +1715,6 @@
           <td>136</td>
           <td>185</td>
           <td><span class="pill good">97.88%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">6</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(112 85% 65%)">A</span>
-            
-            A1    
-          </td>
-          <td><span class="points">65,330.9</span></td>
-          <td>433</td>
-          <td>104</td>
-          <td>196</td>
-          <td><span class="pill good">97.07%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">7</span></td>
@@ -1713,6 +1745,19 @@
         <tr>
           <td><span class="lb-rank">9</span></td>
           <td class="racer">
+            <span class="avatar" style="background:hsl(23 85% 65%)">E</span>
+            <img class="car-thumb" src="../../../assets/cars/shadow_dragon_small.png" alt="" loading="lazy" onerror="this.remove()">
+            EL    
+          </td>
+          <td><span class="points">42,900.27</span></td>
+          <td>239</td>
+          <td>154</td>
+          <td>199</td>
+          <td><span class="pill good">98.63%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">10</span></td>
+          <td class="racer">
             <span class="avatar" style="background:hsl(133 85% 65%)">B</span>
             <img class="car-thumb" src="../../../assets/cars/ksmith_small.png" alt="" loading="lazy" onerror="this.remove()">
             Brysons back
@@ -1722,19 +1767,6 @@
           <td>86</td>
           <td>147</td>
           <td><span class="pill good">96.21%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">10</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(23 85% 65%)">E</span>
-            <img class="car-thumb" src="../../../assets/cars/shadow_dragon_small.png" alt="" loading="lazy" onerror="this.remove()">
-            EL    
-          </td>
-          <td><span class="points">38,333.89</span></td>
-          <td>213</td>
-          <td>164</td>
-          <td>199</td>
-          <td><span class="pill good">98.63%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">11</span></td>
@@ -1830,6 +1862,19 @@
         <tr>
           <td><span class="lb-rank">18</span></td>
           <td class="racer">
+            <span class="avatar" style="background:hsl(53 85% 65%)">T</span>
+            
+            tru of macedonia
+          </td>
+          <td><span class="points">4,583.99</span></td>
+          <td>30</td>
+          <td>116</td>
+          <td>159</td>
+          <td><span class="pill ok">94.72%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">19</span></td>
+          <td class="racer">
             <span class="avatar" style="background:hsl(189 85% 65%)">士</span>
             
             士Karacter士
@@ -1839,19 +1884,6 @@
           <td>129</td>
           <td>166</td>
           <td><span class="pill good">98.28%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">19</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(53 85% 65%)">T</span>
-            
-            tru of macedonia
-          </td>
-          <td><span class="points">4,278.55</span></td>
-          <td>28</td>
-          <td>115</td>
-          <td>159</td>
-          <td><span class="pill ok">94.72%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">20</span></td>
@@ -1948,6 +1980,6 @@
     </div></div></div>
     </div>
 </main>
-<footer class="site">Generated 2026-10-24T16:31:38.714Z</footer>
+<footer class="site">Generated 2026-10-24T16:49:54.377Z</footer>
 </body>
 </html>
