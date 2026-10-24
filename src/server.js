@@ -107,11 +107,19 @@ app.get("/", async (req, res) => {
 // until the ingestion job adds some).
 app.get("/teams", async (req, res) => {
   try {
+    // Ordered the same way the "All-Time" team leaderboard ranks teams
+    // (sum of every racer_points row, see leaderboard-data.js's
+    // queryTeamPoints) - teams with no points yet sort to the back,
+    // alphabetically among themselves.
     const { rows } = await pool.query(
-      `select tag, display_name, last_synced_at,
-              captain_username, captain_display_name, members_count, nt_created_at,
-              min_races, min_speed, tag_color
-       from teams order by tag`
+      `select t.tag, t.display_name, t.last_synced_at,
+              t.captain_username, t.captain_display_name, t.members_count, t.nt_created_at,
+              t.min_races, t.min_speed, t.tag_color
+       from teams t
+       left join (
+         select team_tag, sum(points) as points from racer_points group by team_tag
+       ) lb on lb.team_tag = t.tag
+       order by coalesce(lb.points, 0) desc, t.tag`
     );
     const body = rows.length
       ? `<div class="index-header">

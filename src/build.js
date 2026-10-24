@@ -322,12 +322,21 @@ async function downloadCarImages(pool) {
 }
 
 async function main() {
+  // Ordered the same way the "All-Time" team leaderboard ranks teams
+  // (sum of every racer_points row, see leaderboard-data.js's
+  // queryTeamPoints) - so a team's position in this list matches its
+  // rank there. Teams with no points yet (not synced, or too new to
+  // have earned any) sort to the back, alphabetically among themselves.
   const { rows: teams } = await pool.query(
-    `select tag, display_name, last_synced_at,
-            captain_username, captain_display_name, members_count, nt_created_at,
-            min_races, min_speed, min_level, enrollment, other_requirements, tag_color,
-            captain_nt_user_id
-     from teams order by tag`
+    `select t.tag, t.display_name, t.last_synced_at,
+            t.captain_username, t.captain_display_name, t.members_count, t.nt_created_at,
+            t.min_races, t.min_speed, t.min_level, t.enrollment, t.other_requirements, t.tag_color,
+            t.captain_nt_user_id
+     from teams t
+     left join (
+       select team_tag, sum(points) as points from racer_points group by team_tag
+     ) lb on lb.team_tag = t.tag
+     order by coalesce(lb.points, 0) desc, t.tag`
   );
   buildTeamsIndex(teams);
 
