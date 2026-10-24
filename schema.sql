@@ -281,3 +281,92 @@ create policy "only a team's own verified captain manages its events" on events
         and al.nt_user_id = t.captain_nt_user_id
     )
   );
+
+-- Officers: a captain-appointed tier between "captain" and "everyone else".
+-- One row per (team, racer) means a racer is an officer of THAT team -
+-- deliberately keyed by team_tag + nt_user_id (not just nt_user_id alone)
+-- so moving teams doesn't carry officer status along, same spirit as
+-- racer_points.team_tag being captured rather than re-derived. Captain
+-- status itself still comes from teams.captain_nt_user_id, never from a
+-- row here - a captain is never also stored as their own team's officer.
+create table if not exists team_officers (
+  team_tag     text not null references teams(tag) on delete cascade,
+  nt_user_id   bigint not null references racers(nt_user_id) on delete cascade,
+  appointed_by uuid references auth.users(id) on delete set null,
+  appointed_at timestamptz not null default now(),
+  primary key (team_tag, nt_user_id)
+);
+
+alter table team_officers enable row level security;
+
+-- Readable by anyone (officer badges show up on the public roster/team
+-- admin page); only that team's own verified captain can appoint or
+-- remove an officer - the exact same ownership check events uses above.
+drop policy if exists "team_officers are publicly readable" on team_officers;
+create policy "team_officers are publicly readable" on team_officers
+  for select using (true);
+
+drop policy if exists "only a team's own verified captain manages its officers" on team_officers;
+create policy "only a team's own verified captain manages its officers" on team_officers
+  for all
+  using (
+    exists (
+      select 1
+      from account_links al
+      join teams t on t.tag = team_officers.team_tag
+      where al.auth_user_id = auth.uid()
+        and al.nt_user_id = t.captain_nt_user_id
+    )
+  )
+  with check (
+    exists (
+      select 1
+      from account_links al
+      join teams t on t.tag = team_officers.team_tag
+      where al.auth_user_id = auth.uid()
+        and al.nt_user_id = t.captain_nt_user_id
+    )
+  );
+
+-- Profiles: the display identity for a TypeTrack account, separate from
+-- its Supabase Auth email (which, per the connect-flow redesign, is a
+-- synthetic address the user never sees or picks - see src/client/app.js).
+-- A regular team member or non-member picks their own chosen_username at
+-- signup; a captain or officer instead goes by their real Nitro Type
+-- display name (chosen_username stays null for them and the UI falls back
+-- to account_links -> racers.display_name). Row is created by the owning
+-- user themselves right after they verify ownership, which is why insert
+-- is allowed for "your own row" rather than only by a service role.
+create table if not exists profiles (
+  auth_user_id    uuid primary key references auth.users(id) on delete cascade,
+  chosen_username text unique,
+  created_at      timestamptz not null default now()
+);
+
+alter table profiles enable row level security;
+
+-- Publicly readable (account names show up all over the site); a user may
+-- only ever insert/update their OWN row, never anyone else's.
+drop policy if exists "profiles are publicly readable" on profiles;
+create policy "profiles are publicly readable" on profiles
+  for select using (true);
+
+drop policy if exists "a user manages only their own profile" on profiles;
+create policy "a user manages only their own profile" on profiles
+  for insert with check (auth_user_id = auth.uid());
+
+drop policy if exists "a user updates only their own profile" on profiles;
+create policy "a user updates only their own profile" on profiles
+  for update using (auth_user_id = auth.uid()) with check (auth_user_id = auth.uid());
+
+-- Table-level GRANTs - without these, RLS above is never even reached:
+-- PostgREST checks role-level GRANTs first, and running this file through
+-- the SQL Editor (vs. creating tables through the dashboard's Table
+-- Editor, which auto-grants) does NOT grant anything by itself. Re-run
+-- (idempotent) any time a new table is added above.
+grant select on all tables in schema public to anon, authenticated;
+grant insert, update, delete on all tables in schema public to authenticated;
+grant usage, select on all sequences in schema public to anon, authenticated;
+alter default privileges in schema public grant select on tables to anon, authenticated;
+alter default privileges in schema public grant insert, update, delete on tables to authenticated;
+alter default privileges in schema public grant usage, select on sequences to anon, authenticated;
