@@ -167,10 +167,33 @@
     return "nt" + ntUserId + "@racers.typetrack.internal";
   }
 
+  // This used to call sb.auth.updateUser({ email, password }) straight
+  // from the browser with the anon key. That goes through Supabase's
+  // normal "secure email change" flow, which tries to SEND a confirmation
+  // email to the new address on every single claim - and the address is
+  // always synthetic/unreachable (see syntheticEmail above), so that
+  // email could never be clicked anyway, while still burning the
+  // project's shared-SMTP rate limit until claims started failing outright
+  // with "email rate limit exceeded". The claim-account Edge Function
+  // does the equivalent update server-side with the service-role key via
+  // auth.admin.updateUserById(..., { email_confirm: true }), which skips
+  // the confirmation email entirely - nothing is ever sent. The ntUserId
+  // argument is kept for backward compatibility with existing callers but
+  // isn't actually trusted: the Edge Function resolves it itself from the
+  // caller's own account_links row.
   function claimAccount(ntUserId, password, cb) {
     withClient(function (sb) {
-      sb.auth.updateUser({ email: syntheticEmail(ntUserId), password: password }).then(function (res) {
-        cb(res.error ? res.error.message : null, res.data);
+      sb.functions.invoke("claim-account", { body: { password: password } }).then(function (res) {
+        if (res.error) {
+          var msg = res.error.message || "Could not finish setting up your account.";
+          (res.error.context && res.error.context.json ? res.error.context.json() : Promise.resolve(null)).then(function (body) {
+            cb((body && body.error) || msg, null);
+          }).catch(function () {
+            cb(msg, null);
+          });
+          return;
+        }
+        cb(null, res.data);
       });
     });
   }
