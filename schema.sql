@@ -364,9 +364,19 @@ create policy "a user updates only their own profile" on profiles
 -- the SQL Editor (vs. creating tables through the dashboard's Table
 -- Editor, which auto-grants) does NOT grant anything by itself. Re-run
 -- (idempotent) any time a new table is added above.
-grant select on all tables in schema public to anon, authenticated;
-grant insert, update, delete on all tables in schema public to authenticated;
-grant usage, select on all sequences in schema public to anon, authenticated;
-alter default privileges in schema public grant select on tables to anon, authenticated;
-alter default privileges in schema public grant insert, update, delete on tables to authenticated;
-alter default privileges in schema public grant usage, select on sequences to anon, authenticated;
+--
+-- service_role is included here too, not just anon/authenticated:
+-- verified directly via information_schema.role_table_grants that this
+-- project's service_role had the SAME gap (only REFERENCES/TRIGGER/
+-- TRUNCATE, no SELECT/INSERT/UPDATE/DELETE) on at least `racers` - it
+-- bypasses Row Level Security, not table-level GRANTs, and a table
+-- created by raw SQL here never got service_role's grants either. This
+-- is exactly what was breaking verify-car-swap's Edge Function (which
+-- reads/writes via the service-role key) with "Lookup failed, try
+-- again." even after anon/authenticated were fixed.
+grant select on all tables in schema public to anon, authenticated, service_role;
+grant insert, update, delete on all tables in schema public to authenticated, service_role;
+grant usage, select on all sequences in schema public to anon, authenticated, service_role;
+alter default privileges in schema public grant select on tables to anon, authenticated, service_role;
+alter default privileges in schema public grant insert, update, delete on tables to authenticated, service_role;
+alter default privileges in schema public grant usage, select on sequences to anon, authenticated, service_role;
