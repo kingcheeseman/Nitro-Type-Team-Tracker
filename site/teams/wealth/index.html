@@ -306,11 +306,17 @@
     box-shadow: 0 14px 28px color-mix(in srgb, var(--card-accent, var(--accent)) 30%, transparent);
   }
   .card .top { display: flex; align-items: center; gap: 10px; }
+  /* The tag (short, stable) links to this team's own TypeTrack page;
+     the full name links out to the team's real Nitro Type page - two
+     different destinations, so they get two separate link targets
+     instead of one link covering the whole header. */
   .card .tag { font-weight: 800; font-size: 14px; color: var(--card-accent, var(--accent)); }
+  .card .tag:hover { text-decoration: underline; }
   .card .display-name {
     font-family: "Rajdhani", "Manrope", sans-serif;
     color: var(--text); font-weight: 600; font-size: 15px;
   }
+  .card .display-name:hover { text-decoration: underline; color: var(--card-accent, var(--accent)); }
   .card .footer { margin-top: auto; font-size: 11.5px; color: var(--muted); }
   .card a.cover { position: static; }
   .card a.view { align-self: flex-start; font-size: 12.5px; font-weight: 700; }
@@ -1186,6 +1192,6 @@
     </div></div>
     </div>
 </main>
-<footer class="site">Generated 2026-10-24T16:01:11.147Z</footer>
+<footer class="site">Generated 2026-10-24T16:08:52.266Z</footer>
 </body>
 </html>

@@ -306,11 +306,17 @@
     box-shadow: 0 14px 28px color-mix(in srgb, var(--card-accent, var(--accent)) 30%, transparent);
   }
   .card .top { display: flex; align-items: center; gap: 10px; }
+  /* The tag (short, stable) links to this team's own TypeTrack page;
+     the full name links out to the team's real Nitro Type page - two
+     different destinations, so they get two separate link targets
+     instead of one link covering the whole header. */
   .card .tag { font-weight: 800; font-size: 14px; color: var(--card-accent, var(--accent)); }
+  .card .tag:hover { text-decoration: underline; }
   .card .display-name {
     font-family: "Rajdhani", "Manrope", sans-serif;
     color: var(--text); font-weight: 600; font-size: 15px;
   }
+  .card .display-name:hover { text-decoration: underline; color: var(--card-accent, var(--accent)); }
   .card .footer { margin-top: auto; font-size: 11.5px; color: var(--muted); }
   .card a.cover { position: static; }
   .card a.view { align-self: flex-start; font-size: 12.5px; font-weight: 700; }
@@ -559,7 +565,7 @@
     <div class="hero" style="background:#5b52a3;color:#ffffff">
       <div class="name">[NH] Nephilims</div>
       <div class="sub">
-        Captain: megladon · 45 racers tracked · last synced 10/24/2026, 3:39:56 PM</div>
+        Captain: megladon · 45 racers tracked · last synced 10/24/2026, 4:06:59 PM</div>
     </div>
     
     <div class="req-bar">
@@ -588,10 +594,10 @@
             -hugoNT-<span class="role-pill officer">Officer</span><span class="role-pill gold">Gold</span>
           </td>
           <td>Oct 14, 2026</td>
-          <td>121</td>
+          <td>117</td>
           <td>167</td>
-          <td>62,647</td>
-          <td><span class="pill good">96.27%</span></td>
+          <td>62,661</td>
+          <td><span class="pill good">96.26%</span></td>
         </tr>
         <tr>
           <td class="racer">
@@ -672,10 +678,10 @@
             Aurora
           </td>
           <td>Oct 18, 2026</td>
-          <td>75</td>
+          <td>73</td>
           <td>91</td>
-          <td>11,337</td>
-          <td><span class="pill good">95.61%</span></td>
+          <td>11,374</td>
+          <td><span class="pill good">95.59%</span></td>
         </tr>
         <tr>
           <td class="racer">
@@ -944,14 +950,14 @@
         <tr>
           <td class="racer">
             <span class="avatar" style="background:hsl(308 85% 65%)">P</span>
-            
+            <img class="car-thumb" src="../../assets/cars/painted-spirit_racers_ink_fox_small_120.png" alt="" loading="lazy" onerror="this.remove()">
             platypus<span class="role-pill gold">Gold</span>
           </td>
           <td>Oct 11, 2026</td>
-          <td>63</td>
+          <td>72</td>
           <td>99</td>
-          <td>2,883</td>
-          <td><span class="pill low">89.71%</span></td>
+          <td>2,904</td>
+          <td><span class="pill low">89.78%</span></td>
         </tr>
         <tr>
           <td class="racer">
@@ -1056,9 +1062,9 @@
             Tiktok_dc4lyk<span class="role-pill officer">Officer</span><span class="role-pill gold">Gold</span>
           </td>
           <td>Oct 21, 2026</td>
-          <td>66</td>
+          <td>60</td>
           <td>179</td>
-          <td>12,100</td>
+          <td>12,104</td>
           <td><span class="pill ok">92.38%</span></td>
         </tr>
         <tr>
@@ -1126,6 +1132,6 @@
     </div></div>
     </div>
 </main>
-<footer class="site">Generated 2026-10-24T16:01:20.302Z</footer>
+<footer class="site">Generated 2026-10-24T16:08:56.722Z</footer>
 </body>
 </html>

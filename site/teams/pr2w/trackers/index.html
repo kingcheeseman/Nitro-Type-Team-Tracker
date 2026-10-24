@@ -306,11 +306,17 @@
     box-shadow: 0 14px 28px color-mix(in srgb, var(--card-accent, var(--accent)) 30%, transparent);
   }
   .card .top { display: flex; align-items: center; gap: 10px; }
+  /* The tag (short, stable) links to this team's own TypeTrack page;
+     the full name links out to the team's real Nitro Type page - two
+     different destinations, so they get two separate link targets
+     instead of one link covering the whole header. */
   .card .tag { font-weight: 800; font-size: 14px; color: var(--card-accent, var(--accent)); }
+  .card .tag:hover { text-decoration: underline; }
   .card .display-name {
     font-family: "Rajdhani", "Manrope", sans-serif;
     color: var(--text); font-weight: 600; font-size: 15px;
   }
+  .card .display-name:hover { text-decoration: underline; color: var(--card-accent, var(--accent)); }
   .card .footer { margin-top: auto; font-size: 11.5px; color: var(--muted); }
   .card a.cover { position: static; }
   .card a.view { align-self: flex-start; font-size: 12.5px; font-weight: 700; }
@@ -559,7 +565,7 @@
     <div class="hero" style="background:#ea1979;color:#ffffff">
       <div class="name">[PR2W] P1nks R2 W1ld</div>
       <div class="sub">
-        Captain: pinkyboo · 49 racers tracked · last synced 10/24/2026, 3:40:46 PM</div>
+        Captain: pinkyboo · 49 racers tracked · last synced 10/24/2026, 4:07:51 PM</div>
     </div>
     <h2 style="margin:28px 0 14px;">Tracker</h2>
     <p class="meta-row">This team's own racers, ranked by points earned in each window — the same ledger behind the site-wide leaderboard, scoped to just this roster.</p>
@@ -601,9 +607,9 @@
             <img class="car-thumb" src="../../../assets/cars/painted-yacht_small_340.png" alt="" loading="lazy" onerror="this.remove()">
             GREEK BANANA
           </td>
-          <td><span class="points">74,754.6</span></td>
-          <td>574</td>
-          <td>78</td>
+          <td><span class="points">79,609.74</span></td>
+          <td>611</td>
+          <td>77</td>
           <td>103</td>
           <td><span class="pill ok">92.72%</span></td>
         </tr>
@@ -679,11 +685,11 @@
             <img class="car-thumb" src="../../../assets/cars/underworld_small.png" alt="" loading="lazy" onerror="this.remove()">
             jackybo
           </td>
-          <td><span class="points">14,680.42</span></td>
-          <td>118</td>
-          <td>60</td>
+          <td><span class="points">17,351.62</span></td>
+          <td>139</td>
+          <td>68</td>
           <td>88</td>
-          <td><span class="pill ok">93.19%</span></td>
+          <td><span class="pill ok">93.2%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">8</span></td>
@@ -727,6 +733,19 @@
         <tr>
           <td><span class="lb-rank">11</span></td>
           <td class="racer">
+            <span class="avatar" style="background:hsl(350 85% 65%)">A</span>
+            
+            AllstateRacing4Ava
+          </td>
+          <td><span class="points">7,280.1</span></td>
+          <td>55</td>
+          <td>67</td>
+          <td>148</td>
+          <td><span class="pill good">96.32%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">12</span></td>
+          <td class="racer">
             <span class="avatar" style="background:hsl(209 85% 65%)">Y</span>
             <img class="car-thumb" src="../../../assets/cars/painted-icarus_small_320.png" alt="" loading="lazy" onerror="this.remove()">
             Yaffle
@@ -738,20 +757,20 @@
           <td><span class="pill ok">94.65%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">12</span></td>
+          <td><span class="lb-rank">13</span></td>
           <td class="racer">
-            <span class="avatar" style="background:hsl(350 85% 65%)">A</span>
-            
-            AllstateRacing4Ava
+            <span class="avatar" style="background:hsl(194 85% 65%)">S</span>
+            <img class="car-thumb" src="../../../assets/cars/painted-spirit_koi_small_20.png" alt="" loading="lazy" onerror="this.remove()">
+            SalmonBlast
           </td>
-          <td><span class="points">6,371.36</span></td>
-          <td>48</td>
-          <td>86</td>
-          <td>148</td>
-          <td><span class="pill good">96.32%</span></td>
+          <td><span class="points">6,425.37</span></td>
+          <td>52</td>
+          <td>64</td>
+          <td>90</td>
+          <td><span class="pill ok">91.71%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">13</span></td>
+          <td><span class="lb-rank">14</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(138 85% 65%)">A</span>
             
@@ -762,19 +781,6 @@
           <td>114</td>
           <td>142</td>
           <td><span class="pill good">96.46%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">14</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(194 85% 65%)">S</span>
-            <img class="car-thumb" src="../../../assets/cars/painted-spirit_koi_small_20.png" alt="" loading="lazy" onerror="this.remove()">
-            SalmonBlast
-          </td>
-          <td><span class="points">5,188.27</span></td>
-          <td>42</td>
-          <td>63</td>
-          <td>90</td>
-          <td><span class="pill ok">91.71%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">15</span></td>
@@ -934,9 +940,9 @@
             <img class="car-thumb" src="../../../assets/cars/painted-yacht_small_340.png" alt="" loading="lazy" onerror="this.remove()">
             GREEK BANANA
           </td>
-          <td><span class="points">74,754.6</span></td>
-          <td>574</td>
-          <td>78</td>
+          <td><span class="points">79,609.74</span></td>
+          <td>611</td>
+          <td>77</td>
           <td>103</td>
           <td><span class="pill ok">92.72%</span></td>
         </tr>
@@ -1012,11 +1018,11 @@
             <img class="car-thumb" src="../../../assets/cars/underworld_small.png" alt="" loading="lazy" onerror="this.remove()">
             jackybo
           </td>
-          <td><span class="points">14,680.42</span></td>
-          <td>118</td>
-          <td>60</td>
+          <td><span class="points">17,351.62</span></td>
+          <td>139</td>
+          <td>68</td>
           <td>88</td>
-          <td><span class="pill ok">93.19%</span></td>
+          <td><span class="pill ok">93.2%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">8</span></td>
@@ -1086,6 +1092,32 @@
         <tr>
           <td><span class="lb-rank">13</span></td>
           <td class="racer">
+            <span class="avatar" style="background:hsl(194 85% 65%)">S</span>
+            <img class="car-thumb" src="../../../assets/cars/painted-spirit_koi_small_20.png" alt="" loading="lazy" onerror="this.remove()">
+            SalmonBlast
+          </td>
+          <td><span class="points">7,406.97</span></td>
+          <td>60</td>
+          <td>64</td>
+          <td>90</td>
+          <td><span class="pill ok">91.71%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">14</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(350 85% 65%)">A</span>
+            
+            AllstateRacing4Ava
+          </td>
+          <td><span class="points">7,280.1</span></td>
+          <td>55</td>
+          <td>67</td>
+          <td>148</td>
+          <td><span class="pill good">96.32%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">15</span></td>
+          <td class="racer">
             <span class="avatar" style="background:hsl(138 85% 65%)">A</span>
             
             andrewleslieparker
@@ -1095,32 +1127,6 @@
           <td>114</td>
           <td>142</td>
           <td><span class="pill good">96.46%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">14</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(350 85% 65%)">A</span>
-            
-            AllstateRacing4Ava
-          </td>
-          <td><span class="points">6,371.36</span></td>
-          <td>48</td>
-          <td>86</td>
-          <td>148</td>
-          <td><span class="pill good">96.32%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">15</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(194 85% 65%)">S</span>
-            <img class="car-thumb" src="../../../assets/cars/painted-spirit_koi_small_20.png" alt="" loading="lazy" onerror="this.remove()">
-            SalmonBlast
-          </td>
-          <td><span class="points">6,169.87</span></td>
-          <td>50</td>
-          <td>63</td>
-          <td>90</td>
-          <td><span class="pill ok">91.71%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">16</span></td>
@@ -1319,9 +1325,9 @@
             <img class="car-thumb" src="../../../assets/cars/painted-yacht_small_340.png" alt="" loading="lazy" onerror="this.remove()">
             GREEK BANANA
           </td>
-          <td><span class="points">74,754.6</span></td>
-          <td>574</td>
-          <td>78</td>
+          <td><span class="points">79,609.74</span></td>
+          <td>611</td>
+          <td>77</td>
           <td>103</td>
           <td><span class="pill ok">92.72%</span></td>
         </tr>
@@ -1397,11 +1403,11 @@
             <img class="car-thumb" src="../../../assets/cars/underworld_small.png" alt="" loading="lazy" onerror="this.remove()">
             jackybo
           </td>
-          <td><span class="points">14,680.42</span></td>
-          <td>118</td>
-          <td>60</td>
+          <td><span class="points">17,351.62</span></td>
+          <td>139</td>
+          <td>68</td>
           <td>88</td>
-          <td><span class="pill ok">93.19%</span></td>
+          <td><span class="pill ok">93.2%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">8</span></td>
@@ -1471,6 +1477,32 @@
         <tr>
           <td><span class="lb-rank">13</span></td>
           <td class="racer">
+            <span class="avatar" style="background:hsl(194 85% 65%)">S</span>
+            <img class="car-thumb" src="../../../assets/cars/painted-spirit_koi_small_20.png" alt="" loading="lazy" onerror="this.remove()">
+            SalmonBlast
+          </td>
+          <td><span class="points">7,406.97</span></td>
+          <td>60</td>
+          <td>64</td>
+          <td>90</td>
+          <td><span class="pill ok">91.71%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">14</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(350 85% 65%)">A</span>
+            
+            AllstateRacing4Ava
+          </td>
+          <td><span class="points">7,280.1</span></td>
+          <td>55</td>
+          <td>67</td>
+          <td>148</td>
+          <td><span class="pill good">96.32%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">15</span></td>
+          <td class="racer">
             <span class="avatar" style="background:hsl(138 85% 65%)">A</span>
             
             andrewleslieparker
@@ -1480,32 +1512,6 @@
           <td>114</td>
           <td>142</td>
           <td><span class="pill good">96.46%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">14</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(350 85% 65%)">A</span>
-            
-            AllstateRacing4Ava
-          </td>
-          <td><span class="points">6,371.36</span></td>
-          <td>48</td>
-          <td>86</td>
-          <td>148</td>
-          <td><span class="pill good">96.32%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">15</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(194 85% 65%)">S</span>
-            <img class="car-thumb" src="../../../assets/cars/painted-spirit_koi_small_20.png" alt="" loading="lazy" onerror="this.remove()">
-            SalmonBlast
-          </td>
-          <td><span class="points">6,169.87</span></td>
-          <td>50</td>
-          <td>63</td>
-          <td>90</td>
-          <td><span class="pill ok">91.71%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">16</span></td>
@@ -1704,9 +1710,9 @@
             <img class="car-thumb" src="../../../assets/cars/painted-yacht_small_340.png" alt="" loading="lazy" onerror="this.remove()">
             GREEK BANANA
           </td>
-          <td><span class="points">74,754.6</span></td>
-          <td>574</td>
-          <td>78</td>
+          <td><span class="points">79,609.74</span></td>
+          <td>611</td>
+          <td>77</td>
           <td>103</td>
           <td><span class="pill ok">92.72%</span></td>
         </tr>
@@ -1782,11 +1788,11 @@
             <img class="car-thumb" src="../../../assets/cars/underworld_small.png" alt="" loading="lazy" onerror="this.remove()">
             jackybo
           </td>
-          <td><span class="points">14,680.42</span></td>
-          <td>118</td>
-          <td>60</td>
+          <td><span class="points">17,351.62</span></td>
+          <td>139</td>
+          <td>68</td>
           <td>88</td>
-          <td><span class="pill ok">93.19%</span></td>
+          <td><span class="pill ok">93.2%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">8</span></td>
@@ -1856,6 +1862,32 @@
         <tr>
           <td><span class="lb-rank">13</span></td>
           <td class="racer">
+            <span class="avatar" style="background:hsl(194 85% 65%)">S</span>
+            <img class="car-thumb" src="../../../assets/cars/painted-spirit_koi_small_20.png" alt="" loading="lazy" onerror="this.remove()">
+            SalmonBlast
+          </td>
+          <td><span class="points">7,406.97</span></td>
+          <td>60</td>
+          <td>64</td>
+          <td>90</td>
+          <td><span class="pill ok">91.71%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">14</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(350 85% 65%)">A</span>
+            
+            AllstateRacing4Ava
+          </td>
+          <td><span class="points">7,280.1</span></td>
+          <td>55</td>
+          <td>67</td>
+          <td>148</td>
+          <td><span class="pill good">96.32%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">15</span></td>
+          <td class="racer">
             <span class="avatar" style="background:hsl(138 85% 65%)">A</span>
             
             andrewleslieparker
@@ -1865,32 +1897,6 @@
           <td>114</td>
           <td>142</td>
           <td><span class="pill good">96.46%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">14</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(350 85% 65%)">A</span>
-            
-            AllstateRacing4Ava
-          </td>
-          <td><span class="points">6,371.36</span></td>
-          <td>48</td>
-          <td>86</td>
-          <td>148</td>
-          <td><span class="pill good">96.32%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">15</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(194 85% 65%)">S</span>
-            <img class="car-thumb" src="../../../assets/cars/painted-spirit_koi_small_20.png" alt="" loading="lazy" onerror="this.remove()">
-            SalmonBlast
-          </td>
-          <td><span class="points">6,169.87</span></td>
-          <td>50</td>
-          <td>63</td>
-          <td>90</td>
-          <td><span class="pill ok">91.71%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">16</span></td>
@@ -2078,6 +2084,6 @@
     </div></div></div>
     </div>
 </main>
-<footer class="site">Generated 2026-10-24T16:01:12.262Z</footer>
+<footer class="site">Generated 2026-10-24T16:08:52.719Z</footer>
 </body>
 </html>

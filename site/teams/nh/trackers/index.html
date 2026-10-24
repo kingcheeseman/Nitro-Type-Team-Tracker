@@ -306,11 +306,17 @@
     box-shadow: 0 14px 28px color-mix(in srgb, var(--card-accent, var(--accent)) 30%, transparent);
   }
   .card .top { display: flex; align-items: center; gap: 10px; }
+  /* The tag (short, stable) links to this team's own TypeTrack page;
+     the full name links out to the team's real Nitro Type page - two
+     different destinations, so they get two separate link targets
+     instead of one link covering the whole header. */
   .card .tag { font-weight: 800; font-size: 14px; color: var(--card-accent, var(--accent)); }
+  .card .tag:hover { text-decoration: underline; }
   .card .display-name {
     font-family: "Rajdhani", "Manrope", sans-serif;
     color: var(--text); font-weight: 600; font-size: 15px;
   }
+  .card .display-name:hover { text-decoration: underline; color: var(--card-accent, var(--accent)); }
   .card .footer { margin-top: auto; font-size: 11.5px; color: var(--muted); }
   .card a.cover { position: static; }
   .card a.view { align-self: flex-start; font-size: 12.5px; font-weight: 700; }
@@ -559,7 +565,7 @@
     <div class="hero" style="background:#5b52a3;color:#ffffff">
       <div class="name">[NH] Nephilims</div>
       <div class="sub">
-        Captain: megladon · 45 racers tracked · last synced 10/24/2026, 3:39:56 PM</div>
+        Captain: megladon · 45 racers tracked · last synced 10/24/2026, 4:06:59 PM</div>
     </div>
     <h2 style="margin:28px 0 14px;">Tracker</h2>
     <p class="meta-row">This team's own racers, ranked by points earned in each window — the same ledger behind the site-wide leaderboard, scoped to just this roster.</p>
@@ -610,6 +616,19 @@
         <tr>
           <td><span class="lb-rank top2">2</span></td>
           <td class="racer">
+            <span class="avatar" style="background:hsl(288 85% 65%)">A</span>
+            <img class="car-thumb" src="../../../assets/cars/badrax_small.png" alt="" loading="lazy" onerror="this.remove()">
+            Aurora
+          </td>
+          <td><span class="points">14,993.38</span></td>
+          <td>114</td>
+          <td>73</td>
+          <td>91</td>
+          <td><span class="pill good">95.59%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank top3">3</span></td>
+          <td class="racer">
             <span class="avatar" style="background:hsl(210 85% 65%)">S</span>
             
             Space　
@@ -621,7 +640,20 @@
           <td><span class="pill good">95.1%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank top3">3</span></td>
+          <td><span class="lb-rank">4</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(308 85% 65%)">P</span>
+            <img class="car-thumb" src="../../../assets/cars/painted-spirit_racers_ink_fox_small_120.png" alt="" loading="lazy" onerror="this.remove()">
+            platypus
+          </td>
+          <td><span class="points">11,972.33</span></td>
+          <td>98</td>
+          <td>72</td>
+          <td>99</td>
+          <td><span class="pill low">89.78%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">5</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(289 85% 65%)">C</span>
             <img class="car-thumb" src="../../../assets/cars/painted-nightmarez1_small_340.png" alt="" loading="lazy" onerror="this.remove()">
@@ -632,32 +664,6 @@
           <td>104</td>
           <td>136</td>
           <td><span class="pill ok">93.27%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">4</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(288 85% 65%)">A</span>
-            <img class="car-thumb" src="../../../assets/cars/badrax_small.png" alt="" loading="lazy" onerror="this.remove()">
-            Aurora
-          </td>
-          <td><span class="points">10,106.05</span></td>
-          <td>77</td>
-          <td>75</td>
-          <td>91</td>
-          <td><span class="pill good">95.61%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">5</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(308 85% 65%)">P</span>
-            
-            platypus
-          </td>
-          <td><span class="points">9,330.95</span></td>
-          <td>77</td>
-          <td>63</td>
-          <td>99</td>
-          <td><span class="pill low">89.71%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">6</span></td>
@@ -705,9 +711,9 @@
             
             Tiktok_dc4lyk
           </td>
-          <td><span class="points">3,144.48</span></td>
-          <td>25</td>
-          <td>66</td>
+          <td><span class="points">3,634</span></td>
+          <td>29</td>
+          <td>60</td>
           <td>179</td>
           <td><span class="pill ok">92.38%</span></td>
         </tr>
@@ -740,6 +746,19 @@
         <tr>
           <td><span class="lb-rank">12</span></td>
           <td class="racer">
+            <span class="avatar" style="background:hsl(163 85% 65%)"></span>
+            
+            -hugoNT-
+          </td>
+          <td><span class="points">2,323.41</span></td>
+          <td>15</td>
+          <td>117</td>
+          <td>167</td>
+          <td><span class="pill good">96.26%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">13</span></td>
+          <td class="racer">
             <span class="avatar" style="background:hsl(80 85% 65%)">S</span>
             
             superior rd to 100k
@@ -749,19 +768,6 @@
           <td>100</td>
           <td>159</td>
           <td><span class="pill ok">94.91%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">13</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(163 85% 65%)"></span>
-            
-            -hugoNT-
-          </td>
-          <td><span class="points">156.77</span></td>
-          <td>1</td>
-          <td>121</td>
-          <td>167</td>
-          <td><span class="pill good">96.27%</span></td>
         </tr></tbody>
       </table>
     </div></div><div class="trk-panel" data-range="weekly" hidden>
@@ -800,6 +806,45 @@
         <tr>
           <td><span class="lb-rank top3">3</span></td>
           <td class="racer">
+            <span class="avatar" style="background:hsl(288 85% 65%)">A</span>
+            <img class="car-thumb" src="../../../assets/cars/badrax_small.png" alt="" loading="lazy" onerror="this.remove()">
+            Aurora
+          </td>
+          <td><span class="points">14,993.38</span></td>
+          <td>114</td>
+          <td>73</td>
+          <td>91</td>
+          <td><span class="pill good">95.59%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">4</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(308 85% 65%)">P</span>
+            <img class="car-thumb" src="../../../assets/cars/painted-spirit_racers_ink_fox_small_120.png" alt="" loading="lazy" onerror="this.remove()">
+            platypus
+          </td>
+          <td><span class="points">11,972.33</span></td>
+          <td>98</td>
+          <td>72</td>
+          <td>99</td>
+          <td><span class="pill low">89.78%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">5</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(163 85% 65%)"></span>
+            
+            -hugoNT-
+          </td>
+          <td><span class="points">10,723.26</span></td>
+          <td>69</td>
+          <td>117</td>
+          <td>167</td>
+          <td><span class="pill good">96.26%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">6</span></td>
+          <td class="racer">
             <span class="avatar" style="background:hsl(289 85% 65%)">C</span>
             <img class="car-thumb" src="../../../assets/cars/painted-nightmarez1_small_340.png" alt="" loading="lazy" onerror="this.remove()">
             C L A Y
@@ -811,20 +856,7 @@
           <td><span class="pill ok">93.27%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">4</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(288 85% 65%)">A</span>
-            <img class="car-thumb" src="../../../assets/cars/badrax_small.png" alt="" loading="lazy" onerror="this.remove()">
-            Aurora
-          </td>
-          <td><span class="points">10,106.05</span></td>
-          <td>77</td>
-          <td>75</td>
-          <td>91</td>
-          <td><span class="pill good">95.61%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">5</span></td>
+          <td><span class="lb-rank">7</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(20 85% 65%)">J</span>
             <img class="car-thumb" src="../../../assets/cars/painted-spirit_koi_small_120.png" alt="" loading="lazy" onerror="this.remove()">
@@ -835,32 +867,6 @@
           <td>79</td>
           <td>105</td>
           <td><span class="pill good">95.61%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">6</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(308 85% 65%)">P</span>
-            
-            platypus
-          </td>
-          <td><span class="points">9,330.95</span></td>
-          <td>77</td>
-          <td>63</td>
-          <td>99</td>
-          <td><span class="pill low">89.71%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">7</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(163 85% 65%)"></span>
-            
-            -hugoNT-
-          </td>
-          <td><span class="points">8,556.62</span></td>
-          <td>55</td>
-          <td>121</td>
-          <td>167</td>
-          <td><span class="pill good">96.27%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">8</span></td>
@@ -917,6 +923,19 @@
         <tr>
           <td><span class="lb-rank">12</span></td>
           <td class="racer">
+            <span class="avatar" style="background:hsl(294 85% 65%)">T</span>
+            
+            Tiktok_dc4lyk
+          </td>
+          <td><span class="points">3,634</span></td>
+          <td>29</td>
+          <td>60</td>
+          <td>179</td>
+          <td><span class="pill ok">92.38%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">13</span></td>
+          <td class="racer">
             <span class="avatar" style="background:hsl(197 85% 65%)">-</span>
             <img class="car-thumb" src="../../../assets/cars/painted-spirit_koi_small_280.png" alt="" loading="lazy" onerror="this.remove()">
             -hugoNT-
@@ -926,19 +945,6 @@
           <td>65</td>
           <td>214</td>
           <td><span class="pill ok">91.04%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">13</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(294 85% 65%)">T</span>
-            
-            Tiktok_dc4lyk
-          </td>
-          <td><span class="points">3,144.48</span></td>
-          <td>25</td>
-          <td>66</td>
-          <td>179</td>
-          <td><span class="pill ok">92.38%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">14</span></td>
@@ -1003,6 +1009,45 @@
         <tr>
           <td><span class="lb-rank top3">3</span></td>
           <td class="racer">
+            <span class="avatar" style="background:hsl(288 85% 65%)">A</span>
+            <img class="car-thumb" src="../../../assets/cars/badrax_small.png" alt="" loading="lazy" onerror="this.remove()">
+            Aurora
+          </td>
+          <td><span class="points">14,993.38</span></td>
+          <td>114</td>
+          <td>73</td>
+          <td>91</td>
+          <td><span class="pill good">95.59%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">4</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(308 85% 65%)">P</span>
+            <img class="car-thumb" src="../../../assets/cars/painted-spirit_racers_ink_fox_small_120.png" alt="" loading="lazy" onerror="this.remove()">
+            platypus
+          </td>
+          <td><span class="points">11,972.33</span></td>
+          <td>98</td>
+          <td>72</td>
+          <td>99</td>
+          <td><span class="pill low">89.78%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">5</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(163 85% 65%)"></span>
+            
+            -hugoNT-
+          </td>
+          <td><span class="points">10,723.26</span></td>
+          <td>69</td>
+          <td>117</td>
+          <td>167</td>
+          <td><span class="pill good">96.26%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">6</span></td>
+          <td class="racer">
             <span class="avatar" style="background:hsl(289 85% 65%)">C</span>
             <img class="car-thumb" src="../../../assets/cars/painted-nightmarez1_small_340.png" alt="" loading="lazy" onerror="this.remove()">
             C L A Y
@@ -1014,20 +1059,7 @@
           <td><span class="pill ok">93.27%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">4</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(288 85% 65%)">A</span>
-            <img class="car-thumb" src="../../../assets/cars/badrax_small.png" alt="" loading="lazy" onerror="this.remove()">
-            Aurora
-          </td>
-          <td><span class="points">10,106.05</span></td>
-          <td>77</td>
-          <td>75</td>
-          <td>91</td>
-          <td><span class="pill good">95.61%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">5</span></td>
+          <td><span class="lb-rank">7</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(20 85% 65%)">J</span>
             <img class="car-thumb" src="../../../assets/cars/painted-spirit_koi_small_120.png" alt="" loading="lazy" onerror="this.remove()">
@@ -1038,32 +1070,6 @@
           <td>79</td>
           <td>105</td>
           <td><span class="pill good">95.61%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">6</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(308 85% 65%)">P</span>
-            
-            platypus
-          </td>
-          <td><span class="points">9,330.95</span></td>
-          <td>77</td>
-          <td>63</td>
-          <td>99</td>
-          <td><span class="pill low">89.71%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">7</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(163 85% 65%)"></span>
-            
-            -hugoNT-
-          </td>
-          <td><span class="points">8,556.62</span></td>
-          <td>55</td>
-          <td>121</td>
-          <td>167</td>
-          <td><span class="pill good">96.27%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">8</span></td>
@@ -1120,6 +1126,19 @@
         <tr>
           <td><span class="lb-rank">12</span></td>
           <td class="racer">
+            <span class="avatar" style="background:hsl(294 85% 65%)">T</span>
+            
+            Tiktok_dc4lyk
+          </td>
+          <td><span class="points">3,634</span></td>
+          <td>29</td>
+          <td>60</td>
+          <td>179</td>
+          <td><span class="pill ok">92.38%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">13</span></td>
+          <td class="racer">
             <span class="avatar" style="background:hsl(197 85% 65%)">-</span>
             <img class="car-thumb" src="../../../assets/cars/painted-spirit_koi_small_280.png" alt="" loading="lazy" onerror="this.remove()">
             -hugoNT-
@@ -1129,19 +1148,6 @@
           <td>65</td>
           <td>214</td>
           <td><span class="pill ok">91.04%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">13</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(294 85% 65%)">T</span>
-            
-            Tiktok_dc4lyk
-          </td>
-          <td><span class="points">3,144.48</span></td>
-          <td>25</td>
-          <td>66</td>
-          <td>179</td>
-          <td><span class="pill ok">92.38%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">14</span></td>
@@ -1206,6 +1212,45 @@
         <tr>
           <td><span class="lb-rank top3">3</span></td>
           <td class="racer">
+            <span class="avatar" style="background:hsl(288 85% 65%)">A</span>
+            <img class="car-thumb" src="../../../assets/cars/badrax_small.png" alt="" loading="lazy" onerror="this.remove()">
+            Aurora
+          </td>
+          <td><span class="points">14,993.38</span></td>
+          <td>114</td>
+          <td>73</td>
+          <td>91</td>
+          <td><span class="pill good">95.59%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">4</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(308 85% 65%)">P</span>
+            <img class="car-thumb" src="../../../assets/cars/painted-spirit_racers_ink_fox_small_120.png" alt="" loading="lazy" onerror="this.remove()">
+            platypus
+          </td>
+          <td><span class="points">11,972.33</span></td>
+          <td>98</td>
+          <td>72</td>
+          <td>99</td>
+          <td><span class="pill low">89.78%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">5</span></td>
+          <td class="racer">
+            <span class="avatar" style="background:hsl(163 85% 65%)"></span>
+            
+            -hugoNT-
+          </td>
+          <td><span class="points">10,723.26</span></td>
+          <td>69</td>
+          <td>117</td>
+          <td>167</td>
+          <td><span class="pill good">96.26%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">6</span></td>
+          <td class="racer">
             <span class="avatar" style="background:hsl(289 85% 65%)">C</span>
             <img class="car-thumb" src="../../../assets/cars/painted-nightmarez1_small_340.png" alt="" loading="lazy" onerror="this.remove()">
             C L A Y
@@ -1217,20 +1262,7 @@
           <td><span class="pill ok">93.27%</span></td>
         </tr>
         <tr>
-          <td><span class="lb-rank">4</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(288 85% 65%)">A</span>
-            <img class="car-thumb" src="../../../assets/cars/badrax_small.png" alt="" loading="lazy" onerror="this.remove()">
-            Aurora
-          </td>
-          <td><span class="points">10,106.05</span></td>
-          <td>77</td>
-          <td>75</td>
-          <td>91</td>
-          <td><span class="pill good">95.61%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">5</span></td>
+          <td><span class="lb-rank">7</span></td>
           <td class="racer">
             <span class="avatar" style="background:hsl(20 85% 65%)">J</span>
             <img class="car-thumb" src="../../../assets/cars/painted-spirit_koi_small_120.png" alt="" loading="lazy" onerror="this.remove()">
@@ -1241,32 +1273,6 @@
           <td>79</td>
           <td>105</td>
           <td><span class="pill good">95.61%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">6</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(308 85% 65%)">P</span>
-            
-            platypus
-          </td>
-          <td><span class="points">9,330.95</span></td>
-          <td>77</td>
-          <td>63</td>
-          <td>99</td>
-          <td><span class="pill low">89.71%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">7</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(163 85% 65%)"></span>
-            
-            -hugoNT-
-          </td>
-          <td><span class="points">8,556.62</span></td>
-          <td>55</td>
-          <td>121</td>
-          <td>167</td>
-          <td><span class="pill good">96.27%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">8</span></td>
@@ -1323,6 +1329,19 @@
         <tr>
           <td><span class="lb-rank">12</span></td>
           <td class="racer">
+            <span class="avatar" style="background:hsl(294 85% 65%)">T</span>
+            
+            Tiktok_dc4lyk
+          </td>
+          <td><span class="points">3,634</span></td>
+          <td>29</td>
+          <td>60</td>
+          <td>179</td>
+          <td><span class="pill ok">92.38%</span></td>
+        </tr>
+        <tr>
+          <td><span class="lb-rank">13</span></td>
+          <td class="racer">
             <span class="avatar" style="background:hsl(197 85% 65%)">-</span>
             <img class="car-thumb" src="../../../assets/cars/painted-spirit_koi_small_280.png" alt="" loading="lazy" onerror="this.remove()">
             -hugoNT-
@@ -1332,19 +1351,6 @@
           <td>65</td>
           <td>214</td>
           <td><span class="pill ok">91.04%</span></td>
-        </tr>
-        <tr>
-          <td><span class="lb-rank">13</span></td>
-          <td class="racer">
-            <span class="avatar" style="background:hsl(294 85% 65%)">T</span>
-            
-            Tiktok_dc4lyk
-          </td>
-          <td><span class="points">3,144.48</span></td>
-          <td>25</td>
-          <td>66</td>
-          <td>179</td>
-          <td><span class="pill ok">92.38%</span></td>
         </tr>
         <tr>
           <td><span class="lb-rank">14</span></td>
@@ -1376,6 +1382,6 @@
     </div></div></div>
     </div>
 </main>
-<footer class="site">Generated 2026-10-24T16:01:20.310Z</footer>
+<footer class="site">Generated 2026-10-24T16:08:56.729Z</footer>
 </body>
 </html>

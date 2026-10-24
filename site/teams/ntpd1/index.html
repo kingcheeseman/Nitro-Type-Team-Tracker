@@ -306,11 +306,17 @@
     box-shadow: 0 14px 28px color-mix(in srgb, var(--card-accent, var(--accent)) 30%, transparent);
   }
   .card .top { display: flex; align-items: center; gap: 10px; }
+  /* The tag (short, stable) links to this team's own TypeTrack page;
+     the full name links out to the team's real Nitro Type page - two
+     different destinations, so they get two separate link targets
+     instead of one link covering the whole header. */
   .card .tag { font-weight: 800; font-size: 14px; color: var(--card-accent, var(--accent)); }
+  .card .tag:hover { text-decoration: underline; }
   .card .display-name {
     font-family: "Rajdhani", "Manrope", sans-serif;
     color: var(--text); font-weight: 600; font-size: 15px;
   }
+  .card .display-name:hover { text-decoration: underline; color: var(--card-accent, var(--accent)); }
   .card .footer { margin-top: auto; font-size: 11.5px; color: var(--muted); }
   .card a.cover { position: static; }
   .card a.view { align-self: flex-start; font-size: 12.5px; font-weight: 700; }
@@ -559,7 +565,7 @@
     <div class="hero" style="background:#40b8ea;color:#ffffff">
       <div class="name">[NTPD1] Nitro Type Police</div>
       <div class="sub">
-        Captain: Captain.Loveridge · 50 racers tracked · last synced 10/24/2026, 3:40:24 PM</div>
+        Captain: Captain.Loveridge · 50 racers tracked · last synced 10/24/2026, 4:07:29 PM</div>
     </div>
     
     <div class="req-bar">
@@ -840,10 +846,10 @@
             JP__23K<span class="role-pill gold">Gold</span>
           </td>
           <td>Jul 26, 2026</td>
-          <td>89</td>
+          <td>85</td>
           <td>133</td>
-          <td>24,568</td>
-          <td><span class="pill ok">94.86%</span></td>
+          <td>24,609</td>
+          <td><span class="pill ok">94.88%</span></td>
         </tr>
         <tr>
           <td class="racer">
@@ -944,14 +950,14 @@
         <tr>
           <td class="racer">
             <span class="avatar" style="background:hsl(25 85% 65%)">N</span>
-            <img class="car-thumb" src="../../assets/cars/spirit_koi_small.png" alt="" loading="lazy" onerror="this.remove()">
+            <img class="car-thumb" src="../../assets/cars/painted-darkstar_small_320.png" alt="" loading="lazy" onerror="this.remove()">
             NT KING<span class="role-pill gold">Gold</span>
           </td>
           <td>Oct 4, 2026</td>
-          <td>40</td>
+          <td>37</td>
           <td>67</td>
-          <td>1,914</td>
-          <td><span class="pill ok">94.76%</span></td>
+          <td>1,951</td>
+          <td><span class="pill ok">94.75%</span></td>
         </tr>
         <tr>
           <td class="racer">
@@ -1068,9 +1074,9 @@
             SavannahBananas<span class="role-pill gold">Gold</span>
           </td>
           <td>Sep 25, 2026</td>
-          <td>104</td>
+          <td>101</td>
           <td>139</td>
-          <td>9,482</td>
+          <td>9,505</td>
           <td><span class="pill good">96.47%</span></td>
         </tr>
         <tr>
@@ -1186,6 +1192,6 @@
     </div></div>
     </div>
 </main>
-<footer class="site">Generated 2026-10-24T16:01:09.706Z</footer>
+<footer class="site">Generated 2026-10-24T16:08:51.595Z</footer>
 </body>
 </html>
