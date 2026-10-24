@@ -62,24 +62,20 @@ function buildTeamsIndex(teams) {
        <div class="grid" id="teamGrid">
          ${teams
            .map((t) => {
-             const initial = (t.tag || "?").slice(0, 1).toUpperCase();
              const searchKey = `${t.tag} ${t.display_name || ""} ${t.captain_username || ""}`.toLowerCase();
              const badgeBg = teamColor(t.tag, t.tag_color);
              return `
-             <div class="card" data-search="${escapeHtml(searchKey)}">
+             <div class="card" style="--card-accent:${badgeBg}" data-search="${escapeHtml(searchKey)}">
                <div class="top">
-                 <div class="badge" style="background:${badgeBg};color:${textOnColor(badgeBg)}">${escapeHtml(initial)}</div>
-                 <div>
-                   <div class="tag">[${escapeHtml(t.tag)}]</div>
-                   <div class="display-name">${escapeHtml(t.display_name || "(unsynced)")}</div>
-                 </div>
+                 <div class="tag">[${escapeHtml(t.tag)}]</div>
+                 <div class="display-name">${escapeHtml(t.display_name || "(unsynced)")}</div>
                </div>
                ${t.captain_username ? `<div class="req-line">Captain: <b>${escapeHtml(t.captain_display_name || t.captain_username)}</b></div>` : ""}
                <div class="req-line">Members: <b>${t.members_count ?? "—"}</b> &nbsp;·&nbsp; Formed: <b>${formatDate(t.nt_created_at)}</b></div>
                ${t.min_races != null || t.min_speed != null
                  ? `<div class="req-line">Min: <b>${t.min_races ?? "—"} races</b> / <b>${t.min_speed ?? "—"} wpm</b></div>`
                  : ""}
-               <a class="view-btn" href="teams/${encodeURIComponent(t.tag.toLowerCase())}/">View team →</a>
+               <a class="view-link" href="teams/${encodeURIComponent(t.tag.toLowerCase())}/">View roster</a>
                <div class="footer">${t.last_synced_at ? `Synced ${new Date(t.last_synced_at).toLocaleString()}` : "Not synced yet"}</div>
              </div>`;
            })
@@ -133,7 +129,6 @@ function buildTeamPage(team, racers, sectionData) {
   const heroBg = teamColor(team.tag, team.tag_color);
   const hero = `
     <div class="hero" style="background:${heroBg};color:${textOnColor(heroBg)}">
-      <div class="tag">TEAM</div>
       <div class="name">[${escapeHtml(team.tag)}] ${escapeHtml(team.display_name || "")}</div>
       <div class="sub">
         ${team.captain_display_name || team.captain_username

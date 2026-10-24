@@ -126,24 +126,20 @@ app.get("/teams", async (req, res) => {
          <div class="grid" id="teamGrid">
            ${rows
              .map((t) => {
-               const initial = (t.tag || "?").slice(0, 1).toUpperCase();
                const searchKey = `${t.tag} ${t.display_name || ""} ${t.captain_username || ""}`.toLowerCase();
                const badgeBg = teamColor(t.tag, t.tag_color);
                return `
-               <div class="card" data-search="${escapeHtml(searchKey)}">
+               <div class="card" style="--card-accent:${badgeBg}" data-search="${escapeHtml(searchKey)}">
                  <div class="top">
-                   <div class="badge" style="background:${badgeBg};color:${textOnColor(badgeBg)}">${escapeHtml(initial)}</div>
-                   <div>
-                     <div class="tag">[${escapeHtml(t.tag)}]</div>
-                     <div class="display-name">${escapeHtml(t.display_name || "(unsynced)")}</div>
-                   </div>
+                   <div class="tag">[${escapeHtml(t.tag)}]</div>
+                   <div class="display-name">${escapeHtml(t.display_name || "(unsynced)")}</div>
                  </div>
                  ${t.captain_username ? `<div class="req-line">Captain: <b>${escapeHtml(t.captain_display_name || t.captain_username)}</b></div>` : ""}
                  <div class="req-line">Members: <b>${t.members_count ?? "—"}</b> &nbsp;·&nbsp; Formed: <b>${formatDate(t.nt_created_at)}</b></div>
                  ${t.min_races != null || t.min_speed != null
                    ? `<div class="req-line">Min: <b>${t.min_races ?? "—"} races</b> / <b>${t.min_speed ?? "—"} wpm</b></div>`
                    : ""}
-                 <a class="view-btn" href="/teams/${encodeURIComponent(t.tag)}">View team →</a>
+                 <a class="view-link" href="/teams/${encodeURIComponent(t.tag)}">View roster</a>
                  <div class="footer">${t.last_synced_at ? `Synced ${new Date(t.last_synced_at).toLocaleString()}` : "Not synced yet"}</div>
                </div>`;
              })
@@ -216,7 +212,6 @@ app.get("/teams/:tag", async (req, res) => {
     const heroBg = teamColor(t.tag, t.tag_color);
     const hero = `
       <div class="hero" style="background:${heroBg};color:${textOnColor(heroBg)}">
-        <div class="tag">TEAM</div>
         <div class="name">[${escapeHtml(t.tag)}] ${escapeHtml(t.display_name || "")}</div>
         <div class="sub">
           ${t.captain_display_name || t.captain_username
@@ -282,7 +277,6 @@ app.get("/teams/:tag/:section", async (req, res) => {
     const sectionHeroBg = teamColor(t.tag, t.tag_color);
     const hero = `
       <div class="hero" style="background:${sectionHeroBg};color:${textOnColor(sectionHeroBg)}">
-        <div class="tag">TEAM</div>
         <div class="name">[${escapeHtml(t.tag)}] ${escapeHtml(t.display_name || "")}</div>
       </div>`;
     const built = item.built ? await sectionContent(item.key, tag, t.captain_nt_user_id) : null;
