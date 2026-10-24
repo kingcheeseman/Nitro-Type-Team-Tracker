@@ -135,6 +135,16 @@ function formatDate(value) {
   });
 }
 
+// Thousands-separated display for every stat column (races, points,
+// speeds) - "-" passes through unchanged so existing `?? "-"` fallbacks
+// upstream don't need to change, they just get formatted on the way in.
+function formatNumber(value) {
+  if (value == null || value === "-" || value === "—") return value ?? "-";
+  const n = typeof value === "number" ? value : Number(value);
+  if (Number.isNaN(n)) return value;
+  return n.toLocaleString("en-US", { maximumFractionDigits: 2 });
+}
+
 // "officer"/"member"/captain -> a small colored pill, the same visual
 // slot a tier badge fills on a roster table: a quick, scannable status
 // signal next to each name.
@@ -170,9 +180,9 @@ function racerRosterRows(racers, team, assetsHref = "/assets/") {
             ${escapeHtml(name)}${roleBadge(r.role, isCaptain)}${membershipBadge(r.membership)}
           </td>
           <td>${formatDate(r.joined_at_nt)}</td>
-          <td>${r.avg_speed ?? "-"}</td>
-          <td>${r.top_speed ?? "-"}</td>
-          <td>${r.races ?? "-"}</td>
+          <td>${formatNumber(r.avg_speed ?? "-")}</td>
+          <td>${formatNumber(r.top_speed ?? "-")}</td>
+          <td>${formatNumber(r.races ?? "-")}</td>
           <td><span class="pill ${accClass}">${accLabel}</span></td>
         </tr>`;
     })
@@ -375,10 +385,10 @@ function racersLeaderboardTable(rows, rangeLabel, teamHref, season, assetsHref =
             ${escapeHtml(name)}
             <a class="lb-team-tag" href="${teamHref(r.team_tag)}" style="background:${tagBg};color:${textOnColor(tagBg)}">${escapeHtml(r.team_tag)}</a>
           </td>
-          <td><span class="points">${r.points}</span></td>
-          <td>${r.races}</td>
-          <td>${r.avg_speed ?? "-"}</td>
-          <td>${r.top_speed ?? "-"}</td>
+          <td><span class="points">${formatNumber(r.points)}</span></td>
+          <td>${formatNumber(r.races)}</td>
+          <td>${formatNumber(r.avg_speed ?? "-")}</td>
+          <td>${formatNumber(r.top_speed ?? "-")}</td>
           <td><span class="pill ${accClass}">${accLabel}</span></td>
         </tr>`;
     })
@@ -411,11 +421,11 @@ function teamsLeaderboardTable(rows, rangeLabel, teamHref, season) {
             <a href="${teamHref(t.tag)}">[${escapeHtml(t.tag)}]</a>
             <a href="${nitroTypeTeamHref(t.tag)}" target="_blank" rel="noopener">${escapeHtml(t.display_name || "")}</a>
           </td>
-          <td><span class="points">${t.points}</span></td>
-          <td>${t.races}</td>
-          <td>${t.avg_speed ?? "-"}</td>
+          <td><span class="points">${formatNumber(t.points)}</span></td>
+          <td>${formatNumber(t.races)}</td>
+          <td>${formatNumber(t.avg_speed ?? "-")}</td>
           <td>${t.accuracy == null ? "—" : `${t.accuracy}%`}</td>
-          <td>${t.racer_count}</td>
+          <td>${formatNumber(t.racer_count)}</td>
         </tr>`;
     })
     .join("");
@@ -485,10 +495,10 @@ function trackerTable(rows, rangeLabel, assetsHref = "/assets/") {
             ${carThumb(r.car_id, r.car_hue_angle, assetsHref)}
             ${escapeHtml(name)}
           </td>
-          <td><span class="points">${r.points}</span></td>
-          <td>${r.races}</td>
-          <td>${r.avg_speed ?? "-"}</td>
-          <td>${r.top_speed ?? "-"}</td>
+          <td><span class="points">${formatNumber(r.points)}</span></td>
+          <td>${formatNumber(r.races)}</td>
+          <td>${formatNumber(r.avg_speed ?? "-")}</td>
+          <td>${formatNumber(r.top_speed ?? "-")}</td>
           <td><span class="pill ${accClass}">${accLabel}</span></td>
         </tr>`;
     })
