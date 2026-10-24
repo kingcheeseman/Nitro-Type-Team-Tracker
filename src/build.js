@@ -22,6 +22,8 @@ const {
   notificationsBody,
   teamAdminBody,
   pageShell,
+  carImageSourceUrl,
+  carImageLocalFile,
 } = require("./theme");
 const { loadLeaderboardData, loadTeamTracker } = require("./leaderboard-data");
 const { queryNotifications } = require("./notifications");
@@ -34,7 +36,9 @@ const { accountIndexBody, accountConnectBody, signInBody } = require("./account-
 // preview never render a section differently.
 function sectionContent(key, sectionData) {
   if (key === "events") return eventsBody(sectionData.tag, sectionData.events, sectionData.captainNtUserId);
-  if (key === "trackers") return trackerBody(sectionData.tracker);
+  // Section pages (teams/<tag>/<key>/index.html) sit one level deeper than
+  // the roster page, so they need their own, one-level-further assetsHref.
+  if (key === "trackers") return trackerBody(sectionData.tracker, "../../../assets/");
   if (key === "notifications") return notificationsBody(sectionData.tag, sectionData.notifications);
   if (key === "admin") return teamAdminBody(sectionData.tag, sectionData.captainNtUserId, sectionData.racers || []);
   return null;
@@ -107,7 +111,7 @@ function buildTeamPage(team, racers, sectionData) {
   const dir = path.join(OUT_DIR, "teams", team.tag.toLowerCase());
   fs.mkdirSync(dir, { recursive: true });
 
-  const rows = racerRosterRows(racers, team);
+  const rows = racerRosterRows(racers, team, "../../assets/");
 
   const reqBar = `
     <div class="req-bar">
@@ -195,7 +199,7 @@ function buildLeaderboardsPage(data) {
   // depth (one directory under the site root), so a team page is reached
   // by stepping up one level and back down into teams/.
   const teamHref = (tag) => `../teams/${encodeURIComponent(tag.toLowerCase())}/`;
-  const body = leaderboardsBody(data, teamHref);
+  const body = leaderboardsBody(data, teamHref, "../assets/");
 
   fs.writeFileSync(
     path.join(dir, "index.html"),
@@ -278,6 +282,50 @@ function writeTeamSectionPage({ dir, depth, activeKey, content, crumb, title }) 
   );
 }
 
+// Nitro Type's own CDN returns HTTP 503 for a car image requested as a
+// cross-site <img> embed (confirmed live: it distinguishes an embedded
+// image load - Sec-Fetch-Dest: image - from a same-page fetch() or direct
+// navigation, which both succeed), so hotlinking those URLs straight into
+// our pages silently fails every time. We download each distinct car
+// image once per build instead (a plain server-side fetch - the same kind
+// that already works for ingest.js's API calls) and serve it from our own
+// site/assets/cars/, which theme.js's carImageUrl points at. A download
+// failure for one car just means that one racer's thumbnail quietly stays
+// off (carThumb's onerror handles a missing file the same as an unmapped
+// carId) - never fails the whole build.
+async function downloadCarImages(pool) {
+  const { rows } = await pool.query(
+    `select distinct car_id, car_hue_angle from racers where car_id is not null`
+  );
+  const carsDir = path.join(OUT_DIR, "assets", "cars");
+  fs.mkdirSync(carsDir, { recursive: true });
+
+  const seen = new Set();
+  let downloaded = 0;
+  let failed = 0;
+  for (const r of rows) {
+    const sourceUrl = carImageSourceUrl(r.car_id, r.car_hue_angle);
+    const localFile = carImageLocalFile(r.car_id, r.car_hue_angle);
+    if (!sourceUrl || !localFile || seen.has(localFile)) continue;
+    seen.add(localFile);
+    const destPath = path.join(carsDir, localFile);
+    if (fs.existsSync(destPath)) continue; // already cached from a previous build
+    try {
+      const res = await fetch(sourceUrl, {
+        headers: { "User-Agent": "nitro-type-team-tracker/0.1 (+https://github.com/thevoidracer/thevoidracer.github.io)" },
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const buf = Buffer.from(await res.arrayBuffer());
+      fs.writeFileSync(destPath, buf);
+      downloaded++;
+    } catch (err) {
+      failed++;
+      console.warn(`Car image fetch failed for carId=${r.car_id} hue=${r.car_hue_angle} (${sourceUrl}): ${err.message}`);
+    }
+  }
+  console.log(`Car images: ${downloaded} downloaded, ${failed} failed, ${seen.size - downloaded - failed} already cached.`);
+}
+
 async function main() {
   const { rows: teams } = await pool.query(
     `select tag, display_name, last_synced_at,
@@ -293,6 +341,7 @@ async function main() {
   // everything else in this build script writing files into OUT_DIR.
   fs.mkdirSync(path.join(OUT_DIR, "assets"), { recursive: true });
   fs.copyFileSync(path.join(__dirname, "client", "app.js"), path.join(OUT_DIR, "assets", "app.js"));
+  await downloadCarImages(pool);
 
   for (const team of teams) {
     const { rows: racers } = await pool.query(

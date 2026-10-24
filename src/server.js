@@ -30,7 +30,7 @@ const { accountIndexBody, accountConnectBody, signInBody } = require("./account-
 // just ran without waiting for the next scheduled rebuild.
 async function sectionContent(key, tag, captainNtUserId) {
   if (key === "events") return eventsBody(tag, await eventsForTeam(pool, tag), captainNtUserId);
-  if (key === "trackers") return trackerBody(await loadTeamTracker(pool, tag));
+  if (key === "trackers") return trackerBody(await loadTeamTracker(pool, tag), "/assets/");
   if (key === "notifications") return notificationsBody(tag, await queryNotifications(pool, tag));
   if (key === "admin") {
     const racers = await pool.query("select nt_user_id, username, display_name from racers where team_tag = $1", [tag]);
@@ -53,6 +53,31 @@ const SITE_NAV = {
 const app = express();
 const PORT = process.env.PORT || 3000;
 app.use("/assets", express.static(path.join(__dirname, "client")));
+
+// build.js's static site pre-downloads car thumbnails into site/assets/cars/
+// because Nitro Type's CDN returns HTTP 503 for a cross-site <img> embed
+// (see build.js's downloadCarImages for the full explanation). This dev
+// server has no such pre-downloaded cache, so it proxies each request
+// instead: fetch the image server-side (a plain fetch, same as that build
+// step, which isn't blocked) and stream it back from our own origin. A
+// failed fetch just 404s, which carThumb's onerror already handles the
+// same as a missing/unmapped car.
+app.get("/assets/cars/:file", async (req, res) => {
+  const file = req.params.file;
+  // Reverse carImageLocalFile's flattening: "painted-<slug>_small_<hue>.png"
+  // -> "painted/<slug>_small_<hue>.png", everything else passes through.
+  const slugFile = file.startsWith("painted-") ? `painted/${file.slice("painted-".length)}` : file;
+  if (!/^[a-z0-9_]+(\/[a-z0-9_]+)?\.png$/i.test(slugFile)) return res.status(404).end();
+  try {
+    const upstream = await fetch(`https://www.nitrotype.com/cars/${slugFile}`, {
+      headers: { "User-Agent": "nitro-type-team-tracker/0.1 (+https://github.com/thevoidracer/thevoidracer.github.io)" },
+    });
+    if (!upstream.ok) return res.status(404).end();
+    res.type("png").send(Buffer.from(await upstream.arrayBuffer()));
+  } catch {
+    res.status(404).end();
+  }
+});
 
 // Proves the whole stack is wired correctly: app is running AND can reach
 // the real database. This is the one thing v0 has to get right before
@@ -169,7 +194,7 @@ app.get("/teams/:tag", async (req, res) => {
       [tag]
     );
     const t = team.rows[0];
-    const rowsHtml = racerRosterRows(racers.rows, t);
+    const rowsHtml = racerRosterRows(racers.rows, t, "/assets/");
 
     const reqBar = `
       <div class="req-bar">
@@ -294,7 +319,7 @@ app.get("/leaderboards", async (req, res) => {
     res.type("html").send(
       pageShell({
         title: "Leaderboards — TypeTrack",
-        body: leaderboardsBody(data, teamHref),
+        body: leaderboardsBody(data, teamHref, "/assets/"),
         crumb: `<a href="/teams">← all teams</a>`,
         ...SITE_NAV,
         active: "leaderboards",

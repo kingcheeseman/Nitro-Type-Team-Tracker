@@ -66,26 +66,55 @@ function avatarColor(seed) {
 }
 
 // carId/hueAngle (from Nitro Type's team API, synced onto racers.car_id/
-// car_hue_angle by ingest.js) -> the actual image URL Nitro Type's own CDN
-// serves for that car, or null if we don't have a slug for this carId
+// car_hue_angle by ingest.js) -> the filename slug Nitro Type's own CDN
+// uses for that car, or null if we don't have a slug for this carId
 // (car-catalog.js is best-effort, not exhaustive - see its header comment).
-function carImageUrl(carId, hueAngle) {
+function carImageSlugFile(carId, hueAngle) {
   if (carId == null) return null;
   const slug = CAR_SLUGS[carId];
   if (!slug) return null;
-  if (hueAngle) {
-    return `https://www.nitrotype.com/cars/painted/${slug}_small_${hueAngle}.png`;
-  }
-  return `https://www.nitrotype.com/cars/${slug}_small.png`;
+  return hueAngle ? `painted/${slug}_small_${hueAngle}.png` : `${slug}_small.png`;
+}
+
+// The actual image URL on Nitro Type's own CDN - used only by build.js to
+// know what to download (see downloadCarImages). Never embedded directly
+// in a page: Nitro Type's CDN returns HTTP 503 for cross-site <img>
+// requests (confirmed live - it distinguishes an embedded image load from
+// a same-page fetch/direct navigation, classic hotlink protection), so a
+// hotlinked <img src="nitrotype.com/..."> silently fails every time. We
+// download each car's image once at build time instead and serve it from
+// our own site - see carImageUrl below.
+function carImageSourceUrl(carId, hueAngle) {
+  const file = carImageSlugFile(carId, hueAngle);
+  return file ? `https://www.nitrotype.com/cars/${file}` : null;
+}
+
+// The locally-cached filename build.js saves a car's image under in
+// site/assets/cars/ - flat (no subdirectory) so every page can reach it
+// with the same "assets/cars/<name>" relative segment regardless of depth,
+// the same convention pageShell already uses for assets/app.js.
+function carImageLocalFile(carId, hueAngle) {
+  const file = carImageSlugFile(carId, hueAngle);
+  return file ? file.replace("painted/", "painted-") : null;
+}
+
+// assetsHref is the same "<teamsHref>assets/" prefix pageShell computes
+// for app.js (see siteHeader/pageShell's assetsHref), so a car thumbnail
+// resolves correctly from any page depth. null if we have no image for
+// this racer's current car (unmapped carId, or car-catalog.js just
+// doesn't have this one yet).
+function carImageUrl(carId, hueAngle, assetsHref) {
+  const file = carImageLocalFile(carId, hueAngle);
+  return file ? `${assetsHref}cars/${file}` : null;
 }
 
 // A small car thumbnail to sit next to a racer's avatar/name, or "" if we
-// have no image for their current car. onerror="this.remove()" means a
-// bad/stale/unmapped carId just quietly omits the picture - never a
-// visible broken-image icon - so the incomplete car-catalog.js table is a
-// safe, low-risk thing to ship.
-function carThumb(carId, hueAngle) {
-  const url = carImageUrl(carId, hueAngle);
+// have no locally-cached image for their current car. onerror="this.remove()"
+// means a bad/stale/unmapped carId, or one build.js simply failed to
+// download, just quietly omits the picture - never a visible broken-image
+// icon - so an incomplete cache is a safe, low-risk thing to ship.
+function carThumb(carId, hueAngle, assetsHref) {
+  const url = carImageUrl(carId, hueAngle, assetsHref);
   if (!url) return "";
   return `<img class="car-thumb" src="${url}" alt="" loading="lazy" onerror="this.remove()">`;
 }
@@ -125,7 +154,7 @@ function membershipBadge(membership) {
 // racer currently goes by on Nitro Type; username (often an opaque id
 // string NT assigns, not a real handle) is only a fallback for a racer
 // this tracker hasn't re-synced since display_name was added.
-function racerRosterRows(racers, team) {
+function racerRosterRows(racers, team, assetsHref = "/assets/") {
   return racers
     .map((r) => {
       const name = r.display_name || r.username;
@@ -137,7 +166,7 @@ function racerRosterRows(racers, team) {
         <tr>
           <td class="racer">
             <span class="avatar" style="background:${avatarColor(name || team.tag)}">${escapeHtml(initial)}</span>
-            ${carThumb(r.car_id, r.car_hue_angle)}
+            ${carThumb(r.car_id, r.car_hue_angle, assetsHref)}
             ${escapeHtml(name)}${roleBadge(r.role, isCaptain)}${membershipBadge(r.membership)}
           </td>
           <td>${formatDate(r.joined_at_nt)}</td>
@@ -326,7 +355,7 @@ function nitroTypeTeamHref(tag) {
 // (build.js/server.js) because the static site's relative paths and the
 // Express preview's absolute routes resolve completely differently - same
 // pattern as teamSidebar's linkFor.
-function racersLeaderboardTable(rows, rangeLabel, teamHref, season) {
+function racersLeaderboardTable(rows, rangeLabel, teamHref, season, assetsHref = "/assets/") {
   if (!rows.length) {
     return emptyLeaderboard("racers", rangeLabel, season);
   }
@@ -342,7 +371,7 @@ function racersLeaderboardTable(rows, rangeLabel, teamHref, season) {
           <td><span class="lb-rank${rankBadgeClass(rank)}">${rank}</span></td>
           <td class="racer">
             <span class="avatar" style="background:${avatarColor(name)}">${escapeHtml((name || "?").slice(0, 1).toUpperCase())}</span>
-            ${carThumb(r.car_id, r.car_hue_angle)}
+            ${carThumb(r.car_id, r.car_hue_angle, assetsHref)}
             ${escapeHtml(name)}
             <a class="lb-team-tag" href="${teamHref(r.team_tag)}" style="background:${tagBg};color:${textOnColor(tagBg)}">${escapeHtml(r.team_tag)}</a>
           </td>
@@ -407,7 +436,7 @@ function teamsLeaderboardTable(rows, rangeLabel, teamHref, season) {
 // (see leaderboard-data.js). Shared so build.js and server.js produce
 // identical markup; only the surrounding pageShell() call (and teamHref,
 // which resolves our own team links differently per entrypoint) differs.
-function leaderboardsBody(data, teamHref) {
+function leaderboardsBody(data, teamHref, assetsHref = "/assets/") {
   const panels = [];
   for (const range of LEADERBOARD_RANGES) {
     const visible = range.key === "alltime";
@@ -416,7 +445,7 @@ function leaderboardsBody(data, teamHref) {
       panels.push(leaderboardPanel("teams", range.key, comingSoonLeaderboard(range.label), false));
       continue;
     }
-    panels.push(leaderboardPanel("racers", range.key, racersLeaderboardTable(data.racers[range.key] || [], range.label, teamHref, data.season), visible));
+    panels.push(leaderboardPanel("racers", range.key, racersLeaderboardTable(data.racers[range.key] || [], range.label, teamHref, data.season, assetsHref), visible));
     panels.push(leaderboardPanel("teams", range.key, teamsLeaderboardTable(data.teams[range.key] || [], range.label, teamHref, data.season), false));
   }
   return `
@@ -438,7 +467,7 @@ const TRACKER_RANGES = [
   { key: "alltime", label: "All-Time" },
 ];
 
-function trackerTable(rows, rangeLabel) {
+function trackerTable(rows, rangeLabel, assetsHref = "/assets/") {
   if (!rows.length) {
     return `<div class="empty" style="padding:40px 24px;">No one on this team earned any points in the ${escapeHtml(rangeLabel)} window yet — this fills in as more syncs run.</div>`;
   }
@@ -453,7 +482,7 @@ function trackerTable(rows, rangeLabel) {
           <td><span class="lb-rank${rankBadgeClass(rank)}">${rank}</span></td>
           <td class="racer">
             <span class="avatar" style="background:${avatarColor(name)}">${escapeHtml((name || "?").slice(0, 1).toUpperCase())}</span>
-            ${carThumb(r.car_id, r.car_hue_angle)}
+            ${carThumb(r.car_id, r.car_hue_angle, assetsHref)}
             ${escapeHtml(name)}
           </td>
           <td><span class="points">${r.points}</span></td>
@@ -503,12 +532,12 @@ function trackerControls() {
 }
 
 // `data` is loadTeamTracker()'s result: { byRange: {daily:[],...}, season }.
-function trackerBody(data) {
+function trackerBody(data, assetsHref = "/assets/") {
   const panels = TRACKER_RANGES.map((range, i) => {
     const visible = i === 0;
     const rows = data.byRange[range.key] || [];
     const seasonNote = range.key === "seasonal" ? `<p class="lb-score-note">${seasonalNote(data.season)}</p>` : "";
-    return `<div class="trk-panel" data-range="${range.key}"${visible ? "" : " hidden"}>${trackerTable(rows, range.label)}${seasonNote}</div>`;
+    return `<div class="trk-panel" data-range="${range.key}"${visible ? "" : " hidden"}>${trackerTable(rows, range.label, assetsHref)}${seasonNote}</div>`;
   }).join("");
   return `
     <h2 style="margin:28px 0 14px;">Tracker</h2>
@@ -1267,4 +1296,6 @@ module.exports = {
   eventsBody,
   notificationsBody,
   pageShell,
+  carImageSourceUrl,
+  carImageLocalFile,
 };
