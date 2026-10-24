@@ -198,6 +198,22 @@
     });
   }
 
+  // Lets an already-signed-in visitor set a new password for themselves.
+  // Safe to do straight from the browser with the anon key, unlike
+  // claimAccount above - a password-only update never touches the user's
+  // email, so it never goes through Supabase's "secure email change"
+  // confirmation flow and never sends mail. (Supabase's "Secure password
+  // change" / "Require current password" project settings are both off
+  // for this project, so this works from any signed-in session without
+  // extra re-auth friction.)
+  function changePassword(newPassword, cb) {
+    withClient(function (sb) {
+      sb.auth.updateUser({ password: newPassword }).then(function (res) {
+        cb(res.error ? res.error.message : null, res.data);
+      });
+    });
+  }
+
   // Looks up the Nitro Type racer (if any) this signed-in account has
   // verified ownership of. account_links is publicly readable (see
   // schema.sql), so this is a plain select.
@@ -640,10 +656,14 @@
 
   // ---------------------------------------------------------------------
   // Site-wide header auth status (shown on every page via a small badge
-  // next to the Account nav link, when that link is present).
+  // next to the Account nav link, when that link is present) - and now
+  // also a Sign out link right there in the header, so a signed-in
+  // visitor doesn't have to go find the account page to sign out from
+  // wherever they currently are on the site.
   // ---------------------------------------------------------------------
   function initHeaderStatus() {
     var link = document.querySelector('[data-account-nav]');
+    var signOutLink = document.querySelector('[data-sign-out-nav]');
     if (!link) return;
     getSession(function (session) {
       // An anonymous session only exists mid-connect-flow (see
@@ -651,6 +671,15 @@
       // the header shouldn't claim one.
       if (session && session.user && !session.user.is_anonymous) {
         link.textContent = "Account ●";
+        if (signOutLink) {
+          signOutLink.style.display = "";
+          signOutLink.addEventListener("click", function (e) {
+            e.preventDefault();
+            signOut(function () {
+              location.reload();
+            });
+          });
+        }
       }
     });
   }
@@ -669,6 +698,7 @@
     signOut: signOut,
     getOrCreateSession: getOrCreateSession,
     claimAccount: claimAccount,
+    changePassword: changePassword,
     getMyLink: getMyLink,
     getRacerById: getRacerById,
     getProfile: getProfile,
