@@ -156,6 +156,7 @@ app.get("/teams/:tag", async (req, res) => {
     }
     const racers = await pool.query(
       `select r.username, r.display_name, r.role, r.membership, r.joined_at_nt,
+              r.car_id, r.car_hue_angle,
               s.avg_speed, s.top_speed, s.races, s.accuracy
        from racers r
        left join lateral (

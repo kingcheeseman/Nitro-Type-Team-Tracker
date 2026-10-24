@@ -43,7 +43,17 @@ create table if not exists racers (
   -- goes by on the site. We show display_name everywhere a human reads a
   -- racer's name, falling back to username only for the rare racer this
   -- tracker hasn't re-synced since this column was added.
-  display_name text
+  display_name text,
+  -- The car the racer currently has equipped, straight from Nitro Type's
+  -- team API (member.carID/member.carHueAngle - also what verify-car-swap
+  -- already reads live to run the car-swap proof). car_hue_angle is 0/null
+  -- for a car's stock color and non-zero for a repaint. Rendered as a small
+  -- thumbnail next to the racer's name (see car-catalog.js/theme.js's
+  -- carImageUrl) - best-effort only, since we only have a slug->image
+  -- mapping for the cars we've been able to confirm, so this is nullable
+  -- and a racer with an unmapped or brand-new car just shows no picture.
+  car_id         integer,
+  car_hue_angle  integer
 );
 
 -- One row per sync per racer: snapshots, not overwrites, so history/charts

@@ -11,14 +11,17 @@
 //       "members": [
 //         { "userID": 142493, "username": "sidoh", "avgSpeed": 87,
 //           "highestSpeed": 110, "racesPlayed": 20201, "typed": 494963,
-//           "errs": 12385, "status": "active", ... },
+//           "errs": 12385, "status": "active", "carID": 344,
+//           "carHueAngle": 0, ... },
 //         ...
 //       ],
 //       "stats": [...], "season": [...], "leaderboard": null
 //   } }
 //
 // We only use info.tag/info.name and the per-member fields above. The API
-// has no "accuracy" field, so we derive it from typed/errs.
+// has no "accuracy" field, so we derive it from typed/errs. carID/carHueAngle
+// identify the racer's currently-equipped car (see car-catalog.js/theme.js's
+// carImageUrl for how these become an actual thumbnail image).
 require("dotenv").config();
 const { pool } = require("./db");
 const { fetchPreviousTeamTag, recordNotifications } = require("./notifications");
@@ -118,8 +121,8 @@ async function upsertTeam(tag, info) {
 
 async function upsertRacer(member, teamTag) {
   await pool.query(
-    `insert into racers (nt_user_id, username, team_tag, updated_at, role, membership, joined_at_nt, display_name)
-     values ($1, $2, $3, now(), $4, $5, $6, $7)
+    `insert into racers (nt_user_id, username, team_tag, updated_at, role, membership, joined_at_nt, display_name, car_id, car_hue_angle)
+     values ($1, $2, $3, now(), $4, $5, $6, $7, $8, $9)
      on conflict (nt_user_id) do update
        set username = excluded.username,
            team_tag = excluded.team_tag,
@@ -127,7 +130,9 @@ async function upsertRacer(member, teamTag) {
            role = excluded.role,
            membership = excluded.membership,
            joined_at_nt = excluded.joined_at_nt,
-           display_name = excluded.display_name`,
+           display_name = excluded.display_name,
+           car_id = excluded.car_id,
+           car_hue_angle = excluded.car_hue_angle`,
     [
       member.userID,
       member.username,
@@ -140,6 +145,8 @@ async function upsertRacer(member, teamTag) {
       // current name. Fall back to username only if displayName is ever
       // missing, so the column is never left null outright.
       member.displayName || member.username || null,
+      member.carID ?? null,
+      member.carHueAngle ?? null,
     ]
   );
 }

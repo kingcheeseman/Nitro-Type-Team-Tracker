@@ -68,6 +68,7 @@ async function queryRacerPoints(pool, range, season, teamTag) {
   }
   const { rows } = await pool.query(
     `select r.username, r.display_name, r.team_tag, t.tag_color,
+            r.car_id, r.car_hue_angle,
             sum(rp.points) as points,
             sum(rp.races_delta) as races,
             s.avg_speed, s.top_speed, s.accuracy
@@ -79,7 +80,7 @@ async function queryRacerPoints(pool, range, season, teamTag) {
        order by captured_at desc limit 1
      ) s on true
      where ${clause}
-     group by r.username, r.display_name, r.team_tag, t.tag_color, s.avg_speed, s.top_speed, s.accuracy
+     group by r.username, r.display_name, r.team_tag, t.tag_color, r.car_id, r.car_hue_angle, s.avg_speed, s.top_speed, s.accuracy
      having sum(rp.points) > 0
      order by points desc
      limit 100`,

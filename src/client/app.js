@@ -656,14 +656,13 @@
 
   // ---------------------------------------------------------------------
   // Site-wide header auth status (shown on every page via a small badge
-  // next to the Account nav link, when that link is present) - and now
-  // also a Sign out link right there in the header, so a signed-in
-  // visitor doesn't have to go find the account page to sign out from
-  // wherever they currently are on the site.
+  // next to the Account nav link, when that link is present). Sign-out
+  // itself lives only on the account page's signed-in card - not also
+  // here in the header - so there's exactly one place to do it, right
+  // next to the rest of the account controls (password/username).
   // ---------------------------------------------------------------------
   function initHeaderStatus() {
     var link = document.querySelector('[data-account-nav]');
-    var signOutLink = document.querySelector('[data-sign-out-nav]');
     if (!link) return;
     getSession(function (session) {
       // An anonymous session only exists mid-connect-flow (see
@@ -671,15 +670,6 @@
       // the header shouldn't claim one.
       if (session && session.user && !session.user.is_anonymous) {
         link.textContent = "Account ●";
-        if (signOutLink) {
-          signOutLink.style.display = "";
-          signOutLink.addEventListener("click", function (e) {
-            e.preventDefault();
-            signOut(function () {
-              location.reload();
-            });
-          });
-        }
       }
     });
   }

@@ -9,6 +9,8 @@
 // the general dark-UI/card/table conventions common to this kind of
 // stats dashboard.
 
+const { CAR_SLUGS } = require("./car-catalog.js");
+
 function escapeHtml(str) {
   return String(str ?? "").replace(/[&<>"']/g, (c) => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
@@ -63,6 +65,31 @@ function avatarColor(seed) {
   return `hsl(${hashHue(seed)} 85% 65%)`;
 }
 
+// carId/hueAngle (from Nitro Type's team API, synced onto racers.car_id/
+// car_hue_angle by ingest.js) -> the actual image URL Nitro Type's own CDN
+// serves for that car, or null if we don't have a slug for this carId
+// (car-catalog.js is best-effort, not exhaustive - see its header comment).
+function carImageUrl(carId, hueAngle) {
+  if (carId == null) return null;
+  const slug = CAR_SLUGS[carId];
+  if (!slug) return null;
+  if (hueAngle) {
+    return `https://www.nitrotype.com/cars/painted/${slug}_small_${hueAngle}.png`;
+  }
+  return `https://www.nitrotype.com/cars/${slug}_small.png`;
+}
+
+// A small car thumbnail to sit next to a racer's avatar/name, or "" if we
+// have no image for their current car. onerror="this.remove()" means a
+// bad/stale/unmapped carId just quietly omits the picture - never a
+// visible broken-image icon - so the incomplete car-catalog.js table is a
+// safe, low-risk thing to ship.
+function carThumb(carId, hueAngle) {
+  const url = carImageUrl(carId, hueAngle);
+  if (!url) return "";
+  return `<img class="car-thumb" src="${url}" alt="" loading="lazy" onerror="this.remove()">`;
+}
+
 // Bucket accuracy into a color class the same way a tier badge would -
 // quick visual signal without requiring the viewer to read every number.
 function accuracyClass(accuracy) {
@@ -110,6 +137,7 @@ function racerRosterRows(racers, team) {
         <tr>
           <td class="racer">
             <span class="avatar" style="background:${avatarColor(name || team.tag)}">${escapeHtml(initial)}</span>
+            ${carThumb(r.car_id, r.car_hue_angle)}
             ${escapeHtml(name)}${roleBadge(r.role, isCaptain)}${membershipBadge(r.membership)}
           </td>
           <td>${formatDate(r.joined_at_nt)}</td>
@@ -314,6 +342,7 @@ function racersLeaderboardTable(rows, rangeLabel, teamHref, season) {
           <td><span class="lb-rank${rankBadgeClass(rank)}">${rank}</span></td>
           <td class="racer">
             <span class="avatar" style="background:${avatarColor(name)}">${escapeHtml((name || "?").slice(0, 1).toUpperCase())}</span>
+            ${carThumb(r.car_id, r.car_hue_angle)}
             ${escapeHtml(name)}
             <a class="lb-team-tag" href="${teamHref(r.team_tag)}" style="background:${tagBg};color:${textOnColor(tagBg)}">${escapeHtml(r.team_tag)}</a>
           </td>
@@ -424,6 +453,7 @@ function trackerTable(rows, rangeLabel) {
           <td><span class="lb-rank${rankBadgeClass(rank)}">${rank}</span></td>
           <td class="racer">
             <span class="avatar" style="background:${avatarColor(name)}">${escapeHtml((name || "?").slice(0, 1).toUpperCase())}</span>
+            ${carThumb(r.car_id, r.car_hue_angle)}
             ${escapeHtml(name)}
           </td>
           <td><span class="points">${r.points}</span></td>
@@ -995,6 +1025,11 @@ const BASE_CSS = `
     flex: none;
     box-shadow: 0 0 0 2px rgba(255,255,255,0.08), 0 2px 6px rgba(0,0,0,0.3);
   }
+  .car-thumb {
+    height: 22px; width: auto; max-width: 42px;
+    object-fit: contain; flex: none;
+    filter: drop-shadow(0 1px 3px rgba(0,0,0,0.4));
+  }
 
   .pill {
     display: inline-block;
@@ -1168,7 +1203,6 @@ function siteHeader({ teamsHref = "./", leaderboardsHref = "leaderboards/", acco
         <a class="site-nav-link${active === "teams" ? " active" : ""}" href="${teamsHref}">Teams</a>
         <a class="site-nav-link${active === "leaderboards" ? " active" : ""}" href="${leaderboardsHref}">Leaderboards</a>
         <a class="site-nav-link${active === "account" ? " active" : ""}" href="${accountHref}" data-account-nav>Account</a>
-        <a class="site-nav-link" href="#" data-sign-out-nav style="display:none;">Sign out</a>
       </nav>
     </header>`;
 }
