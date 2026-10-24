@@ -1096,6 +1096,7 @@ function siteHeader({ teamsHref = "./", leaderboardsHref = "leaderboards/", acco
         <a class="site-nav-link${active === "teams" ? " active" : ""}" href="${teamsHref}">Teams</a>
         <a class="site-nav-link${active === "leaderboards" ? " active" : ""}" href="${leaderboardsHref}">Leaderboards</a>
         <a class="site-nav-link${active === "account" ? " active" : ""}" href="${accountHref}" data-account-nav>Account</a>
+        <a class="site-nav-link" href="#" data-sign-out-nav style="display:none;">Sign out</a>
       </nav>
     </header>`;
 }

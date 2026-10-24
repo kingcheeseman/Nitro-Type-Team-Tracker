@@ -160,7 +160,29 @@ function accountIndexBody({ signInHref = "sign-in/" } = {}) {
     <div class="card" id="signed-in-card" style="max-width:480px;padding:20px;display:none;margin-top:16px;">
       <div style="font-weight:700;" id="signed-in-name"></div>
       <div id="signed-in-role" style="margin:6px 0 0;color:var(--muted);font-size:13px;"></div>
-      <button type="button" id="sign-out-btn" class="btn-secondary" style="margin-top:14px;">Sign out</button>
+
+      <div id="account-editor" style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+        <div style="font-weight:700;margin-bottom:10px;">Account settings</div>
+
+        <form id="username-form" style="display:none;flex-direction:column;gap:8px;margin-bottom:14px;">
+          <label style="font-size:13px;color:var(--muted);">Username</label>
+          <input class="form-input" name="username" placeholder="Pick a username" autocomplete="username">
+          <button type="submit" class="btn-secondary">Save username</button>
+          <div class="form-success" style="display:none;color:var(--good);font-size:13px;"></div>
+          <div class="form-error" style="display:none;"></div>
+        </form>
+        <div id="username-locked-note" style="display:none;color:var(--muted);font-size:13px;margin-bottom:14px;"></div>
+
+        <form id="password-form" style="display:flex;flex-direction:column;gap:8px;">
+          <label style="font-size:13px;color:var(--muted);">New password</label>
+          <input class="form-input" name="password" type="password" placeholder="New password (6+ characters)" required minlength="6" autocomplete="new-password">
+          <button type="submit" class="btn-secondary">Change password</button>
+          <div class="form-success" style="display:none;color:var(--good);font-size:13px;"></div>
+          <div class="form-error" style="display:none;"></div>
+        </form>
+      </div>
+
+      <button type="button" id="sign-out-btn" class="btn-secondary" style="margin-top:16px;">Sign out</button>
     </div>
 
     <script>
@@ -177,6 +199,9 @@ function accountIndexBody({ signInHref = "sign-in/" } = {}) {
       var countdownEl = document.getElementById("countdown");
       var checkBtn = document.getElementById("check-btn");
       var checkMessage = document.getElementById("check-message");
+      var usernameForm = document.getElementById("username-form");
+      var usernameLockedNote = document.getElementById("username-locked-note");
+      var passwordForm = document.getElementById("password-form");
       var timer = null;
       var expiresAt = null;
       var pendingLink = null; // { nt_user_id, nt_username }
@@ -215,6 +240,25 @@ function accountIndexBody({ signInHref = "sign-in/" } = {}) {
                 TypeTrack.resolveTeamRole(teamTag, link.nt_user_id, captainId, function (err3, role) {
                   var roleLabel = role === "captain" ? "Team captain" : role === "officer" ? "Team officer" : "Team member";
                   document.getElementById("signed-in-role").textContent = roleLabel + (teamTag ? " on team [" + TypeTrack.escapeHtml(teamTag) + "]" : "");
+
+                  // Captains and officers sign in with their live Nitro
+                  // Type username (see showClaimForm below) - that isn't
+                  // something to let them separately rename here, since it
+                  // has to keep matching what Nitro Type reports. Only
+                  // members, who pick an arbitrary chosen_username at
+                  // claim time, get an editable username field.
+                  usernameForm.setAttribute("data-role", role);
+                  if (role === "member") {
+                    TypeTrack.getProfile(session.user.id, function (errP, profile) {
+                      usernameForm.username.value = (profile && profile.chosen_username) || "";
+                    });
+                    hide(usernameLockedNote);
+                    show(usernameForm);
+                  } else {
+                    hide(usernameForm);
+                    usernameLockedNote.textContent = "Your sign-in name follows your Nitro Type username and isn't separately editable.";
+                    show(usernameLockedNote);
+                  }
                 });
               });
             });
@@ -341,6 +385,50 @@ function accountIndexBody({ signInHref = "sign-in/" } = {}) {
           } else {
             done();
           }
+        });
+      });
+
+      usernameForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var errorEl = usernameForm.querySelector(".form-error");
+        var successEl = usernameForm.querySelector(".form-success");
+        hide(errorEl);
+        hide(successEl);
+        var newUsername = usernameForm.username.value.trim();
+        if (!newUsername) {
+          errorEl.textContent = "Pick a username.";
+          show(errorEl);
+          return;
+        }
+        TypeTrack.getSession(function (session) {
+          TypeTrack.setChosenUsername(session.user.id, newUsername, function (err) {
+            if (err) {
+              errorEl.textContent = err;
+              show(errorEl);
+              return;
+            }
+            successEl.textContent = "Saved.";
+            show(successEl);
+          });
+        });
+      });
+
+      passwordForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var errorEl = passwordForm.querySelector(".form-error");
+        var successEl = passwordForm.querySelector(".form-success");
+        hide(errorEl);
+        hide(successEl);
+        var newPassword = passwordForm.password.value;
+        TypeTrack.changePassword(newPassword, function (err) {
+          if (err) {
+            errorEl.textContent = err;
+            show(errorEl);
+            return;
+          }
+          passwordForm.password.value = "";
+          successEl.textContent = "Password changed.";
+          show(successEl);
         });
       });
 
