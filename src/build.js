@@ -24,6 +24,7 @@ const {
   pageShell,
   carImageSourceUrl,
   carImageLocalFile,
+  nitroTypeTeamHref,
 } = require("./theme");
 const { loadLeaderboardData, loadTeamTracker } = require("./leaderboard-data");
 const { queryNotifications } = require("./notifications");
@@ -64,18 +65,19 @@ function buildTeamsIndex(teams) {
            .map((t) => {
              const searchKey = `${t.tag} ${t.display_name || ""} ${t.captain_username || ""}`.toLowerCase();
              const badgeBg = teamColor(t.tag, t.tag_color);
+             const teamHref = `teams/${encodeURIComponent(t.tag.toLowerCase())}/`;
              return `
              <div class="card" style="--card-accent:${badgeBg}" data-search="${escapeHtml(searchKey)}">
                <div class="top">
-                 <div class="tag">[${escapeHtml(t.tag)}]</div>
-                 <div class="display-name">${escapeHtml(t.display_name || "(unsynced)")}</div>
+                 <a class="tag" href="${teamHref}">[${escapeHtml(t.tag)}]</a>
+                 <a class="display-name" href="${nitroTypeTeamHref(t.tag)}" target="_blank" rel="noopener">${escapeHtml(t.display_name || "(unsynced)")}</a>
                </div>
                ${t.captain_username ? `<div class="req-line">Captain: <b>${escapeHtml(t.captain_display_name || t.captain_username)}</b></div>` : ""}
                <div class="req-line">Members: <b>${t.members_count ?? "—"}</b> &nbsp;·&nbsp; Formed: <b>${formatDate(t.nt_created_at)}</b></div>
                ${t.min_races != null || t.min_speed != null
                  ? `<div class="req-line">Min: <b>${t.min_races ?? "—"} races</b> / <b>${t.min_speed ?? "—"} wpm</b></div>`
                  : ""}
-               <a class="view-link" href="teams/${encodeURIComponent(t.tag.toLowerCase())}/">View roster</a>
+               <a class="view-link" href="${teamHref}">View roster</a>
                <div class="footer">${t.last_synced_at ? `Synced ${new Date(t.last_synced_at).toLocaleString()}` : "Not synced yet"}</div>
              </div>`;
            })
