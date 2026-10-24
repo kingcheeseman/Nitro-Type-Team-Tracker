@@ -157,6 +157,13 @@
   }
   .req-bar .req { color: var(--muted); }
   .req-bar .req b { color: var(--text); font-weight: 700; }
+  .req-bar a.req.discord-invite {
+    color: var(--velocity);
+    font-weight: 700;
+    text-decoration: none;
+    margin-left: auto;
+  }
+  .req-bar a.req.discord-invite:hover { text-decoration: underline; }
 
   .special-reqs {
     background: var(--panel);
@@ -572,21 +579,46 @@
       <div data-admin-gate style="color:var(--muted);font-size:13.5px;">Checking your access…</div>
       <div data-admin-content style="display:none;">
         <p class="meta-row" data-admin-role-note></p>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Officer</th><th></th></tr></thead>
-            <tbody data-admin-officer-rows><tr><td colspan="2" style="color:var(--muted);">No officers appointed yet.</td></tr></tbody>
-          </table>
+        <div class="seg" style="margin-bottom:16px;">
+          <button type="button" class="seg-btn active" data-admin-tab-btn="officers">Officers</button>
+          <button type="button" class="seg-btn" data-admin-tab-btn="settings">Settings</button>
         </div>
-        <form data-admin-appoint-form style="display:none;margin-top:14px;gap:8px;max-width:420px;">
-          <select class="form-input" name="nt_user_id" style="flex:1;"><option value="">Astarya</option><option value="">badbyes</option><option value="">bdawgowa</option><option value="">CR7Agi</option><option value="">CRK_WATERMELON</option><option value="">cvef</option><option value="">Dedicated2NT</option><option value="">EpicFailure82</option><option value="">Faith_In_God</option><option value="">FlowerBoy</option><option value="">Frying_Pansokewl</option><option value="">GoldPeachHaddock</option><option value="">gratified</option><option value="">IAMS10W</option><option value="">IndigoCoralWhitefish</option><option value="">isaiah is better 223</option><option value="">JabronJames</option><option value="">JJ_Dubai_Kid</option><option value="">JoyfulAmethystKangaroo</option><option value="">JZ-V7X is king</option><option value="">LebronJames23</option><option value="">LetsPlayBloxFruits</option><option value="">LightningDragon</option><option value="">Like2Type</option><option value="">LoyalYellowDove</option><option value="">MateoABoss</option><option value="">MeandMatthewaregood6</option><option value="">mike4532fxfx</option><option value="">Mr.Emazing</option><option value="">MrsWTypes</option><option value="">OKBruv</option><option value="">ONE PEICE IS REAL</option><option value="">OptimisticAzureGopher</option><option value="">T R I B U T O N</option><option value="">THEKING551</option></select>
-          <button type="submit" class="btn-primary">Make officer</button>
-        </form>
+
+        <div data-admin-tabpanel="officers">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Officer</th><th></th></tr></thead>
+              <tbody data-admin-officer-rows><tr><td colspan="2" style="color:var(--muted);">No officers appointed yet.</td></tr></tbody>
+            </table>
+          </div>
+          <form data-admin-appoint-form style="display:none;margin-top:14px;gap:8px;max-width:420px;">
+            <select class="form-input" name="nt_user_id" style="flex:1;"><option value="">Astarya</option><option value="">badbyes</option><option value="">bdawgowa</option><option value="">CR7Agi</option><option value="">CRK_WATERMELON</option><option value="">cvef</option><option value="">Dedicated2NT</option><option value="">EpicFailure82</option><option value="">Faith_In_God</option><option value="">FlowerBoy</option><option value="">Frying_Pansokewl</option><option value="">GoldPeachHaddock</option><option value="">gratified</option><option value="">IAMS10W</option><option value="">IndigoCoralWhitefish</option><option value="">isaiah is better 223</option><option value="">JabronJames</option><option value="">JJ_Dubai_Kid</option><option value="">JoyfulAmethystKangaroo</option><option value="">JZ-V7X is king</option><option value="">LebronJames23</option><option value="">LetsPlayBloxFruits</option><option value="">LightningDragon</option><option value="">Like2Type</option><option value="">LoyalYellowDove</option><option value="">MateoABoss</option><option value="">MeandMatthewaregood6</option><option value="">mike4532fxfx</option><option value="">Mr.Emazing</option><option value="">MrsWTypes</option><option value="">OKBruv</option><option value="">ONE PEICE IS REAL</option><option value="">OptimisticAzureGopher</option><option value="">T R I B U T O N</option><option value="">THEKING551</option></select>
+            <button type="submit" class="btn-primary">Make officer</button>
+          </form>
+        </div>
+
+        <div data-admin-tabpanel="settings" style="display:none;max-width:480px;">
+          <div style="color:var(--muted);font-size:13px;margin-bottom:14px;">
+            Site-only settings for [LEGNDZ] — everything else on this team's page (requirements, color, roster) comes straight from Nitro Type and can't be edited here.
+          </div>
+          <label class="form-input-wrap" style="margin-bottom:16px;">
+            <span style="color:var(--text);font-size:13.5px;font-weight:700;">Discord invite link</span>
+            <span>Shown on this team's page so racers can join your server directly.</span>
+            <input class="form-input" type="url" data-admin-discord-input placeholder="https://discord.gg/yourteam">
+          </label>
+          <label class="form-input-wrap" style="margin-bottom:16px;">
+            <span style="color:var(--text);font-size:13.5px;font-weight:700;">Team emoji</span>
+            <span>One emoji, shown next to your team's name on the leaderboards and team list.</span>
+            <input class="form-input" type="text" data-admin-emoji-input placeholder="🏁" maxlength="8" style="max-width:120px;">
+          </label>
+          <button type="button" class="btn-primary" data-admin-settings-save style="display:none;">Save settings</button>
+        </div>
+
         <div data-admin-error class="form-error" style="display:none;margin-top:10px;"></div>
       </div>
     </div></div>
     </div>
 </main>
-<footer class="site">Generated 2026-10-24T16:19:46.129Z</footer>
+<footer class="site">Generated 2026-10-24T16:31:42.639Z</footer>
 </body>
 </html>

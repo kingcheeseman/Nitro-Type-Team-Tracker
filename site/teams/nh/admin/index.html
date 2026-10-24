@@ -157,6 +157,13 @@
   }
   .req-bar .req { color: var(--muted); }
   .req-bar .req b { color: var(--text); font-weight: 700; }
+  .req-bar a.req.discord-invite {
+    color: var(--velocity);
+    font-weight: 700;
+    text-decoration: none;
+    margin-left: auto;
+  }
+  .req-bar a.req.discord-invite:hover { text-decoration: underline; }
 
   .special-reqs {
     background: var(--panel);
@@ -572,21 +579,46 @@
       <div data-admin-gate style="color:var(--muted);font-size:13.5px;">Checking your access…</div>
       <div data-admin-content style="display:none;">
         <p class="meta-row" data-admin-role-note></p>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Officer</th><th></th></tr></thead>
-            <tbody data-admin-officer-rows><tr><td colspan="2" style="color:var(--muted);">No officers appointed yet.</td></tr></tbody>
-          </table>
+        <div class="seg" style="margin-bottom:16px;">
+          <button type="button" class="seg-btn active" data-admin-tab-btn="officers">Officers</button>
+          <button type="button" class="seg-btn" data-admin-tab-btn="settings">Settings</button>
         </div>
-        <form data-admin-appoint-form style="display:none;margin-top:14px;gap:8px;max-width:420px;">
-          <select class="form-input" name="nt_user_id" style="flex:1;"><option value="">-hugoNT-</option><option value="">-_- t-i-r-e-d -_-</option><option value="">-hugoNT-</option><option value="">-Infinity-</option><option value="">⚡F-L-Ⓐ-S-H-Y⚡</option><option value="">5HRKBAIT</option><option value="">account made in 2021</option><option value="">Aurora</option><option value="">BRO_phpbender</option><option value="">C L A Y</option><option value="">Chaos_Pixie</option><option value="">colors_of_the_wind</option><option value="">DA FLAME BACK</option><option value="">DatboiJacob</option><option value="">FOWLER08</option><option value="">franchesca</option><option value="">hajira love</option><option value="">henna love</option><option value="">ilovetypos</option><option value="">itypewith2fingers</option><option value="">J A R V I S</option><option value="">Jesus is the way</option><option value="">John von Jean</option><option value="">maxthekitty</option><option value="">Mcgee,</option><option value="">megladon</option><option value="">Meltocrazy</option><option value="">MnkyDLuffy</option><option value="">nodalgem</option><option value="">nospeedlimit</option><option value="">platypus</option><option value="">PracticalAquaNarwhal</option><option value="">riyaaaaaaa</option><option value="">Satoru Gojo</option><option value="">Space　</option><option value="">Subject_0</option><option value="">superior rd to 100k</option><option value="">tell a vision</option><option value="">thank u, next</option><option value="">Tiktok_dc4lyk</option><option value="">vanilla</option><option value="">wefwef</option><option value="">yo soy trippieredd</option><option value="">zoe   </option><option value="">zyprex</option></select>
-          <button type="submit" class="btn-primary">Make officer</button>
-        </form>
+
+        <div data-admin-tabpanel="officers">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Officer</th><th></th></tr></thead>
+              <tbody data-admin-officer-rows><tr><td colspan="2" style="color:var(--muted);">No officers appointed yet.</td></tr></tbody>
+            </table>
+          </div>
+          <form data-admin-appoint-form style="display:none;margin-top:14px;gap:8px;max-width:420px;">
+            <select class="form-input" name="nt_user_id" style="flex:1;"><option value="">-hugoNT-</option><option value="">-_- t-i-r-e-d -_-</option><option value="">-hugoNT-</option><option value="">-Infinity-</option><option value="">⚡F-L-Ⓐ-S-H-Y⚡</option><option value="">5HRKBAIT</option><option value="">account made in 2021</option><option value="">Aurora</option><option value="">BRO_phpbender</option><option value="">C L A Y</option><option value="">Chaos_Pixie</option><option value="">colors_of_the_wind</option><option value="">DA FLAME BACK</option><option value="">DatboiJacob</option><option value="">FOWLER08</option><option value="">franchesca</option><option value="">hajira love</option><option value="">henna love</option><option value="">ilovetypos</option><option value="">itypewith2fingers</option><option value="">J A R V I S</option><option value="">Jesus is the way</option><option value="">John von Jean</option><option value="">maxthekitty</option><option value="">Mcgee,</option><option value="">megladon</option><option value="">Meltocrazy</option><option value="">MnkyDLuffy</option><option value="">nodalgem</option><option value="">nospeedlimit</option><option value="">platypus</option><option value="">PracticalAquaNarwhal</option><option value="">riyaaaaaaa</option><option value="">Satoru Gojo</option><option value="">Space　</option><option value="">Subject_0</option><option value="">superior rd to 100k</option><option value="">tell a vision</option><option value="">thank u, next</option><option value="">Tiktok_dc4lyk</option><option value="">vanilla</option><option value="">wefwef</option><option value="">yo soy trippieredd</option><option value="">zoe   </option><option value="">zyprex</option></select>
+            <button type="submit" class="btn-primary">Make officer</button>
+          </form>
+        </div>
+
+        <div data-admin-tabpanel="settings" style="display:none;max-width:480px;">
+          <div style="color:var(--muted);font-size:13px;margin-bottom:14px;">
+            Site-only settings for [NH] — everything else on this team's page (requirements, color, roster) comes straight from Nitro Type and can't be edited here.
+          </div>
+          <label class="form-input-wrap" style="margin-bottom:16px;">
+            <span style="color:var(--text);font-size:13.5px;font-weight:700;">Discord invite link</span>
+            <span>Shown on this team's page so racers can join your server directly.</span>
+            <input class="form-input" type="url" data-admin-discord-input placeholder="https://discord.gg/yourteam">
+          </label>
+          <label class="form-input-wrap" style="margin-bottom:16px;">
+            <span style="color:var(--text);font-size:13.5px;font-weight:700;">Team emoji</span>
+            <span>One emoji, shown next to your team's name on the leaderboards and team list.</span>
+            <input class="form-input" type="text" data-admin-emoji-input placeholder="🏁" maxlength="8" style="max-width:120px;">
+          </label>
+          <button type="button" class="btn-primary" data-admin-settings-save style="display:none;">Save settings</button>
+        </div>
+
         <div data-admin-error class="form-error" style="display:none;margin-top:10px;"></div>
       </div>
     </div></div>
     </div>
 </main>
-<footer class="site">Generated 2026-10-24T16:19:50.155Z</footer>
+<footer class="site">Generated 2026-10-24T16:31:44.480Z</footer>
 </body>
 </html>

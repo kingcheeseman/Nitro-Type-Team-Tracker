@@ -157,6 +157,13 @@
   }
   .req-bar .req { color: var(--muted); }
   .req-bar .req b { color: var(--text); font-weight: 700; }
+  .req-bar a.req.discord-invite {
+    color: var(--velocity);
+    font-weight: 700;
+    text-decoration: none;
+    margin-left: auto;
+  }
+  .req-bar a.req.discord-invite:hover { text-decoration: underline; }
 
   .special-reqs {
     background: var(--panel);
@@ -572,21 +579,46 @@
       <div data-admin-gate style="color:var(--muted);font-size:13.5px;">Checking your access…</div>
       <div data-admin-content style="display:none;">
         <p class="meta-row" data-admin-role-note></p>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Officer</th><th></th></tr></thead>
-            <tbody data-admin-officer-rows><tr><td colspan="2" style="color:var(--muted);">No officers appointed yet.</td></tr></tbody>
-          </table>
+        <div class="seg" style="margin-bottom:16px;">
+          <button type="button" class="seg-btn active" data-admin-tab-btn="officers">Officers</button>
+          <button type="button" class="seg-btn" data-admin-tab-btn="settings">Settings</button>
         </div>
-        <form data-admin-appoint-form style="display:none;margin-top:14px;gap:8px;max-width:420px;">
-          <select class="form-input" name="nt_user_id" style="flex:1;"><option value="">_Solar_</option><option value="">✨No.1✨</option><option value="">✨superjoelzy✨</option><option value="">Adam and Karin</option><option value="">Adlxr be grindin</option><option value="">Ardiel</option><option value="">Ay2sos</option><option value="">bubbles</option><option value="">chromi</option><option value="">Cobalt_21</option><option value="">creeperking1200</option><option value="">Crusader20k</option><option value="">CURRRYFAN30</option><option value="">DIVINE</option><option value="">doodlebobsquaresocks</option><option value="">Drifter -2k-</option><option value="">Ferrari Enzo</option><option value="">Flood81</option><option value="">FreeFlyer</option><option value="">Gambit</option><option value="">Go Barcelona</option><option value="">GO MADRID_ Enzo</option><option value="">guayete</option><option value="">H1M0THY</option><option value="">HANDSOME KING</option><option value="">Im not good</option><option value="">IM2SLOW4U</option><option value="">Imnotatryhard</option><option value="">ItsNBAopeningweek</option><option value="">jariae n tj</option><option value="">JoeyMax22</option><option value="">Life is Time</option><option value="">lordprettyflackojody</option><option value="">Marsky</option><option value="">Mathewtheimposter</option><option value="">Mormadable</option><option value="">O_V_E_R_D_R_I_V_E</option><option value="">PhantomTyper</option><option value="">r-a-i-n</option><option value="">Real Madrid</option><option value="">Reesespieces0508</option><option value="">review</option><option value="">S k y _ L i g h t</option><option value="">Snake </option><option value="">THE_WINNER_RACER_</option><option value="">Titans44</option><option value="">Tnush615</option><option value="">type faster</option><option value="">Voidzzz</option><option value="">wklime</option><option value="">Xmaxx Dream</option><option value="">Zoneray</option></select>
-          <button type="submit" class="btn-primary">Make officer</button>
-        </form>
+
+        <div data-admin-tabpanel="officers">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Officer</th><th></th></tr></thead>
+              <tbody data-admin-officer-rows><tr><td colspan="2" style="color:var(--muted);">No officers appointed yet.</td></tr></tbody>
+            </table>
+          </div>
+          <form data-admin-appoint-form style="display:none;margin-top:14px;gap:8px;max-width:420px;">
+            <select class="form-input" name="nt_user_id" style="flex:1;"><option value="">_Solar_</option><option value="">✨No.1✨</option><option value="">✨superjoelzy✨</option><option value="">Adam and Karin</option><option value="">Adlxr be grindin</option><option value="">Ardiel</option><option value="">Ay2sos</option><option value="">bubbles</option><option value="">chromi</option><option value="">Cobalt_21</option><option value="">creeperking1200</option><option value="">Crusader20k</option><option value="">CURRRYFAN30</option><option value="">DIVINE</option><option value="">doodlebobsquaresocks</option><option value="">Drifter -2k-</option><option value="">Ferrari Enzo</option><option value="">Flood81</option><option value="">FreeFlyer</option><option value="">Gambit</option><option value="">Go Barcelona</option><option value="">GO MADRID_ Enzo</option><option value="">guayete</option><option value="">H1M0THY</option><option value="">HANDSOME KING</option><option value="">Im not good</option><option value="">IM2SLOW4U</option><option value="">Imnotatryhard</option><option value="">ItsNBAopeningweek</option><option value="">jariae n tj</option><option value="">JoeyMax22</option><option value="">Life is Time</option><option value="">lordprettyflackojody</option><option value="">Marsky</option><option value="">Mathewtheimposter</option><option value="">Mormadable</option><option value="">O_V_E_R_D_R_I_V_E</option><option value="">PhantomTyper</option><option value="">r-a-i-n</option><option value="">Real Madrid</option><option value="">Reesespieces0508</option><option value="">review</option><option value="">S k y _ L i g h t</option><option value="">Snake </option><option value="">THE_WINNER_RACER_</option><option value="">Titans44</option><option value="">Tnush615</option><option value="">type faster</option><option value="">Voidzzz</option><option value="">wklime</option><option value="">Xmaxx Dream</option><option value="">Zoneray</option></select>
+            <button type="submit" class="btn-primary">Make officer</button>
+          </form>
+        </div>
+
+        <div data-admin-tabpanel="settings" style="display:none;max-width:480px;">
+          <div style="color:var(--muted);font-size:13px;margin-bottom:14px;">
+            Site-only settings for [NHS] — everything else on this team's page (requirements, color, roster) comes straight from Nitro Type and can't be edited here.
+          </div>
+          <label class="form-input-wrap" style="margin-bottom:16px;">
+            <span style="color:var(--text);font-size:13.5px;font-weight:700;">Discord invite link</span>
+            <span>Shown on this team's page so racers can join your server directly.</span>
+            <input class="form-input" type="url" data-admin-discord-input placeholder="https://discord.gg/yourteam">
+          </label>
+          <label class="form-input-wrap" style="margin-bottom:16px;">
+            <span style="color:var(--text);font-size:13.5px;font-weight:700;">Team emoji</span>
+            <span>One emoji, shown next to your team's name on the leaderboards and team list.</span>
+            <input class="form-input" type="text" data-admin-emoji-input placeholder="🏁" maxlength="8" style="max-width:120px;">
+          </label>
+          <button type="button" class="btn-primary" data-admin-settings-save style="display:none;">Save settings</button>
+        </div>
+
         <div data-admin-error class="form-error" style="display:none;margin-top:10px;"></div>
       </div>
     </div></div>
     </div>
 </main>
-<footer class="site">Generated 2026-10-24T16:19:43.420Z</footer>
+<footer class="site">Generated 2026-10-24T16:31:40.844Z</footer>
 </body>
 </html>

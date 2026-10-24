@@ -596,6 +596,23 @@
     var rowsEl = panel.querySelector("[data-admin-officer-rows]");
     var appointForm = panel.querySelector("[data-admin-appoint-form]");
     var errorEl = panel.querySelector("[data-admin-error]");
+    var tabBtns = Array.prototype.slice.call(panel.querySelectorAll("[data-admin-tab-btn]"));
+    var tabPanels = Array.prototype.slice.call(panel.querySelectorAll("[data-admin-tabpanel]"));
+    var discordInput = panel.querySelector("[data-admin-discord-input]");
+    var emojiInput = panel.querySelector("[data-admin-emoji-input]");
+    var settingsSaveBtn = panel.querySelector("[data-admin-settings-save]");
+
+    // Tabs are just show/hide - wiring this up doesn't depend on who's
+    // looking, so it can happen before the access check below resolves.
+    tabBtns.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var target = btn.getAttribute("data-admin-tab-btn");
+        tabBtns.forEach(function (b) { b.classList.toggle("active", b === btn); });
+        tabPanels.forEach(function (p) {
+          p.style.display = p.getAttribute("data-admin-tabpanel") === target ? "" : "none";
+        });
+      });
+    });
 
     getSession(function (session) {
       if (!session || !session.user || session.user.is_anonymous) {
@@ -634,6 +651,56 @@
             });
           }
           refresh();
+
+          // Settings tab: discord_invite_url/team_emoji are the only two
+          // `teams` columns a captain can write (see schema.sql's
+          // column-scoped grant) - read is public, same as every other
+          // team-profile field, so both captain and officer see the
+          // current values; only the captain gets an editable form.
+          withClient(function (sb) {
+            sb.from("teams")
+              .select("discord_invite_url, team_emoji")
+              .eq("tag", teamTag)
+              .maybeSingle()
+              .then(function (res) {
+                if (res.error || !res.data) return;
+                if (discordInput) discordInput.value = res.data.discord_invite_url || "";
+                if (emojiInput) emojiInput.value = res.data.team_emoji || "";
+              });
+          });
+          if (isCaptain) {
+            if (discordInput) discordInput.removeAttribute("disabled");
+            if (emojiInput) emojiInput.removeAttribute("disabled");
+            if (settingsSaveBtn) settingsSaveBtn.style.display = "";
+          } else {
+            if (discordInput) discordInput.setAttribute("disabled", "disabled");
+            if (emojiInput) emojiInput.setAttribute("disabled", "disabled");
+          }
+          if (settingsSaveBtn) {
+            settingsSaveBtn.addEventListener("click", function () {
+              errorEl.style.display = "none";
+              // Letters/digits typed into the emoji field are stripped
+              // rather than rejected outright - easier to just take
+              // whatever's left than to bounce the whole save over it.
+              var emoji = (emojiInput.value || "").replace(/[a-zA-Z0-9]/g, "").trim().slice(0, 8);
+              var discordUrl = (discordInput.value || "").trim();
+              withClient(function (sb) {
+                sb.from("teams")
+                  .update({ discord_invite_url: discordUrl || null, team_emoji: emoji || null })
+                  .eq("tag", teamTag)
+                  .then(function (res) {
+                    if (res.error) {
+                      errorEl.textContent = res.error.message;
+                      errorEl.style.display = "";
+                      return;
+                    }
+                    emojiInput.value = emoji;
+                    settingsSaveBtn.textContent = "Saved!";
+                    setTimeout(function () { settingsSaveBtn.textContent = "Save settings"; }, 1500);
+                  });
+              });
+            });
+          }
 
           appointForm.addEventListener("submit", function (e) {
             e.preventDefault();

@@ -157,6 +157,13 @@
   }
   .req-bar .req { color: var(--muted); }
   .req-bar .req b { color: var(--text); font-weight: 700; }
+  .req-bar a.req.discord-invite {
+    color: var(--velocity);
+    font-weight: 700;
+    text-decoration: none;
+    margin-left: auto;
+  }
+  .req-bar a.req.discord-invite:hover { text-decoration: underline; }
 
   .special-reqs {
     background: var(--panel);
@@ -572,21 +579,46 @@
       <div data-admin-gate style="color:var(--muted);font-size:13.5px;">Checking your access…</div>
       <div data-admin-content style="display:none;">
         <p class="meta-row" data-admin-role-note></p>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Officer</th><th></th></tr></thead>
-            <tbody data-admin-officer-rows><tr><td colspan="2" style="color:var(--muted);">No officers appointed yet.</td></tr></tbody>
-          </table>
+        <div class="seg" style="margin-bottom:16px;">
+          <button type="button" class="seg-btn active" data-admin-tab-btn="officers">Officers</button>
+          <button type="button" class="seg-btn" data-admin-tab-btn="settings">Settings</button>
         </div>
-        <form data-admin-appoint-form style="display:none;margin-top:14px;gap:8px;max-width:420px;">
-          <select class="form-input" name="nt_user_id" style="flex:1;"><option value="">- KK TH3 PR0</option><option value="">-belive in f a i t h</option><option value="">-Galaxy- pls 1mil</option><option value="">-nemo-</option><option value="">-Tag_Typ3r-</option><option value="">, q ,1</option><option value="">10674271</option><option value="">A U R A</option><option value="">Aband_KiDx2</option><option value="">AxSolar</option><option value="">back95</option><option value="">bobthebldr1313</option><option value="">Chase_Pls_nt_money</option><option value="">Christinaaaa</option><option value="">Cricket Rules</option><option value="">Deltis_</option><option value="">DR4G0N_YT</option><option value="">Fortune</option><option value="">freshtoes</option><option value="">gabbin1500</option><option value="">Hyoma_Chigiri</option><option value="">ice coffee</option><option value="">Incendius</option><option value="">IZZYTHEDUDE</option><option value="">JoblessAiko</option><option value="">JSN_11</option><option value="">KavinLegend</option><option value="">LandoOnaBoat</option><option value="">mcu94rw942</option><option value="">mmm_not_ramen</option><option value="">Mr King</option><option value="">Neutrino_18 on yt</option><option value="">NightRiderXW</option><option value="">Nights D Icarus</option><option value="">Orb_362</option><option value="">Rentenna</option><option value="">sara10_alt</option><option value="">The Phantom Knight</option><option value="">TheobaldTheBirdr2 8k</option><option value="">Toasty</option><option value="">Trueno</option><option value="">TunnelVision</option><option value="">Typers Workshop</option><option value="">Unnamed</option><option value="">V4Flower</option><option value="">Vision</option><option value="">void - almost 25k</option><option value="">WEALTHY_AHHH_BOI</option><option value="">X__r__</option><option value="">X-Wave For Life</option><option value="">xc0untxb4c0nx</option><option value="">xProton_</option><option value="">Xx -B r o- xX</option><option value="">YN MON</option></select>
-          <button type="submit" class="btn-primary">Make officer</button>
-        </form>
+
+        <div data-admin-tabpanel="officers">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Officer</th><th></th></tr></thead>
+              <tbody data-admin-officer-rows><tr><td colspan="2" style="color:var(--muted);">No officers appointed yet.</td></tr></tbody>
+            </table>
+          </div>
+          <form data-admin-appoint-form style="display:none;margin-top:14px;gap:8px;max-width:420px;">
+            <select class="form-input" name="nt_user_id" style="flex:1;"><option value="">- KK TH3 PR0</option><option value="">-belive in f a i t h</option><option value="">-Galaxy- pls 1mil</option><option value="">-nemo-</option><option value="">-Tag_Typ3r-</option><option value="">, q ,1</option><option value="">10674271</option><option value="">A U R A</option><option value="">Aband_KiDx2</option><option value="">AxSolar</option><option value="">back95</option><option value="">bobthebldr1313</option><option value="">Chase_Pls_nt_money</option><option value="">Christinaaaa</option><option value="">Cricket Rules</option><option value="">Deltis_</option><option value="">DR4G0N_YT</option><option value="">Fortune</option><option value="">freshtoes</option><option value="">gabbin1500</option><option value="">Hyoma_Chigiri</option><option value="">ice coffee</option><option value="">Incendius</option><option value="">IZZYTHEDUDE</option><option value="">JoblessAiko</option><option value="">JSN_11</option><option value="">KavinLegend</option><option value="">LandoOnaBoat</option><option value="">mcu94rw942</option><option value="">mmm_not_ramen</option><option value="">Mr King</option><option value="">Neutrino_18 on yt</option><option value="">NightRiderXW</option><option value="">Nights D Icarus</option><option value="">Orb_362</option><option value="">Rentenna</option><option value="">sara10_alt</option><option value="">The Phantom Knight</option><option value="">TheobaldTheBirdr2 8k</option><option value="">Toasty</option><option value="">Trueno</option><option value="">TunnelVision</option><option value="">Typers Workshop</option><option value="">Unnamed</option><option value="">V4Flower</option><option value="">Vision</option><option value="">void - almost 25k</option><option value="">WEALTHY_AHHH_BOI</option><option value="">X__r__</option><option value="">X-Wave For Life</option><option value="">xc0untxb4c0nx</option><option value="">xProton_</option><option value="">Xx -B r o- xX</option><option value="">YN MON</option></select>
+            <button type="submit" class="btn-primary">Make officer</button>
+          </form>
+        </div>
+
+        <div data-admin-tabpanel="settings" style="display:none;max-width:480px;">
+          <div style="color:var(--muted);font-size:13px;margin-bottom:14px;">
+            Site-only settings for [XW] — everything else on this team's page (requirements, color, roster) comes straight from Nitro Type and can't be edited here.
+          </div>
+          <label class="form-input-wrap" style="margin-bottom:16px;">
+            <span style="color:var(--text);font-size:13.5px;font-weight:700;">Discord invite link</span>
+            <span>Shown on this team's page so racers can join your server directly.</span>
+            <input class="form-input" type="url" data-admin-discord-input placeholder="https://discord.gg/yourteam">
+          </label>
+          <label class="form-input-wrap" style="margin-bottom:16px;">
+            <span style="color:var(--text);font-size:13.5px;font-weight:700;">Team emoji</span>
+            <span>One emoji, shown next to your team's name on the leaderboards and team list.</span>
+            <input class="form-input" type="text" data-admin-emoji-input placeholder="🏁" maxlength="8" style="max-width:120px;">
+          </label>
+          <button type="button" class="btn-primary" data-admin-settings-save style="display:none;">Save settings</button>
+        </div>
+
         <div data-admin-error class="form-error" style="display:none;margin-top:10px;"></div>
       </div>
     </div></div>
     </div>
 </main>
-<footer class="site">Generated 2026-10-24T16:19:44.329Z</footer>
+<footer class="site">Generated 2026-10-24T16:31:41.530Z</footer>
 </body>
 </html>

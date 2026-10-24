@@ -157,6 +157,13 @@
   }
   .req-bar .req { color: var(--muted); }
   .req-bar .req b { color: var(--text); font-weight: 700; }
+  .req-bar a.req.discord-invite {
+    color: var(--velocity);
+    font-weight: 700;
+    text-decoration: none;
+    margin-left: auto;
+  }
+  .req-bar a.req.discord-invite:hover { text-decoration: underline; }
 
   .special-reqs {
     background: var(--panel);
@@ -572,21 +579,46 @@
       <div data-admin-gate style="color:var(--muted);font-size:13.5px;">Checking your access…</div>
       <div data-admin-content style="display:none;">
         <p class="meta-row" data-admin-role-note></p>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Officer</th><th></th></tr></thead>
-            <tbody data-admin-officer-rows><tr><td colspan="2" style="color:var(--muted);">No officers appointed yet.</td></tr></tbody>
-          </table>
+        <div class="seg" style="margin-bottom:16px;">
+          <button type="button" class="seg-btn active" data-admin-tab-btn="officers">Officers</button>
+          <button type="button" class="seg-btn" data-admin-tab-btn="settings">Settings</button>
         </div>
-        <form data-admin-appoint-form style="display:none;margin-top:14px;gap:8px;max-width:420px;">
-          <select class="form-input" name="nt_user_id" style="flex:1;"><option value=""> Dany</option><option value=""> Kraze </option><option value=""> rajr</option><option value=""> ynnek</option><option value="">⚡Ⱳîzard⚡</option><option value="">⭐⭐⭐­</option><option value="">$$$Mason$$$</option><option value="">A1    </option><option value="">akm    </option><option value="">autumn</option><option value="">Blossom_Ashleyy</option><option value="">Bluewhale</option><option value="">Brysons back</option><option value="">Caleb                                             </option><option value="">Calhoun</option><option value="">cortezdavis6565</option><option value="">Davante On IR</option><option value="">DenjilsWashed</option><option value="">EL    </option><option value="">Fallen Star</option><option value="">Icarus</option><option value="">ItsAlonPlayz</option><option value="">itzCam</option><option value="">IVI </option><option value="">JacobLaw</option><option value="">Ketsui</option><option value="">khail                                             </option><option value="">KINGIE XV</option><option value="">KT    </option><option value="">LovelyLyrica</option><option value="">Mighty</option><option value="">Night_Light</option><option value="">NightlsWashed</option><option value="">Nxt The Boss</option><option value="">PH4NTOM</option><option value="">preston</option><option value="">r omeo</option><option value="">racing</option><option value="">Radioactive Spider</option><option value="">Randora</option><option value="">RentFreeInDawnsMind</option><option value="">Rizzard of Oz</option><option value="">snipez</option><option value="">SNT MADE ME 2011</option><option value="">Talan 88k</option><option value="">Trip                                              </option><option value="">tru of macedonia</option><option value="">Try2Win4Glory</option><option value="">Vox   </option><option value="">will the knight</option><option value="">wise,,</option><option value="">士Karacter士</option></select>
-          <button type="submit" class="btn-primary">Make officer</button>
-        </form>
+
+        <div data-admin-tabpanel="officers">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Officer</th><th></th></tr></thead>
+              <tbody data-admin-officer-rows><tr><td colspan="2" style="color:var(--muted);">No officers appointed yet.</td></tr></tbody>
+            </table>
+          </div>
+          <form data-admin-appoint-form style="display:none;margin-top:14px;gap:8px;max-width:420px;">
+            <select class="form-input" name="nt_user_id" style="flex:1;"><option value=""> Dany</option><option value=""> Kraze </option><option value=""> rajr</option><option value=""> ynnek</option><option value="">⚡Ⱳîzard⚡</option><option value="">⭐⭐⭐­</option><option value="">$$$Mason$$$</option><option value="">A1    </option><option value="">akm    </option><option value="">autumn</option><option value="">Blossom_Ashleyy</option><option value="">Bluewhale</option><option value="">Brysons back</option><option value="">Caleb                                             </option><option value="">Calhoun</option><option value="">cortezdavis6565</option><option value="">Davante On IR</option><option value="">DenjilsWashed</option><option value="">EL    </option><option value="">Fallen Star</option><option value="">Icarus</option><option value="">ItsAlonPlayz</option><option value="">itzCam</option><option value="">IVI </option><option value="">JacobLaw</option><option value="">Ketsui</option><option value="">khail                                             </option><option value="">KINGIE XV</option><option value="">KT    </option><option value="">LovelyLyrica</option><option value="">Mighty</option><option value="">Night_Light</option><option value="">NightlsWashed</option><option value="">Nxt The Boss</option><option value="">PH4NTOM</option><option value="">preston</option><option value="">r omeo</option><option value="">racing</option><option value="">Radioactive Spider</option><option value="">Randora</option><option value="">RentFreeInDawnsMind</option><option value="">Rizzard of Oz</option><option value="">snipez</option><option value="">SNT MADE ME 2011</option><option value="">Talan 88k</option><option value="">Trip                                              </option><option value="">tru of macedonia</option><option value="">Try2Win4Glory</option><option value="">Vox   </option><option value="">will the knight</option><option value="">wise,,</option><option value="">士Karacter士</option></select>
+            <button type="submit" class="btn-primary">Make officer</button>
+          </form>
+        </div>
+
+        <div data-admin-tabpanel="settings" style="display:none;max-width:480px;">
+          <div style="color:var(--muted);font-size:13px;margin-bottom:14px;">
+            Site-only settings for [KU] — everything else on this team's page (requirements, color, roster) comes straight from Nitro Type and can't be edited here.
+          </div>
+          <label class="form-input-wrap" style="margin-bottom:16px;">
+            <span style="color:var(--text);font-size:13.5px;font-weight:700;">Discord invite link</span>
+            <span>Shown on this team's page so racers can join your server directly.</span>
+            <input class="form-input" type="url" data-admin-discord-input placeholder="https://discord.gg/yourteam">
+          </label>
+          <label class="form-input-wrap" style="margin-bottom:16px;">
+            <span style="color:var(--text);font-size:13.5px;font-weight:700;">Team emoji</span>
+            <span>One emoji, shown next to your team's name on the leaderboards and team list.</span>
+            <input class="form-input" type="text" data-admin-emoji-input placeholder="🏁" maxlength="8" style="max-width:120px;">
+          </label>
+          <button type="button" class="btn-primary" data-admin-settings-save style="display:none;">Save settings</button>
+        </div>
+
         <div data-admin-error class="form-error" style="display:none;margin-top:10px;"></div>
       </div>
     </div></div>
     </div>
 </main>
-<footer class="site">Generated 2026-10-24T16:19:39.256Z</footer>
+<footer class="site">Generated 2026-10-24T16:31:38.717Z</footer>
 </body>
 </html>

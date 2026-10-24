@@ -157,6 +157,13 @@
   }
   .req-bar .req { color: var(--muted); }
   .req-bar .req b { color: var(--text); font-weight: 700; }
+  .req-bar a.req.discord-invite {
+    color: var(--velocity);
+    font-weight: 700;
+    text-decoration: none;
+    margin-left: auto;
+  }
+  .req-bar a.req.discord-invite:hover { text-decoration: underline; }
 
   .special-reqs {
     background: var(--panel);
@@ -572,21 +579,46 @@
       <div data-admin-gate style="color:var(--muted);font-size:13.5px;">Checking your access…</div>
       <div data-admin-content style="display:none;">
         <p class="meta-row" data-admin-role-note></p>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Officer</th><th></th></tr></thead>
-            <tbody data-admin-officer-rows><tr><td colspan="2" style="color:var(--muted);">No officers appointed yet.</td></tr></tbody>
-          </table>
+        <div class="seg" style="margin-bottom:16px;">
+          <button type="button" class="seg-btn active" data-admin-tab-btn="officers">Officers</button>
+          <button type="button" class="seg-btn" data-admin-tab-btn="settings">Settings</button>
         </div>
-        <form data-admin-appoint-form style="display:none;margin-top:14px;gap:8px;max-width:420px;">
-          <select class="form-input" name="nt_user_id" style="flex:1;"><option value="">Mr_Star</option><option value="">★BlackStar★</option><option value="">⚔️Viking⚔️</option><option value="">Aiden Schumacher</option><option value="">AlyxSSBM</option><option value="">angelo</option><option value="">aototom</option><option value="">BritishMexico</option><option value="">bruhdooh</option><option value="">Chuchi</option><option value="">Dan 32K</option><option value="">DRS#4867</option><option value="">DUBSZ NTT</option><option value="">Kurohitsugi</option><option value="">Liqud_Force</option><option value="">Louish</option><option value="">Maple Syrup</option><option value="">Monkey D. Luffy</option><option value="">MysteryTypist</option><option value="">MysticLegendx</option><option value="">Nedjeljko</option><option value="">odin    </option><option value="">Ondader</option><option value="">pashkhan</option><option value="">pugtaka</option><option value="">Qwerty</option><option value="">Recontinued</option><option value="">riddle</option><option value="">riptide</option><option value="">Roberto</option><option value="">sageost</option><option value="">Semper Citius</option><option value="">Skittles Typer</option><option value="">skyleaf❀</option><option value="">solicitary</option><option value="">Stretch</option><option value="">TemporaryPlan</option><option value="">tieneken</option><option value="">Tummie</option><option value="">Vielle</option><option value="">Volhosis</option><option value="">westcoast</option><option value="">Zizzler</option><option value="">мρн300</option></select>
-          <button type="submit" class="btn-primary">Make officer</button>
-        </form>
+
+        <div data-admin-tabpanel="officers">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Officer</th><th></th></tr></thead>
+              <tbody data-admin-officer-rows><tr><td colspan="2" style="color:var(--muted);">No officers appointed yet.</td></tr></tbody>
+            </table>
+          </div>
+          <form data-admin-appoint-form style="display:none;margin-top:14px;gap:8px;max-width:420px;">
+            <select class="form-input" name="nt_user_id" style="flex:1;"><option value="">Mr_Star</option><option value="">★BlackStar★</option><option value="">⚔️Viking⚔️</option><option value="">Aiden Schumacher</option><option value="">AlyxSSBM</option><option value="">angelo</option><option value="">aototom</option><option value="">BritishMexico</option><option value="">bruhdooh</option><option value="">Chuchi</option><option value="">Dan 32K</option><option value="">DRS#4867</option><option value="">DUBSZ NTT</option><option value="">Kurohitsugi</option><option value="">Liqud_Force</option><option value="">Louish</option><option value="">Maple Syrup</option><option value="">Monkey D. Luffy</option><option value="">MysteryTypist</option><option value="">MysticLegendx</option><option value="">Nedjeljko</option><option value="">odin    </option><option value="">Ondader</option><option value="">pashkhan</option><option value="">pugtaka</option><option value="">Qwerty</option><option value="">Recontinued</option><option value="">riddle</option><option value="">riptide</option><option value="">Roberto</option><option value="">sageost</option><option value="">Semper Citius</option><option value="">Skittles Typer</option><option value="">skyleaf❀</option><option value="">solicitary</option><option value="">Stretch</option><option value="">TemporaryPlan</option><option value="">tieneken</option><option value="">Tummie</option><option value="">Vielle</option><option value="">Volhosis</option><option value="">westcoast</option><option value="">Zizzler</option><option value="">мρн300</option></select>
+            <button type="submit" class="btn-primary">Make officer</button>
+          </form>
+        </div>
+
+        <div data-admin-tabpanel="settings" style="display:none;max-width:480px;">
+          <div style="color:var(--muted);font-size:13px;margin-bottom:14px;">
+            Site-only settings for [NTM] — everything else on this team's page (requirements, color, roster) comes straight from Nitro Type and can't be edited here.
+          </div>
+          <label class="form-input-wrap" style="margin-bottom:16px;">
+            <span style="color:var(--text);font-size:13.5px;font-weight:700;">Discord invite link</span>
+            <span>Shown on this team's page so racers can join your server directly.</span>
+            <input class="form-input" type="url" data-admin-discord-input placeholder="https://discord.gg/yourteam">
+          </label>
+          <label class="form-input-wrap" style="margin-bottom:16px;">
+            <span style="color:var(--text);font-size:13.5px;font-weight:700;">Team emoji</span>
+            <span>One emoji, shown next to your team's name on the leaderboards and team list.</span>
+            <input class="form-input" type="text" data-admin-emoji-input placeholder="🏁" maxlength="8" style="max-width:120px;">
+          </label>
+          <button type="button" class="btn-primary" data-admin-settings-save style="display:none;">Save settings</button>
+        </div>
+
         <div data-admin-error class="form-error" style="display:none;margin-top:10px;"></div>
       </div>
     </div></div>
     </div>
 </main>
-<footer class="site">Generated 2026-10-24T16:19:52.788Z</footer>
+<footer class="site">Generated 2026-10-24T16:31:45.644Z</footer>
 </body>
 </html>

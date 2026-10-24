@@ -157,6 +157,13 @@
   }
   .req-bar .req { color: var(--muted); }
   .req-bar .req b { color: var(--text); font-weight: 700; }
+  .req-bar a.req.discord-invite {
+    color: var(--velocity);
+    font-weight: 700;
+    text-decoration: none;
+    margin-left: auto;
+  }
+  .req-bar a.req.discord-invite:hover { text-decoration: underline; }
 
   .special-reqs {
     background: var(--panel);
@@ -572,21 +579,46 @@
       <div data-admin-gate style="color:var(--muted);font-size:13.5px;">Checking your access…</div>
       <div data-admin-content style="display:none;">
         <p class="meta-row" data-admin-role-note></p>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Officer</th><th></th></tr></thead>
-            <tbody data-admin-officer-rows><tr><td colspan="2" style="color:var(--muted);">No officers appointed yet.</td></tr></tbody>
-          </table>
+        <div class="seg" style="margin-bottom:16px;">
+          <button type="button" class="seg-btn active" data-admin-tab-btn="officers">Officers</button>
+          <button type="button" class="seg-btn" data-admin-tab-btn="settings">Settings</button>
         </div>
-        <form data-admin-appoint-form style="display:none;margin-top:14px;gap:8px;max-width:420px;">
-          <select class="form-input" name="nt_user_id" style="flex:1;"><option value="">-Car-　</option><option value="">-Mystery-</option><option value="">-NeverLostInGod-3K</option><option value="">-Nova-</option><option value="">100k cash plz</option><option value="">Angelina29000</option><option value="">B1ACKhornet</option><option value="">B2ACKhornet</option><option value="">baby abyss</option><option value="">Bicentric_PLZ_N_gold</option><option value="">BicentricFir0</option><option value="">BicentricFir10</option><option value="">BicentricFir11</option><option value="">BicentricFir12</option><option value="">BicentricFir13</option><option value="">BicentricFir14</option><option value="">Bicentricfir4</option><option value="">BicentricFir67</option><option value="">BicentricFir7</option><option value="">BicentricFir77</option><option value="">BicentricFir8</option><option value="">BicentricFir9</option><option value="">BN8 BN8 BN8 BN8</option><option value="">caffelne</option><option value="">catsrule2013</option><option value="">Colepalmer is my BFF</option><option value="">Entity_304</option><option value="">FUTUR3 Rd2 7K</option><option value="">GreenWizardBEN</option><option value="">i quite</option><option value="">into the void</option><option value="">ITypeWith2Fingers</option><option value="">Jomamasofast</option><option value="">L3G3NDARY</option><option value="">MagicKio -_-</option><option value="">mightyox</option><option value="">Mochi　</option><option value="">MR HIGGENS</option><option value="">MysteR⚜️B✨</option><option value="">MYTH1CAL_MAG1C</option><option value="">Nitro Libre</option><option value="">NΣKØLØRD</option><option value="">OliverCast</option><option value="">OriginalTanBoar</option><option value="">Patrick Jane</option><option value="">PINK BOY</option><option value="">RedWolf</option><option value="">Sans　　</option><option value="">Shirley Temple</option><option value="">TerryHolloway</option><option value="">Tokito</option><option value="">unicorn_789</option><option value="">VortexKeyz</option><option value="">WIAmDream</option><option value="">X5UT57YHSZ</option><option value="">xxl_grind</option><option value="">Zeltron IIX</option></select>
-          <button type="submit" class="btn-primary">Make officer</button>
-        </form>
+
+        <div data-admin-tabpanel="officers">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Officer</th><th></th></tr></thead>
+              <tbody data-admin-officer-rows><tr><td colspan="2" style="color:var(--muted);">No officers appointed yet.</td></tr></tbody>
+            </table>
+          </div>
+          <form data-admin-appoint-form style="display:none;margin-top:14px;gap:8px;max-width:420px;">
+            <select class="form-input" name="nt_user_id" style="flex:1;"><option value="">-Car-　</option><option value="">-Mystery-</option><option value="">-NeverLostInGod-3K</option><option value="">-Nova-</option><option value="">100k cash plz</option><option value="">Angelina29000</option><option value="">B1ACKhornet</option><option value="">B2ACKhornet</option><option value="">baby abyss</option><option value="">Bicentric_PLZ_N_gold</option><option value="">BicentricFir0</option><option value="">BicentricFir10</option><option value="">BicentricFir11</option><option value="">BicentricFir12</option><option value="">BicentricFir13</option><option value="">BicentricFir14</option><option value="">Bicentricfir4</option><option value="">BicentricFir67</option><option value="">BicentricFir7</option><option value="">BicentricFir77</option><option value="">BicentricFir8</option><option value="">BicentricFir9</option><option value="">BN8 BN8 BN8 BN8</option><option value="">caffelne</option><option value="">catsrule2013</option><option value="">Colepalmer is my BFF</option><option value="">Entity_304</option><option value="">FUTUR3 Rd2 7K</option><option value="">GreenWizardBEN</option><option value="">i quite</option><option value="">into the void</option><option value="">ITypeWith2Fingers</option><option value="">Jomamasofast</option><option value="">L3G3NDARY</option><option value="">MagicKio -_-</option><option value="">mightyox</option><option value="">Mochi　</option><option value="">MR HIGGENS</option><option value="">MysteR⚜️B✨</option><option value="">MYTH1CAL_MAG1C</option><option value="">Nitro Libre</option><option value="">NΣKØLØRD</option><option value="">OliverCast</option><option value="">OriginalTanBoar</option><option value="">Patrick Jane</option><option value="">PINK BOY</option><option value="">RedWolf</option><option value="">Sans　　</option><option value="">Shirley Temple</option><option value="">TerryHolloway</option><option value="">Tokito</option><option value="">unicorn_789</option><option value="">VortexKeyz</option><option value="">WIAmDream</option><option value="">X5UT57YHSZ</option><option value="">xxl_grind</option><option value="">Zeltron IIX</option></select>
+            <button type="submit" class="btn-primary">Make officer</button>
+          </form>
+        </div>
+
+        <div data-admin-tabpanel="settings" style="display:none;max-width:480px;">
+          <div style="color:var(--muted);font-size:13px;margin-bottom:14px;">
+            Site-only settings for [BN8] — everything else on this team's page (requirements, color, roster) comes straight from Nitro Type and can't be edited here.
+          </div>
+          <label class="form-input-wrap" style="margin-bottom:16px;">
+            <span style="color:var(--text);font-size:13.5px;font-weight:700;">Discord invite link</span>
+            <span>Shown on this team's page so racers can join your server directly.</span>
+            <input class="form-input" type="url" data-admin-discord-input placeholder="https://discord.gg/yourteam">
+          </label>
+          <label class="form-input-wrap" style="margin-bottom:16px;">
+            <span style="color:var(--text);font-size:13.5px;font-weight:700;">Team emoji</span>
+            <span>One emoji, shown next to your team's name on the leaderboards and team list.</span>
+            <input class="form-input" type="text" data-admin-emoji-input placeholder="🏁" maxlength="8" style="max-width:120px;">
+          </label>
+          <button type="button" class="btn-primary" data-admin-settings-save style="display:none;">Save settings</button>
+        </div>
+
         <div data-admin-error class="form-error" style="display:none;margin-top:10px;"></div>
       </div>
     </div></div>
     </div>
 </main>
-<footer class="site">Generated 2026-10-24T16:19:39.737Z</footer>
+<footer class="site">Generated 2026-10-24T16:31:38.983Z</footer>
 </body>
 </html>
