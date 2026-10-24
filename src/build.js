@@ -25,6 +25,7 @@ const {
   carImageSourceUrl,
   carImageLocalFile,
   nitroTypeTeamHref,
+  teamEmojiSuffix,
 } = require("./theme");
 const { loadLeaderboardData, loadTeamTracker } = require("./leaderboard-data");
 const { queryNotifications } = require("./notifications");
@@ -70,7 +71,7 @@ function buildTeamsIndex(teams) {
              <div class="card" style="--card-accent:${badgeBg}" data-search="${escapeHtml(searchKey)}">
                <div class="top">
                  <a class="tag" href="${teamHref}">[${escapeHtml(t.tag)}]</a>
-                 <a class="display-name" href="${nitroTypeTeamHref(t.tag)}" target="_blank" rel="noopener">${escapeHtml(t.display_name || "(unsynced)")}</a>
+                 <a class="display-name" href="${nitroTypeTeamHref(t.tag)}" target="_blank" rel="noopener">${escapeHtml(t.display_name || "(unsynced)")}${teamEmojiSuffix(t.team_emoji)}</a>
                </div>
                ${t.captain_username ? `<div class="req-line">Captain: <b>${escapeHtml(t.captain_display_name || t.captain_username)}</b></div>` : ""}
                <div class="req-line">Members: <b>${t.members_count ?? "—"}</b> &nbsp;·&nbsp; Formed: <b>${formatDate(t.nt_created_at)}</b></div>
@@ -119,6 +120,7 @@ function buildTeamPage(team, racers, sectionData) {
       <div class="req">Min races <b>${team.min_races ?? "—"}</b></div>
       <div class="req">Min speed <b>${team.min_speed ?? "—"} wpm</b></div>
       ${team.min_level != null ? `<div class="req">Min level <b>${team.min_level}</b></div>` : ""}
+      ${team.discord_invite_url ? `<a class="req discord-invite" href="${escapeHtml(team.discord_invite_url)}" target="_blank" rel="noopener">Join Discord</a>` : ""}
     </div>`;
 
   const specialReqs = team.other_requirements
@@ -131,7 +133,7 @@ function buildTeamPage(team, racers, sectionData) {
   const heroBg = teamColor(team.tag, team.tag_color);
   const hero = `
     <div class="hero" style="background:${heroBg};color:${textOnColor(heroBg)}">
-      <div class="name">[${escapeHtml(team.tag)}] ${escapeHtml(team.display_name || "")}</div>
+      <div class="name">[${escapeHtml(team.tag)}] ${escapeHtml(team.display_name || "")}${teamEmojiSuffix(team.team_emoji)}</div>
       <div class="sub">
         ${team.captain_display_name || team.captain_username
           ? `Captain: ${escapeHtml(team.captain_display_name || team.captain_username)} · `
@@ -333,7 +335,7 @@ async function main() {
     `select t.tag, t.display_name, t.last_synced_at,
             t.captain_username, t.captain_display_name, t.members_count, t.nt_created_at,
             t.min_races, t.min_speed, t.min_level, t.enrollment, t.other_requirements, t.tag_color,
-            t.captain_nt_user_id
+            t.captain_nt_user_id, t.discord_invite_url, t.team_emoji
      from teams t
      left join (
        select team_tag, sum(points) as points from racer_points group by team_tag

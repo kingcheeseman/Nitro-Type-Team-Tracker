@@ -19,6 +19,7 @@ const {
   teamAdminBody,
   pageShell,
   nitroTypeTeamHref,
+  teamEmojiSuffix,
 } = require("./theme");
 const { loadLeaderboardData, loadTeamTracker } = require("./leaderboard-data");
 const { queryNotifications } = require("./notifications");
@@ -115,7 +116,7 @@ app.get("/teams", async (req, res) => {
     const { rows } = await pool.query(
       `select t.tag, t.display_name, t.last_synced_at,
               t.captain_username, t.captain_display_name, t.members_count, t.nt_created_at,
-              t.min_races, t.min_speed, t.tag_color
+              t.min_races, t.min_speed, t.tag_color, t.team_emoji
        from teams t
        left join (
          select team_tag, sum(points) as points from racer_points group by team_tag
@@ -142,7 +143,7 @@ app.get("/teams", async (req, res) => {
                <div class="card" style="--card-accent:${badgeBg}" data-search="${escapeHtml(searchKey)}">
                  <div class="top">
                    <a class="tag" href="${teamHref}">[${escapeHtml(t.tag)}]</a>
-                   <a class="display-name" href="${nitroTypeTeamHref(t.tag)}" target="_blank" rel="noopener">${escapeHtml(t.display_name || "(unsynced)")}</a>
+                   <a class="display-name" href="${nitroTypeTeamHref(t.tag)}" target="_blank" rel="noopener">${escapeHtml(t.display_name || "(unsynced)")}${teamEmojiSuffix(t.team_emoji)}</a>
                  </div>
                  ${t.captain_username ? `<div class="req-line">Captain: <b>${escapeHtml(t.captain_display_name || t.captain_username)}</b></div>` : ""}
                  <div class="req-line">Members: <b>${t.members_count ?? "—"}</b> &nbsp;·&nbsp; Formed: <b>${formatDate(t.nt_created_at)}</b></div>
@@ -210,6 +211,7 @@ app.get("/teams/:tag", async (req, res) => {
         <div class="req">Min races <b>${t.min_races ?? "—"}</b></div>
         <div class="req">Min speed <b>${t.min_speed ?? "—"} wpm</b></div>
         ${t.min_level != null ? `<div class="req">Min level <b>${t.min_level}</b></div>` : ""}
+        ${t.discord_invite_url ? `<a class="req discord-invite" href="${escapeHtml(t.discord_invite_url)}" target="_blank" rel="noopener">Join Discord</a>` : ""}
       </div>`;
 
     const specialReqs = t.other_requirements
@@ -222,7 +224,7 @@ app.get("/teams/:tag", async (req, res) => {
     const heroBg = teamColor(t.tag, t.tag_color);
     const hero = `
       <div class="hero" style="background:${heroBg};color:${textOnColor(heroBg)}">
-        <div class="name">[${escapeHtml(t.tag)}] ${escapeHtml(t.display_name || "")}</div>
+        <div class="name">[${escapeHtml(t.tag)}] ${escapeHtml(t.display_name || "")}${teamEmojiSuffix(t.team_emoji)}</div>
         <div class="sub">
           ${t.captain_display_name || t.captain_username
             ? `Captain: ${escapeHtml(t.captain_display_name || t.captain_username)} · `
@@ -287,7 +289,7 @@ app.get("/teams/:tag/:section", async (req, res) => {
     const sectionHeroBg = teamColor(t.tag, t.tag_color);
     const hero = `
       <div class="hero" style="background:${sectionHeroBg};color:${textOnColor(sectionHeroBg)}">
-        <div class="name">[${escapeHtml(t.tag)}] ${escapeHtml(t.display_name || "")}</div>
+        <div class="name">[${escapeHtml(t.tag)}] ${escapeHtml(t.display_name || "")}${teamEmojiSuffix(t.team_emoji)}</div>
       </div>`;
     const built = item.built ? await sectionContent(item.key, tag, t.captain_nt_user_id) : null;
     const linkFor = (key) => (key === "roster" ? `/teams/${encodeURIComponent(tag)}` : `/teams/${encodeURIComponent(tag)}/${key}`);

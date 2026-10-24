@@ -17,6 +17,14 @@ function escapeHtml(str) {
   }[c]));
 }
 
+// A team's optional single emoji (set via its Team Admin Settings tab),
+// shown right after its display name - a bare space when there isn't
+// one, so callers can always just concatenate this in rather than
+// branching themselves.
+function teamEmojiSuffix(emoji) {
+  return emoji ? ` ${escapeHtml(emoji)}` : "";
+}
+
 // Deterministic tag -> hue, so every team gets a stable, distinct accent
 // color across visits/builds without storing one in the database.
 function hashHue(str) {
@@ -419,7 +427,7 @@ function teamsLeaderboardTable(rows, rangeLabel, teamHref, season) {
           <td class="racer">
             <span class="avatar" style="background:${bg};color:${textOnColor(bg)}">${escapeHtml((t.tag || "?").slice(0, 1).toUpperCase())}</span>
             <a href="${teamHref(t.tag)}">[${escapeHtml(t.tag)}]</a>
-            <a href="${nitroTypeTeamHref(t.tag)}" target="_blank" rel="noopener">${escapeHtml(t.display_name || "")}</a>
+            <a href="${nitroTypeTeamHref(t.tag)}" target="_blank" rel="noopener">${escapeHtml(t.display_name || "")}${teamEmojiSuffix(t.team_emoji)}</a>
           </td>
           <td><span class="points">${formatNumber(t.points)}</span></td>
           <td>${formatNumber(t.races)}</td>
@@ -641,16 +649,41 @@ function teamAdminBody(tag, captainNtUserId, racers) {
       <div data-admin-gate style="color:var(--muted);font-size:13.5px;">Checking your access…</div>
       <div data-admin-content style="display:none;">
         <p class="meta-row" data-admin-role-note></p>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Officer</th><th></th></tr></thead>
-            <tbody data-admin-officer-rows><tr><td colspan="2" style="color:var(--muted);">No officers appointed yet.</td></tr></tbody>
-          </table>
+        <div class="seg" style="margin-bottom:16px;">
+          <button type="button" class="seg-btn active" data-admin-tab-btn="officers">Officers</button>
+          <button type="button" class="seg-btn" data-admin-tab-btn="settings">Settings</button>
         </div>
-        <form data-admin-appoint-form style="display:none;margin-top:14px;gap:8px;max-width:420px;">
-          <select class="form-input" name="nt_user_id" style="flex:1;">${rosterOptions}</select>
-          <button type="submit" class="btn-primary">Make officer</button>
-        </form>
+
+        <div data-admin-tabpanel="officers">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Officer</th><th></th></tr></thead>
+              <tbody data-admin-officer-rows><tr><td colspan="2" style="color:var(--muted);">No officers appointed yet.</td></tr></tbody>
+            </table>
+          </div>
+          <form data-admin-appoint-form style="display:none;margin-top:14px;gap:8px;max-width:420px;">
+            <select class="form-input" name="nt_user_id" style="flex:1;">${rosterOptions}</select>
+            <button type="submit" class="btn-primary">Make officer</button>
+          </form>
+        </div>
+
+        <div data-admin-tabpanel="settings" style="display:none;max-width:480px;">
+          <div style="color:var(--muted);font-size:13px;margin-bottom:14px;">
+            Site-only settings for [${escapeHtml(tag)}] — everything else on this team's page (requirements, color, roster) comes straight from Nitro Type and can't be edited here.
+          </div>
+          <label class="form-input-wrap" style="margin-bottom:16px;">
+            <span style="color:var(--text);font-size:13.5px;font-weight:700;">Discord invite link</span>
+            <span>Shown on this team's page so racers can join your server directly.</span>
+            <input class="form-input" type="url" data-admin-discord-input placeholder="https://discord.gg/yourteam">
+          </label>
+          <label class="form-input-wrap" style="margin-bottom:16px;">
+            <span style="color:var(--text);font-size:13.5px;font-weight:700;">Team emoji</span>
+            <span>One emoji, shown next to your team's name on the leaderboards and team list.</span>
+            <input class="form-input" type="text" data-admin-emoji-input placeholder="🏁" maxlength="8" style="max-width:120px;">
+          </label>
+          <button type="button" class="btn-primary" data-admin-settings-save style="display:none;">Save settings</button>
+        </div>
+
         <div data-admin-error class="form-error" style="display:none;margin-top:10px;"></div>
       </div>
     </div>`;
@@ -874,6 +907,13 @@ const BASE_CSS = `
   }
   .req-bar .req { color: var(--muted); }
   .req-bar .req b { color: var(--text); font-weight: 700; }
+  .req-bar a.req.discord-invite {
+    color: var(--velocity);
+    font-weight: 700;
+    text-decoration: none;
+    margin-left: auto;
+  }
+  .req-bar a.req.discord-invite:hover { text-decoration: underline; }
 
   .special-reqs {
     background: var(--panel);
@@ -1308,6 +1348,7 @@ ${body}
 
 module.exports = {
   escapeHtml,
+  teamEmojiSuffix,
   hashHue,
   teamColor,
   textOnColor,

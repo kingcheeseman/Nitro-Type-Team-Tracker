@@ -117,7 +117,7 @@ async function queryTeamPoints(pool, range, season) {
   const filter = rangeFilter(range, season, 0);
   if (!filter) return [];
   const { rows } = await pool.query(
-    `select t.tag, t.display_name, t.tag_color,
+    `select t.tag, t.display_name, t.tag_color, t.team_emoji,
             sum(rp.points) as points,
             sum(rp.races_delta) as races,
             count(distinct rp.nt_user_id) as racer_count,
@@ -132,7 +132,7 @@ async function queryTeamPoints(pool, range, season) {
      from racer_points rp
      join teams t on t.tag = rp.team_tag
      where ${filter.clause}
-     group by t.tag, t.display_name, t.tag_color
+     group by t.tag, t.display_name, t.tag_color, t.team_emoji
      having sum(rp.points) > 0
      order by points desc`,
     filter.params

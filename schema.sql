@@ -377,6 +377,53 @@ create policy "only a team's own verified captain manages its officers" on team_
     )
   );
 
+-- Team settings: discord_invite_url + team_emoji are the only two
+-- `teams` columns a captain edits directly through the site - every
+-- other column on this table is Nitro Type's own truth, overwritten by
+-- the next sync, so letting a captain edit those would just be
+-- undone within 30 minutes. These two are shown on the team's public
+-- page (an invite link racers can actually join through) and next to
+-- the team's name on leaderboards (the emoji), the same idea as
+-- Startrack's own Settings tab.
+alter table teams add column if not exists discord_invite_url text;
+alter table teams add column if not exists team_emoji text;
+
+-- teams had NO row level security at all until now. Combined with the
+-- blanket "grant insert, update, delete ... to authenticated" at the
+-- bottom of this file, that meant ANY signed-in session (including the
+-- short-lived anonymous one the connect-flow creates) could already
+-- rewrite or delete any team's row via the REST API - nothing client-
+-- side ever exercised that path, but it was open. Turning RLS on here
+-- closes it: a public read policy keeps every existing read working,
+-- and the update policy below (same ownership check as events/
+-- team_officers) plus a column-scoped grant make the only remaining
+-- write a team's own verified captain changing their own two settings
+-- columns - inserts and deletes are denied outright (no policy allows
+-- them once RLS is on, regardless of the blanket grant).
+alter table teams enable row level security;
+
+drop policy if exists "teams are publicly readable" on teams;
+create policy "teams are publicly readable" on teams
+  for select using (true);
+
+drop policy if exists "only a team's own verified captain edits its settings" on teams;
+create policy "only a team's own verified captain edits its settings" on teams
+  for update
+  using (
+    exists (
+      select 1 from account_links al
+      where al.auth_user_id = auth.uid()
+        and al.nt_user_id = teams.captain_nt_user_id
+    )
+  )
+  with check (
+    exists (
+      select 1 from account_links al
+      where al.auth_user_id = auth.uid()
+        and al.nt_user_id = teams.captain_nt_user_id
+    )
+  );
+
 -- Profiles: the display identity for a TypeTrack account, separate from
 -- its Supabase Auth email (which, per the connect-flow redesign, is a
 -- synthetic address the user never sees or picks - see src/client/app.js).
@@ -429,3 +476,16 @@ grant usage, select on all sequences in schema public to anon, authenticated, se
 alter default privileges in schema public grant select on tables to anon, authenticated, service_role;
 alter default privileges in schema public grant insert, update, delete on tables to authenticated, service_role;
 alter default privileges in schema public grant usage, select on sequences to anon, authenticated, service_role;
+
+-- teams is the one exception to the blanket "insert, update, delete ...
+-- to authenticated" two lines up: that grant would otherwise let a
+-- signed-in captain UPDATE any column on their own team's row
+-- (tag_color, min_races, even captain_nt_user_id), not just the two
+-- settings columns the RLS policy above is meant to allow, and would
+-- let ANY signed-in session insert or delete team rows outright. Narrow
+-- it back down to exactly what the Settings tab needs - this has to run
+-- after the blanket grant above (same idempotent-script ordering this
+-- whole file already depends on), or the blanket grant would simply
+-- re-widen it on the next run.
+revoke insert, update, delete on teams from authenticated;
+grant update (discord_invite_url, team_emoji) on teams to authenticated;
