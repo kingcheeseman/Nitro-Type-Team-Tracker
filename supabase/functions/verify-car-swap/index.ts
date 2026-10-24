@@ -167,13 +167,7 @@ Deno.serve(async (req: Request) => {
       members = await liveFetchTeamMembers(racer.team_tag, db);
     } catch (err) {
       console.error("liveFetchTeamMembers failed (start):", err && (err as Error).message);
-      return json(
-        {
-          error: "Couldn't reach Nitro Type right now - try again shortly.",
-          _debug: String(err && (err as Error).message || err),
-        },
-        502
-      );
+      return json({ error: "Couldn't reach Nitro Type right now - try again shortly." }, 502);
     }
     const baselineCarId = findMemberCarId(members, racer.nt_user_id);
     if (baselineCarId === null) {
