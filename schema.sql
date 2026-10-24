@@ -424,6 +424,93 @@ create policy "only a team's own verified captain edits its settings" on teams
     )
   );
 
+-- Squads: a captain's own sub-groups within their team (StarTrack's
+-- "Squads" tab) - just a name + color, with each racer optionally
+-- belonging to one. Nothing scoring-related reads this; it's purely
+-- organizational (roster badges, eventually squad-filtered views).
+create table if not exists team_squads (
+  id         bigserial primary key,
+  team_tag   text not null references teams(tag) on delete cascade,
+  name       text not null,
+  -- "#rrggbb", captain-picked via a native color input - no palette to
+  -- maintain, and it reads back straight into a CSS background/border.
+  color      text not null default '#29d3ff',
+  created_at timestamptz not null default now(),
+  unique (team_tag, name)
+);
+
+alter table team_squads enable row level security;
+
+-- Readable by anyone (squad badges show up on the public roster); only
+-- that team's own verified captain creates/renames/recolors/deletes
+-- squads - the same ownership check as team_officers/teams above.
+drop policy if exists "team_squads are publicly readable" on team_squads;
+create policy "team_squads are publicly readable" on team_squads
+  for select using (true);
+
+drop policy if exists "only a team's own verified captain manages its squads" on team_squads;
+create policy "only a team's own verified captain manages its squads" on team_squads
+  for all
+  using (
+    exists (
+      select 1
+      from account_links al
+      join teams t on t.tag = team_squads.team_tag
+      where al.auth_user_id = auth.uid()
+        and al.nt_user_id = t.captain_nt_user_id
+    )
+  )
+  with check (
+    exists (
+      select 1
+      from account_links al
+      join teams t on t.tag = team_squads.team_tag
+      where al.auth_user_id = auth.uid()
+        and al.nt_user_id = t.captain_nt_user_id
+    )
+  );
+
+alter table racers add column if not exists squad_id bigint references team_squads(id) on delete set null;
+
+-- racers had NO row level security at all until now - the exact same gap
+-- teams had (see the comment above teams' "enable row level security"):
+-- combined with the blanket "insert, update, delete ... to authenticated"
+-- grant at the bottom of this file, ANY signed-in session could already
+-- rewrite or delete ANY racer's row via the REST API. Turning RLS on here
+-- closes it the same way: public read keeps every existing read working,
+-- and the update policy below (same ownership check as everything else
+-- above) plus a column-scoped grant make the only remaining write a
+-- team's own verified captain re-assigning one of their own racers to a
+-- different squad - every other racers column stays Nitro Type's own
+-- truth, overwritten by the next sync regardless. Inserts/deletes are
+-- denied outright (those only ever happen via the sync job's
+-- service-role key, which bypasses RLS entirely).
+alter table racers enable row level security;
+
+drop policy if exists "racers are publicly readable" on racers;
+create policy "racers are publicly readable" on racers
+  for select using (true);
+
+drop policy if exists "only a racer's own team's verified captain assigns its squad" on racers;
+create policy "only a racer's own team's verified captain assigns its squad" on racers
+  for update
+  using (
+    exists (
+      select 1 from account_links al
+      join teams t on t.tag = racers.team_tag
+      where al.auth_user_id = auth.uid()
+        and al.nt_user_id = t.captain_nt_user_id
+    )
+  )
+  with check (
+    exists (
+      select 1 from account_links al
+      join teams t on t.tag = racers.team_tag
+      where al.auth_user_id = auth.uid()
+        and al.nt_user_id = t.captain_nt_user_id
+    )
+  );
+
 -- Profiles: the display identity for a TypeTrack account, separate from
 -- its Supabase Auth email (which, per the connect-flow redesign, is a
 -- synthetic address the user never sees or picks - see src/client/app.js).
@@ -489,3 +576,13 @@ alter default privileges in schema public grant usage, select on sequences to an
 -- re-widen it on the next run.
 revoke insert, update, delete on teams from authenticated;
 grant update (discord_invite_url, team_emoji) on teams to authenticated;
+
+-- Same narrowing for racers: the RLS update policy above is meant to let
+-- a captain change only squad_id on their own team's racers, not every
+-- other NT-sourced column (role, car_id, display_name, ...) and
+-- definitely not insert/delete rows outright. team_squads itself needs
+-- no equivalent narrowing - a captain legitimately owns the full
+-- insert/update/delete lifecycle of their own squads, which is exactly
+-- what its "for all" RLS policy above already scopes to their team.
+revoke insert, update, delete on racers from authenticated;
+grant update (squad_id) on racers to authenticated;

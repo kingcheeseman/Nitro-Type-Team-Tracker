@@ -309,6 +309,60 @@
     });
   }
 
+  // ---------------------------------------------------------------------
+  // Squads (see team_squads in schema.sql) - a captain's own sub-groups
+  // within their team. Same ownership-via-RLS model as officers: anyone
+  // can read, only that team's own verified captain can write, enforced
+  // server-side (not just hidden client-side), so these calls fail
+  // harmlessly for a non-captain even if somehow invoked.
+  // ---------------------------------------------------------------------
+  function loadSquads(teamTag, cb) {
+    withClient(function (sb) {
+      sb.from("team_squads")
+        .select("id, name, color")
+        .eq("team_tag", teamTag)
+        .order("name")
+        .then(function (res) {
+          cb(res.error ? res.error.message : null, res.data || []);
+        });
+    });
+  }
+
+  function createSquad(teamTag, name, color, cb) {
+    withClient(function (sb) {
+      sb.from("team_squads")
+        .insert({ team_tag: teamTag, name: name, color: color })
+        .then(function (res) {
+          cb(res.error ? res.error.message : null);
+        });
+    });
+  }
+
+  function deleteSquad(squadId, cb) {
+    withClient(function (sb) {
+      sb.from("team_squads")
+        .delete()
+        .eq("id", squadId)
+        .then(function (res) {
+          cb(res.error ? res.error.message : null);
+        });
+    });
+  }
+
+  // null squadId clears a racer's assignment ("No squad") - squad_id is
+  // nullable and the column-scoped grant in schema.sql only ever allows
+  // writing this one column on racers, nothing else.
+  function updateRacerSquad(ntUserId, squadId, cb) {
+    withClient(function (sb) {
+      sb.from("racers")
+        .update({ squad_id: squadId })
+        .eq("nt_user_id", ntUserId)
+        .then(function (res) {
+          cb(res.error ? res.error.message : null);
+        });
+    });
+  }
+
   // "captain" | "officer" | "member" - the three tiers the latest design
   // calls out. Captain is decided purely from teams.captain_nt_user_id
   // (the same source of truth events.js's RLS policy itself trusts);
@@ -585,6 +639,89 @@
     });
   }
 
+  // squads: [{id, name, color}]. Builds both the squad list table (with a
+  // racer count per squad and a captain-only Delete button) and the
+  // option list every per-racer <select> in the roster below reuses -
+  // kept as one function since both need to stay in sync with the same
+  // squads array on every refresh.
+  function renderSquadRows(tbody, teamTag, squads, racersById, isCaptain, refresh) {
+    if (!squads.length) {
+      tbody.innerHTML = '<tr><td colspan="3" style="color:var(--muted);">No squads yet.</td></tr>';
+      return;
+    }
+    var counts = {};
+    for (var id in racersById) {
+      var sid = racersById[id].squad_id;
+      if (sid != null) counts[sid] = (counts[sid] || 0) + 1;
+    }
+    tbody.innerHTML = "";
+    squads.forEach(function (squad) {
+      var tr = document.createElement("tr");
+      var nameTd = document.createElement("td");
+      var swatch = document.createElement("span");
+      swatch.className = "squad-swatch";
+      swatch.style.background = squad.color;
+      nameTd.appendChild(swatch);
+      nameTd.appendChild(document.createTextNode(squad.name));
+      tr.appendChild(nameTd);
+      var countTd = document.createElement("td");
+      countTd.textContent = String(counts[squad.id] || 0);
+      tr.appendChild(countTd);
+      var actionTd = document.createElement("td");
+      if (isCaptain) {
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "btn-danger";
+        btn.textContent = "Delete";
+        btn.addEventListener("click", function () {
+          deleteSquad(squad.id, function (err) {
+            if (!err) refresh();
+          });
+        });
+        actionTd.appendChild(btn);
+      }
+      tr.appendChild(actionTd);
+      tbody.appendChild(tr);
+    });
+  }
+
+  function squadSelectOptionsHtml(squads, currentSquadId) {
+    var opts = '<option value="">No squad</option>';
+    squads.forEach(function (squad) {
+      var selected = String(currentSquadId == null ? "" : currentSquadId) === String(squad.id) ? " selected" : "";
+      opts += '<option value="' + escapeHtml(squad.id) + '"' + selected + ">" + escapeHtml(squad.name) + "</option>";
+    });
+    return opts;
+  }
+
+  function renderSquadRosterRows(tbody, teamTag, squads, racers, isCaptain, refresh) {
+    if (!racers.length) {
+      tbody.innerHTML = '<tr><td colspan="2" style="color:var(--muted);">No racers synced yet.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = "";
+    racers.forEach(function (racer) {
+      var tr = document.createElement("tr");
+      var nameTd = document.createElement("td");
+      nameTd.textContent = racer.display_name || racer.username;
+      tr.appendChild(nameTd);
+      var selectTd = document.createElement("td");
+      var select = document.createElement("select");
+      select.className = "form-input";
+      select.innerHTML = squadSelectOptionsHtml(squads, racer.squad_id);
+      if (!isCaptain) select.setAttribute("disabled", "disabled");
+      select.addEventListener("change", function () {
+        var val = select.value ? Number(select.value) : null;
+        updateRacerSquad(racer.nt_user_id, val, function (err) {
+          if (!err) refresh();
+        });
+      });
+      selectTd.appendChild(select);
+      tr.appendChild(selectTd);
+      tbody.appendChild(tr);
+    });
+  }
+
   function initTeamAdminPage() {
     var panel = document.querySelector("[data-admin-panel]");
     if (!panel) return;
@@ -601,6 +738,9 @@
     var discordInput = panel.querySelector("[data-admin-discord-input]");
     var emojiInput = panel.querySelector("[data-admin-emoji-input]");
     var settingsSaveBtn = panel.querySelector("[data-admin-settings-save]");
+    var squadRowsEl = panel.querySelector("[data-admin-squad-rows]");
+    var squadForm = panel.querySelector("[data-admin-squad-form]");
+    var squadRosterRowsEl = panel.querySelector("[data-admin-squad-roster-rows]");
 
     // Tabs are just show/hide - wiring this up doesn't depend on who's
     // looking, so it can happen before the access check below resolves.
@@ -651,6 +791,47 @@
             });
           }
           refresh();
+
+          // Squads tab: fetches its own squads + full roster (not just
+          // officers) independently of the Officers tab's refresh() above
+          // - same "each tab owns its own data" pattern the Settings tab
+          // below already uses.
+          function refreshSquads() {
+            withClient(function (sb) {
+              Promise.all([
+                sb.from("team_squads").select("id, name, color").eq("team_tag", teamTag).order("name"),
+                sb.from("racers").select("nt_user_id, username, display_name, squad_id").eq("team_tag", teamTag)
+                  .order("display_name", { nullsFirst: false }),
+              ]).then(function (results) {
+                var squads = results[0].data || [];
+                var racers = results[1].data || [];
+                var racersById = {};
+                racers.forEach(function (r) { racersById[r.nt_user_id] = r; });
+                if (squadRowsEl) renderSquadRows(squadRowsEl, teamTag, squads, racersById, isCaptain, refreshSquads);
+                if (squadRosterRowsEl) renderSquadRosterRows(squadRosterRowsEl, teamTag, squads, racers, isCaptain, refreshSquads);
+                if (isCaptain && squadForm) squadForm.style.display = "flex";
+              });
+            });
+          }
+          refreshSquads();
+          if (squadForm) {
+            squadForm.addEventListener("submit", function (e) {
+              e.preventDefault();
+              var name = (squadForm.squad_name.value || "").trim();
+              var color = squadForm.squad_color.value || "#29d3ff";
+              if (!name) return;
+              errorEl.style.display = "none";
+              createSquad(teamTag, name, color, function (err4) {
+                if (err4) {
+                  errorEl.textContent = err4;
+                  errorEl.style.display = "";
+                  return;
+                }
+                squadForm.squad_name.value = "";
+                refreshSquads();
+              });
+            });
+          }
 
           // Settings tab: discord_invite_url/team_emoji are the only two
           // `teams` columns a captain can write (see schema.sql's

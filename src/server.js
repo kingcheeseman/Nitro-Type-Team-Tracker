@@ -35,8 +35,21 @@ async function sectionContent(key, tag, captainNtUserId) {
   if (key === "trackers") return trackerBody(await loadTeamTracker(pool, tag), "/assets/");
   if (key === "notifications") return notificationsBody(tag, await queryNotifications(pool, tag));
   if (key === "admin") {
-    const racers = await pool.query("select nt_user_id, username, display_name from racers where team_tag = $1", [tag]);
-    return teamAdminBody(tag, captainNtUserId, racers.rows);
+    const racers = await pool.query(
+      "select nt_user_id, username, display_name, squad_id from racers where team_tag = $1 order by coalesce(display_name, username)",
+      [tag]
+    );
+    const squads = await pool.query(
+      `select sq.id, sq.name, sq.color,
+              count(r.nt_user_id) filter (where r.nt_user_id is not null) as racer_count
+       from team_squads sq
+       left join racers r on r.squad_id = sq.id
+       where sq.team_tag = $1
+       group by sq.id, sq.name, sq.color
+       order by sq.name`,
+      [tag]
+    );
+    return teamAdminBody(tag, captainNtUserId, racers.rows, squads.rows);
   }
   return null;
 }
@@ -188,7 +201,7 @@ app.get("/teams/:tag", async (req, res) => {
     }
     const racers = await pool.query(
       `select r.username, r.display_name, r.role, r.membership, r.joined_at_nt,
-              r.car_id, r.car_hue_angle,
+              r.car_id, r.car_hue_angle, sq.name as squad_name, sq.color as squad_color,
               s.avg_speed, s.top_speed, s.races, s.accuracy
        from racers r
        left join lateral (
@@ -196,6 +209,7 @@ app.get("/teams/:tag", async (req, res) => {
          where rs.nt_user_id = r.nt_user_id
          order by captured_at desc limit 1
        ) s on true
+       left join team_squads sq on sq.id = r.squad_id
        where r.team_tag = $1
        order by coalesce(r.display_name, r.username)`,
       [tag]

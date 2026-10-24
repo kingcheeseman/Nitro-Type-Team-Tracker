@@ -167,6 +167,16 @@ function membershipBadge(membership) {
   return "";
 }
 
+// A racer's squad (see team_squads in schema.sql) - name + captain-picked
+// color, same visual slot as roleBadge/membershipBadge but with an
+// arbitrary color (inline style, like lb-team-tag) instead of a fixed
+// palette, since there's no limit on how many squads a team can make.
+function squadBadge(squadName, squadColor) {
+  if (!squadName) return "";
+  const bg = squadColor || "#29d3ff";
+  return `<span class="squad-pill" style="background:${escapeHtml(bg)}22;color:${escapeHtml(bg)};border-color:${escapeHtml(bg)}55;">${escapeHtml(squadName)}</span>`;
+}
+
 // Shared by build.js (static) and server.js (local preview) so a team's
 // roster rows render identically in both - display_name is what the
 // racer currently goes by on Nitro Type; username (often an opaque id
@@ -185,7 +195,7 @@ function racerRosterRows(racers, team, assetsHref = "/assets/") {
           <td class="racer">
             <span class="avatar" style="background:${avatarColor(name || team.tag)}">${escapeHtml(initial)}</span>
             ${carThumb(r.car_id, r.car_hue_angle, assetsHref)}
-            ${escapeHtml(name)}${roleBadge(r.role, isCaptain)}${membershipBadge(r.membership)}
+            ${escapeHtml(name)}${roleBadge(r.role, isCaptain)}${membershipBadge(r.membership)}${squadBadge(r.squad_name, r.squad_color)}
           </td>
           <td>${formatDate(r.joined_at_nt)}</td>
           <td>${formatNumber(r.avg_speed ?? "-")}</td>
@@ -639,10 +649,45 @@ function eventsBody(tag, events, captainNtUserId) {
 // who's actually looking at the page. racers is the already-queried
 // roster (build.js passes the same list roster.js renders), used only to
 // label each officer-toggle row with a name instead of a bare nt_user_id.
-function teamAdminBody(tag, captainNtUserId, racers) {
+function teamAdminBody(tag, captainNtUserId, racers, squads) {
   const rosterOptions = (racers || [])
     .map((r) => `<option value="${escapeHtml(r.nt_user_id)}">${escapeHtml(r.display_name || r.username)}</option>`)
     .join("");
+  // Rendered once, server-side, from whatever squads already exist at
+  // build/request time; the client re-renders this same block after any
+  // create/delete/assign so it never goes stale within a session (see
+  // renderSquadsTab in app.js) - this initial markup just avoids a blank
+  // flash while getSession/resolveTeamRole are still resolving.
+  const squadRows = (squads || []).length
+    ? (squads || [])
+        .map(
+          (s) => `
+          <tr data-squad-row="${escapeHtml(s.id)}">
+            <td><span class="squad-swatch" style="background:${escapeHtml(s.color)};"></span>${escapeHtml(s.name)}</td>
+            <td data-squad-count>${escapeHtml(String(s.racer_count ?? 0))}</td>
+            <td data-squad-delete-cell></td>
+          </tr>`
+        )
+        .join("")
+    : `<tr><td colspan="3" style="color:var(--muted);">No squads yet.</td></tr>`;
+  const squadOptionsFor = (currentId) =>
+    `<option value="">No squad</option>` +
+    (squads || [])
+      .map((s) => `<option value="${escapeHtml(s.id)}"${String(currentId ?? "") === String(s.id) ? " selected" : ""}>${escapeHtml(s.name)}</option>`)
+      .join("");
+  const squadRosterRows = (racers || []).length
+    ? (racers || [])
+        .map(
+          (r) => `
+          <tr data-squad-roster-row="${escapeHtml(r.nt_user_id)}">
+            <td>${escapeHtml(r.display_name || r.username)}</td>
+            <td data-squad-roster-select-cell>
+              <select class="form-input" data-squad-roster-select disabled>${squadOptionsFor(r.squad_id)}</select>
+            </td>
+          </tr>`
+        )
+        .join("")
+    : `<tr><td colspan="2" style="color:var(--muted);">No racers synced yet.</td></tr>`;
   return `
     <div data-admin-panel data-team-tag="${escapeHtml(tag)}" data-captain-nt-user-id="${escapeHtml(captainNtUserId ?? "")}">
       <h2 style="margin:28px 0 14px;">Team Admin</h2>
@@ -651,6 +696,7 @@ function teamAdminBody(tag, captainNtUserId, racers) {
         <p class="meta-row" data-admin-role-note></p>
         <div class="seg" style="margin-bottom:16px;">
           <button type="button" class="seg-btn active" data-admin-tab-btn="officers">Officers</button>
+          <button type="button" class="seg-btn" data-admin-tab-btn="squads">Squads</button>
           <button type="button" class="seg-btn" data-admin-tab-btn="settings">Settings</button>
         </div>
 
@@ -665,6 +711,31 @@ function teamAdminBody(tag, captainNtUserId, racers) {
             <select class="form-input" name="nt_user_id" style="flex:1;">${rosterOptions}</select>
             <button type="submit" class="btn-primary">Make officer</button>
           </form>
+        </div>
+
+        <div data-admin-tabpanel="squads" style="display:none;">
+          <div style="color:var(--muted);font-size:13px;margin-bottom:14px;">
+            Group racers within [${escapeHtml(tag)}] — site-only, doesn't affect anything on Nitro Type itself.
+          </div>
+          <div class="table-wrap" style="max-width:480px;">
+            <table>
+              <thead><tr><th>Squad</th><th>Racers</th><th></th></tr></thead>
+              <tbody data-admin-squad-rows>${squadRows}</tbody>
+            </table>
+          </div>
+          <form data-admin-squad-form style="display:none;margin-top:14px;gap:8px;max-width:480px;align-items:center;">
+            <input class="form-input" type="color" name="squad_color" value="#29d3ff" style="flex:none;width:44px;padding:4px;">
+            <input class="form-input" type="text" name="squad_name" placeholder="Squad name" maxlength="40" style="flex:1;">
+            <button type="submit" class="btn-primary">Create squad</button>
+          </form>
+
+          <h3 style="margin:26px 0 10px;font-size:14.5px;">Assign racers</h3>
+          <div class="table-wrap" style="max-width:480px;">
+            <table>
+              <thead><tr><th>Racer</th><th>Squad</th></tr></thead>
+              <tbody data-admin-squad-roster-rows>${squadRosterRows}</tbody>
+            </table>
+          </div>
         </div>
 
         <div data-admin-tabpanel="settings" style="display:none;max-width:480px;">
@@ -973,6 +1044,25 @@ const BASE_CSS = `
   .role-pill.captain { background: rgba(255,176,32,0.18); color: var(--ok); }
   .role-pill.officer { background: rgba(41,211,255,0.16); color: var(--velocity); }
   .role-pill.gold { background: rgba(255,176,32,0.12); color: var(--ok); }
+
+  .squad-pill {
+    display: inline-block;
+    font-size: 10.5px;
+    font-weight: 800;
+    padding: 1px 7px;
+    border-radius: 5px;
+    margin-left: 7px;
+    vertical-align: middle;
+    border: 1px solid;
+  }
+  .squad-swatch {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
 
   .team-layout {
     display: flex;
@@ -1357,6 +1447,7 @@ module.exports = {
   formatDate,
   roleBadge,
   membershipBadge,
+  squadBadge,
   racerRosterRows,
   NAV_ITEMS,
   MANAGE_NAV_ITEMS,

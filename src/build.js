@@ -42,7 +42,7 @@ function sectionContent(key, sectionData) {
   // the roster page, so they need their own, one-level-further assetsHref.
   if (key === "trackers") return trackerBody(sectionData.tracker, "../../../assets/");
   if (key === "notifications") return notificationsBody(sectionData.tag, sectionData.notifications);
-  if (key === "admin") return teamAdminBody(sectionData.tag, sectionData.captainNtUserId, sectionData.racers || []);
+  if (key === "admin") return teamAdminBody(sectionData.tag, sectionData.captainNtUserId, sectionData.racers || [], sectionData.squads || []);
   return null;
 }
 
@@ -353,8 +353,8 @@ async function main() {
 
   for (const team of teams) {
     const { rows: racers } = await pool.query(
-      `select r.username, r.display_name, r.role, r.membership, r.joined_at_nt,
-              r.car_id, r.car_hue_angle,
+      `select r.nt_user_id, r.username, r.display_name, r.role, r.membership, r.joined_at_nt,
+              r.car_id, r.car_hue_angle, r.squad_id, sq.name as squad_name, sq.color as squad_color,
               s.avg_speed, s.top_speed, s.races, s.accuracy
        from racers r
        left join lateral (
@@ -362,8 +362,23 @@ async function main() {
          where rs.nt_user_id = r.nt_user_id
          order by captured_at desc limit 1
        ) s on true
+       left join team_squads sq on sq.id = r.squad_id
        where r.team_tag = $1
        order by coalesce(r.display_name, r.username)`,
+      [team.tag]
+    );
+    // One row per squad, with how many of this team's racers currently
+    // belong to it - purely for the admin squads list (see theme.js's
+    // squadRows); "racers" above already has each racer's own squad_id
+    // for the roster badge and the per-racer assignment dropdown.
+    const { rows: squads } = await pool.query(
+      `select sq.id, sq.name, sq.color,
+              count(r.nt_user_id) filter (where r.nt_user_id is not null) as racer_count
+       from team_squads sq
+       left join racers r on r.squad_id = sq.id
+       where sq.team_tag = $1
+       group by sq.id, sq.name, sq.color
+       order by sq.name`,
       [team.tag]
     );
     const sectionData = {
@@ -373,6 +388,7 @@ async function main() {
       events: await eventsForTeam(pool, team.tag),
       captainNtUserId: team.captain_nt_user_id,
       racers,
+      squads,
     };
     buildTeamPage(team, racers, sectionData);
   }
