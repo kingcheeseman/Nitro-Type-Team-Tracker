@@ -64,7 +64,10 @@ async function liveFetchTeamMembers(tag: string, db: ReturnType<typeof createCli
     }
   );
   if (!dispatchRes.ok) {
-    throw new Error(`Could not start live fetch (GitHub returned HTTP ${dispatchRes.status})`);
+    const bodyText = await dispatchRes.text().catch(() => "");
+    throw new Error(
+      `Could not start live fetch (GitHub returned HTTP ${dispatchRes.status}): ${bodyText.slice(0, 300)}`
+    );
   }
 
   const deadline = Date.now() + LIVE_FETCH_TIMEOUT_MS;
@@ -164,7 +167,13 @@ Deno.serve(async (req: Request) => {
       members = await liveFetchTeamMembers(racer.team_tag, db);
     } catch (err) {
       console.error("liveFetchTeamMembers failed (start):", err && (err as Error).message);
-      return json({ error: "Couldn't reach Nitro Type right now - try again shortly." }, 502);
+      return json(
+        {
+          error: "Couldn't reach Nitro Type right now - try again shortly.",
+          _debug: String(err && (err as Error).message || err),
+        },
+        502
+      );
     }
     const baselineCarId = findMemberCarId(members, racer.nt_user_id);
     if (baselineCarId === null) {
