@@ -454,7 +454,7 @@
     <nav class="team-sidebar">
       <a class="nav-item" href="../"><span class="nav-icon">👥</span>Roster</a><a class="nav-item" href="../events/"><span class="nav-icon">📅</span>Events</a><a class="nav-item" href="../activity/"><span class="nav-icon">📈</span>Activity<span class="soon-tag">Soon</span></a><a class="nav-item" href="../tournaments/"><span class="nav-icon">🏆</span>Tournaments<span class="soon-tag">Soon</span></a><a class="nav-item" href="../trackers/"><span class="nav-icon">📌</span>Trackers</a><a class="nav-item" href="../notifications/"><span class="nav-icon">🔔</span>Notifications</a>
       <div class="nav-section-label">Manage</div>
-      <a class="nav-item active" href="../admin/"><span class="nav-icon">⚙️</span>Team Admin<span class="soon-tag">Soon</span></a>
+      <a class="nav-item active" href="../admin/"><span class="nav-icon">⚙️</span>Team Admin</a>
     </nav>
       <div class="team-content">
     <div class="hero" style="background:#436fb6;color:#ffffff">
@@ -463,12 +463,26 @@
       <div class="sub">
         Captain: volatile · 50 racers tracked · last synced 10/24/2026, 12:03:12 AM</div>
     </div>
-    <div class="empty" style="padding:48px 28px;">
-      <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px;">Coming soon</div>
-      <div>The Team Admin section isn't built yet — only Roster is live right now.</div>
+    <div data-admin-panel data-team-tag="SSH" data-captain-nt-user-id="3430225">
+      <h2 style="margin:28px 0 14px;">Team Admin</h2>
+      <div data-admin-gate style="color:var(--muted);font-size:13.5px;">Checking your access…</div>
+      <div data-admin-content style="display:none;">
+        <p class="meta-row" data-admin-role-note></p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Officer</th><th></th></tr></thead>
+            <tbody data-admin-officer-rows><tr><td colspan="2" style="color:var(--muted);">No officers appointed yet.</td></tr></tbody>
+          </table>
+        </div>
+        <form data-admin-appoint-form style="display:none;margin-top:14px;gap:8px;max-width:420px;">
+          <select class="form-input" name="nt_user_id" style="flex:1;"><option value="">  Alex  </option><option value=""> D N D </option><option value="">_Eleanor_</option><option value="">-F O R G I V E N- 20</option><option value="">-Spookydrive-</option><option value="">-Tacticus-</option><option value="">-Zeta-</option><option value="">0</option><option value="">Ark13TheGoat</option><option value="">Aurora Baijan</option><option value="">Beaver123</option><option value="">bobchapek100</option><option value="">bradbr123432858824</option><option value="">Cadence</option><option value="">clayface</option><option value="">CoolPingu</option><option value="">E-rror</option><option value="">Eileen</option><option value="">Exxon Mobil1</option><option value="">F14M3FR4GS 10K</option><option value="">fifa25248</option><option value="">Flutterstick</option><option value="">GeloXD</option><option value="">Hokey Pokey</option><option value="">i l y2thes t a r sX3</option><option value="">ILOVESOPHIERAIN</option><option value="">javan727</option><option value="">MakubeX</option><option value="">Marbled</option><option value="">missmary13601</option><option value="">NitroRacer</option><option value="">NitroTypist</option><option value="">nuggets 18K</option><option value="">Pickles</option><option value="">Pitter-Patter</option><option value="">PREM1UM_JR</option><option value="">Prophy</option><option value="">python,,</option><option value="">Rossonero</option><option value="">Salah11</option><option value="">slightly violet</option><option value="">SlimJimPingu</option><option value="">Spooky Envy</option><option value="">Starstruck</option><option value="">stellan</option><option value="">TaylorMadeGrit</option><option value="">TheDestroyist</option><option value="">volatile</option><option value="">Wisnu80K</option><option value="">ZTNT ROAD_TO_20K</option></select>
+          <button type="submit" class="btn-primary">Make officer</button>
+        </form>
+        <div data-admin-error class="form-error" style="display:none;margin-top:10px;"></div>
+      </div>
     </div></div>
     </div>
 </main>
-<footer class="site">Generated 2026-10-24T00:27:50.804Z</footer>
+<footer class="site">Generated 2026-10-24T00:34:27.393Z</footer>
 </body>
 </html>

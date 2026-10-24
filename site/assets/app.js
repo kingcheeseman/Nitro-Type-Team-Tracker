@@ -121,6 +121,60 @@
     });
   }
 
+  // "Connect first" flow: the visitor proves ownership of a Nitro Type
+  // account BEFORE they ever pick a TypeTrack email/username/password.
+  // That needs *some* signed-in Supabase session to exist already (the
+  // verify-car-swap Edge Function and the RLS policies on account_links /
+  // verification_challenges are both anchored to auth.uid()) - an
+  // anonymous Supabase Auth session is exactly that: a real auth.users row
+  // with no email/password yet. Requires "Allow anonymous sign-ins" to be
+  // turned on for this project (Supabase dashboard -> Authentication ->
+  // Sign In / Providers -> Anonymous Sign-Ins); until that's on,
+  // signInAnonymously resolves with an error and getOrCreateSession below
+  // surfaces it as a normal error message rather than throwing.
+  function getOrCreateSession(cb) {
+    withClient(function (sb) {
+      sb.auth.getSession().then(function (res) {
+        var session = res.data && res.data.session ? res.data.session : null;
+        if (session) {
+          cb(null, session, sb);
+          return;
+        }
+        sb.auth.signInAnonymously().then(function (res2) {
+          if (res2.error) {
+            cb(res2.error.message, null, sb);
+            return;
+          }
+          cb(null, res2.data.session, sb);
+        });
+      });
+    });
+  }
+
+  // Turns the visitor's current session (anonymous or not) into a real,
+  // permanent TypeTrack login by attaching an email + password to it. The
+  // auth_user_id never changes, so any account_links / verification_challenges
+  // row already tied to this session (from the car-swap check) carries
+  // straight over - nothing about the verification needs to be redone.
+  //
+  // Nitro Type usernames aren't email addresses, and a captain/officer's
+  // account doesn't collect one at all per the current design, so both
+  // paths synthesize a private, never-shown address under a dedicated
+  // subdomain scoped to this project, built only from stable Nitro Type
+  // ids - never guessable from someone else's real email, and never used
+  // to actually send mail.
+  function syntheticEmail(ntUserId) {
+    return "nt" + ntUserId + "@racers.typetrack.internal";
+  }
+
+  function claimAccount(ntUserId, password, cb) {
+    withClient(function (sb) {
+      sb.auth.updateUser({ email: syntheticEmail(ntUserId), password: password }).then(function (res) {
+        cb(res.error ? res.error.message : null, res.data);
+      });
+    });
+  }
+
   // Looks up the Nitro Type racer (if any) this signed-in account has
   // verified ownership of. account_links is publicly readable (see
   // schema.sql), so this is a plain select.
@@ -145,6 +199,93 @@
         .then(function (res) {
           cb(res.error ? res.error.message : null, res.data);
         });
+    });
+  }
+
+  function getProfile(authUserId, cb) {
+    withClient(function (sb) {
+      sb.from("profiles")
+        .select("chosen_username")
+        .eq("auth_user_id", authUserId)
+        .maybeSingle()
+        .then(function (res) {
+          cb(res.error ? res.error.message : null, res.data);
+        });
+    });
+  }
+
+  function setChosenUsername(authUserId, username, cb) {
+    withClient(function (sb) {
+      sb.from("profiles")
+        .upsert({ auth_user_id: authUserId, chosen_username: username })
+        .then(function (res) {
+          cb(res.error ? res.error.message : null, res.data);
+        });
+    });
+  }
+
+  function isTeamOfficer(teamTag, ntUserId, cb) {
+    withClient(function (sb) {
+      sb.from("team_officers")
+        .select("nt_user_id")
+        .eq("team_tag", teamTag)
+        .eq("nt_user_id", ntUserId)
+        .maybeSingle()
+        .then(function (res) {
+          cb(res.error ? res.error.message : null, !!res.data);
+        });
+    });
+  }
+
+  function listTeamOfficers(teamTag, cb) {
+    withClient(function (sb) {
+      sb.from("team_officers")
+        .select("nt_user_id")
+        .eq("team_tag", teamTag)
+        .then(function (res) {
+          cb(res.error ? res.error.message : null, (res.data || []).map(function (r) { return r.nt_user_id; }));
+        });
+    });
+  }
+
+  function addTeamOfficer(teamTag, ntUserId, cb) {
+    withClient(function (sb) {
+      sb.from("team_officers")
+        .insert({ team_tag: teamTag, nt_user_id: ntUserId })
+        .then(function (res) {
+          cb(res.error ? res.error.message : null);
+        });
+    });
+  }
+
+  function removeTeamOfficer(teamTag, ntUserId, cb) {
+    withClient(function (sb) {
+      sb.from("team_officers")
+        .delete()
+        .eq("team_tag", teamTag)
+        .eq("nt_user_id", ntUserId)
+        .then(function (res) {
+          cb(res.error ? res.error.message : null);
+        });
+    });
+  }
+
+  // "captain" | "officer" | "member" - the three tiers the latest design
+  // calls out. Captain is decided purely from teams.captain_nt_user_id
+  // (the same source of truth events.js's RLS policy itself trusts);
+  // officer from team_officers; anything else (including a racer who
+  // isn't currently on team_tag's team at all) is "member".
+  function resolveTeamRole(teamTag, ntUserId, captainNtUserId, cb) {
+    if (captainNtUserId != null && String(ntUserId) === String(captainNtUserId)) {
+      cb(null, "captain");
+      return;
+    }
+    if (!teamTag) {
+      cb(null, "member");
+      return;
+    }
+    isTeamOfficer(teamTag, ntUserId, function (err, isOfficer) {
+      cb(err, isOfficer ? "officer" : "member");
     });
   }
 
@@ -370,6 +511,111 @@
   }
 
   // ---------------------------------------------------------------------
+  // Team Admin: captain edits officers, officer views read-only, anyone
+  // else gets no content at all - see theme.js's teamAdminBody for the
+  // static shell this fills in.
+  // ---------------------------------------------------------------------
+  function renderOfficerRows(tbody, teamTag, officerIds, racersById, isCaptain, refresh) {
+    if (!officerIds.length) {
+      tbody.innerHTML = '<tr><td colspan="2" style="color:var(--muted);">No officers appointed yet.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = "";
+    officerIds.forEach(function (ntUserId) {
+      var racer = racersById[ntUserId];
+      var name = (racer && (racer.display_name || racer.username)) || "racer " + ntUserId;
+      var tr = document.createElement("tr");
+      var nameTd = document.createElement("td");
+      nameTd.textContent = name;
+      tr.appendChild(nameTd);
+      var actionTd = document.createElement("td");
+      if (isCaptain) {
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "btn-danger";
+        btn.textContent = "Remove";
+        btn.addEventListener("click", function () {
+          removeTeamOfficer(teamTag, ntUserId, function (err) {
+            if (!err) refresh();
+          });
+        });
+        actionTd.appendChild(btn);
+      }
+      tr.appendChild(actionTd);
+      tbody.appendChild(tr);
+    });
+  }
+
+  function initTeamAdminPage() {
+    var panel = document.querySelector("[data-admin-panel]");
+    if (!panel) return;
+    var teamTag = panel.getAttribute("data-team-tag");
+    var captainNtUserId = panel.getAttribute("data-captain-nt-user-id") || null;
+    var gate = panel.querySelector("[data-admin-gate]");
+    var content = panel.querySelector("[data-admin-content]");
+    var roleNote = panel.querySelector("[data-admin-role-note]");
+    var rowsEl = panel.querySelector("[data-admin-officer-rows]");
+    var appointForm = panel.querySelector("[data-admin-appoint-form]");
+    var errorEl = panel.querySelector("[data-admin-error]");
+
+    getSession(function (session) {
+      if (!session || !session.user || session.user.is_anonymous) {
+        gate.textContent = "Sign in and connect your Nitro Type account to view this page.";
+        return;
+      }
+      getMyLink(session.user.id, function (err, link) {
+        if (err || !link) {
+          gate.textContent = "Connect your Nitro Type account to view this page.";
+          return;
+        }
+        resolveTeamRole(teamTag, link.nt_user_id, captainNtUserId, function (err2, role) {
+          if (role !== "captain" && role !== "officer") {
+            gate.textContent = "You don't have access to this team's admin page.";
+            return;
+          }
+          gate.style.display = "none";
+          content.style.display = "";
+          var isCaptain = role === "captain";
+          roleNote.textContent = isCaptain
+            ? "You're this team's captain — appoint or remove officers below."
+            : "You're an officer on this team — you can view this page, but only the captain can make changes.";
+
+          function refresh() {
+            withClient(function (sb) {
+              Promise.all([
+                sb.from("team_officers").select("nt_user_id").eq("team_tag", teamTag),
+                sb.from("racers").select("nt_user_id, username, display_name").eq("team_tag", teamTag),
+              ]).then(function (results) {
+                var officerIds = (results[0].data || []).map(function (r) { return r.nt_user_id; });
+                var racersById = {};
+                (results[1].data || []).forEach(function (r) { racersById[r.nt_user_id] = r; });
+                renderOfficerRows(rowsEl, teamTag, officerIds, racersById, isCaptain, refresh);
+                if (isCaptain) appointForm.style.display = "flex";
+              });
+            });
+          }
+          refresh();
+
+          appointForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            var ntUserId = appointForm.nt_user_id.value;
+            if (!ntUserId) return;
+            errorEl.style.display = "none";
+            addTeamOfficer(teamTag, Number(ntUserId), function (err3) {
+              if (err3) {
+                errorEl.textContent = err3;
+                errorEl.style.display = "";
+                return;
+              }
+              refresh();
+            });
+          });
+        });
+      });
+    });
+  }
+
+  // ---------------------------------------------------------------------
   // Site-wide header auth status (shown on every page via a small badge
   // next to the Account nav link, when that link is present).
   // ---------------------------------------------------------------------
@@ -377,9 +623,11 @@
     var link = document.querySelector('[data-account-nav]');
     if (!link) return;
     getSession(function (session) {
-      if (session && session.user) {
+      // An anonymous session only exists mid-connect-flow (see
+      // getOrCreateSession) - it isn't a real "signed in" state yet, so
+      // the header shouldn't claim one.
+      if (session && session.user && !session.user.is_anonymous) {
         link.textContent = "Account ●";
-        link.title = session.user.email;
       }
     });
   }
@@ -387,6 +635,7 @@
   document.addEventListener("DOMContentLoaded", function () {
     initHeaderStatus();
     initEventsPage();
+    initTeamAdminPage();
   });
 
   window.TypeTrack = {
@@ -395,11 +644,21 @@
     signUp: signUp,
     signIn: signIn,
     signOut: signOut,
+    getOrCreateSession: getOrCreateSession,
+    claimAccount: claimAccount,
     getMyLink: getMyLink,
     getRacerById: getRacerById,
+    getProfile: getProfile,
+    setChosenUsername: setChosenUsername,
+    isTeamOfficer: isTeamOfficer,
+    listTeamOfficers: listTeamOfficers,
+    addTeamOfficer: addTeamOfficer,
+    removeTeamOfficer: removeTeamOfficer,
+    resolveTeamRole: resolveTeamRole,
     startVerification: startVerification,
     checkVerification: checkVerification,
     el: el,
     escapeHtml: escapeHtml,
+    fmtDate: fmtDate,
   };
 })();

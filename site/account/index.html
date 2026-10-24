@@ -450,113 +450,217 @@
 <div class="crumb"><a href="../">← all teams</a></div>
 
     <h1>Your TypeTrack account</h1>
-    <p class="meta-row">Sign in to connect your Nitro Type account. Once you're verified, your team's real captain can manage Events for your team right here on the site.</p>
+    <p class="meta-row">Connect your Nitro Type account by briefly changing your in-game car - we never ask for your Nitro Type password. Already connected? <a href="sign-in/">Sign in</a>.</p>
 
-    <div class="card" id="auth-card" style="max-width:420px;padding:20px;">
-      <form id="auth-form" style="display:flex;flex-direction:column;gap:10px;">
-        <input class="form-input" type="email" name="email" placeholder="Email" required autocomplete="email">
-        <input class="form-input" type="password" name="password" placeholder="Password (6+ characters)" required minlength="6" autocomplete="current-password">
-        <div style="display:flex;gap:8px;">
-          <button type="submit" class="btn-primary" style="flex:1;">Sign in</button>
-          <button type="button" data-mode="signup" class="btn-secondary" style="flex:1;">Create account</button>
-        </div>
+    <div id="connect-card" class="card" style="max-width:480px;padding:20px;">
+      <div id="already-linked" style="margin-bottom:14px;color:var(--muted);font-size:13px;display:none;"></div>
+
+      <form id="start-form" style="display:flex;flex-direction:column;gap:10px;">
+        <input class="form-input" name="username" placeholder="Your Nitro Type username" required autocomplete="off">
+        <button type="submit" class="btn-primary">Connect</button>
         <div class="form-error" style="display:none;"></div>
-        <div class="form-note" style="display:none;"></div>
+      </form>
+
+      <div id="challenge-panel" style="display:none;margin-top:14px;">
+        <p>Go to <a href="https://www.nitrotype.com/garage" target="_blank" rel="noopener">your Nitro Type garage</a> and equip any <b>different</b> car than the one you're using right now. You have <b id="challenge-minutes"></b> minutes.</p>
+        <div style="font-size:28px;font-weight:800;margin:10px 0;" id="countdown">--:--</div>
+        <button type="button" id="check-btn" class="btn-primary">I changed it — check now</button>
+        <div id="check-message" style="margin-top:10px;color:var(--muted);font-size:13px;"></div>
+      </div>
+
+      <form id="claim-form" style="display:none;margin-top:14px;flex-direction:column;gap:10px;">
+        <div id="claim-intro" style="color:var(--good);font-weight:700;margin-bottom:4px;"></div>
+        <input class="form-input" id="claim-username" name="username" placeholder="Pick a username" autocomplete="username">
+        <input class="form-input" name="password" type="password" placeholder="Pick a password (6+ characters)" required minlength="6" autocomplete="new-password">
+        <button type="submit" class="btn-primary">Finish setting up my account</button>
+        <div class="form-error" style="display:none;"></div>
       </form>
     </div>
 
-    <div class="card" id="signed-in-card" style="max-width:420px;padding:20px;display:none;">
-      <div style="font-weight:700;" id="signed-in-email"></div>
-      <div id="link-status" style="margin:10px 0;color:var(--muted);font-size:13px;">Checking your Nitro Type link…</div>
-      <a id="connect-link" class="view-btn" href="connect/" style="display:none;">Connect your Nitro Type account →</a>
-      <div>
-        <button type="button" id="sign-out-btn" class="btn-secondary" style="margin-top:14px;">Sign out</button>
-      </div>
+    <div class="card" id="signed-in-card" style="max-width:480px;padding:20px;display:none;margin-top:16px;">
+      <div style="font-weight:700;" id="signed-in-name"></div>
+      <div id="signed-in-role" style="margin:6px 0 0;color:var(--muted);font-size:13px;"></div>
+      <button type="button" id="sign-out-btn" class="btn-secondary" style="margin-top:14px;">Sign out</button>
     </div>
 
     <script>
     (function () {
       function show(e) { e.style.display = ""; }
       function hide(e) { e.style.display = "none"; }
-      var authCard = document.getElementById("auth-card");
-      var signedInCard = document.getElementById("signed-in-card");
-      var form = document.getElementById("auth-form");
-      var errorEl = form.querySelector(".form-error");
-      var noteEl = form.querySelector(".form-note");
 
-      function renderSignedIn(session) {
-        hide(authCard);
+      var connectCard = document.getElementById("connect-card");
+      var signedInCard = document.getElementById("signed-in-card");
+      var startForm = document.getElementById("start-form");
+      var challengePanel = document.getElementById("challenge-panel");
+      var claimForm = document.getElementById("claim-form");
+      var alreadyLinked = document.getElementById("already-linked");
+      var countdownEl = document.getElementById("countdown");
+      var checkBtn = document.getElementById("check-btn");
+      var checkMessage = document.getElementById("check-message");
+      var timer = null;
+      var expiresAt = null;
+      var pendingLink = null; // { nt_user_id, nt_username }
+
+      function startCountdown(exp) {
+        expiresAt = new Date(exp).getTime();
+        if (timer) clearInterval(timer);
+        function tick() {
+          var ms = expiresAt - Date.now();
+          if (ms <= 0) {
+            countdownEl.textContent = "Expired";
+            clearInterval(timer);
+            return;
+          }
+          var m = Math.floor(ms / 60000);
+          var s = Math.floor((ms % 60000) / 1000);
+          countdownEl.textContent = m + ":" + (s < 10 ? "0" : "") + s;
+        }
+        tick();
+        timer = setInterval(tick, 1000);
+      }
+
+      function renderAlreadySignedIn(session) {
+        hide(connectCard);
         show(signedInCard);
-        document.getElementById("signed-in-email").textContent = session.user.email;
-        var statusEl = document.getElementById("link-status");
-        var connectLink = document.getElementById("connect-link");
         TypeTrack.getMyLink(session.user.id, function (err, link) {
-          if (err) {
-            statusEl.textContent = "Could not check your link status.";
-            return;
-          }
-          if (!link) {
-            statusEl.textContent = "Not linked to a Nitro Type account yet.";
-            show(connectLink);
-            return;
-          }
-          hide(connectLink);
+          if (!link) return; // anonymous session with no link yet - treat as "not connected"
           TypeTrack.getRacerById(link.nt_user_id, function (err2, racer) {
-            if (racer) {
-              statusEl.innerHTML =
-                "Linked to <b>" +
-                TypeTrack.escapeHtml(racer.display_name || racer.username) +
-                "</b>" +
-                (racer.team_tag ? " on team [" + TypeTrack.escapeHtml(racer.team_tag) + "]" : "");
-            } else {
-              statusEl.textContent = "Linked (racer " + link.nt_user_id + ").";
-            }
+            var name = (racer && (racer.display_name || racer.username)) || "racer " + link.nt_user_id;
+            document.getElementById("signed-in-name").textContent = name;
+            var teamTag = racer && racer.team_tag;
+            TypeTrack.withClient(function (sb) {
+              var captainId = null;
+              (teamTag ? sb.from("teams").select("captain_nt_user_id").eq("tag", teamTag).maybeSingle() : Promise.resolve({ data: null })).then(function (res) {
+                captainId = res.data && res.data.captain_nt_user_id;
+                TypeTrack.resolveTeamRole(teamTag, link.nt_user_id, captainId, function (err3, role) {
+                  var roleLabel = role === "captain" ? "Team captain" : role === "officer" ? "Team officer" : "Team member";
+                  document.getElementById("signed-in-role").textContent = roleLabel + (teamTag ? " on team [" + TypeTrack.escapeHtml(teamTag) + "]" : "");
+                });
+              });
+            });
           });
         });
       }
 
       TypeTrack.getSession(function (session) {
-        if (session) renderSignedIn(session);
+        if (session && session.user && !session.user.is_anonymous) {
+          renderAlreadySignedIn(session);
+        }
       });
 
-      form.addEventListener("submit", function (e) {
+      startForm.addEventListener("submit", function (e) {
         e.preventDefault();
-        var email = form.email.value.trim();
-        var password = form.password.value;
+        var username = startForm.username.value.trim();
+        var errorEl = startForm.querySelector(".form-error");
         hide(errorEl);
-        hide(noteEl);
-        TypeTrack.signIn(email, password, function (err, data) {
-          if (err) {
-            errorEl.textContent = err;
+        if (!username) return;
+        TypeTrack.getOrCreateSession(function (sessErr) {
+          if (sessErr) {
+            errorEl.textContent = "Could not start a session: " + sessErr;
             show(errorEl);
             return;
           }
-          renderSignedIn(data.session);
+          TypeTrack.startVerification(username, function (err, data) {
+            if (err) {
+              errorEl.textContent = err;
+              show(errorEl);
+              return;
+            }
+            pendingLink = { nt_username: data.nt_username };
+            hide(startForm);
+            show(challengePanel);
+            document.getElementById("challenge-minutes").textContent = data.minutes;
+            startCountdown(data.expires_at);
+          });
         });
       });
 
-      form.querySelector('[data-mode="signup"]').addEventListener("click", function () {
-        var email = form.email.value.trim();
-        var password = form.password.value;
+      checkBtn.addEventListener("click", function () {
+        checkMessage.textContent = "Checking…";
+        TypeTrack.checkVerification(function (err, data) {
+          if (err) {
+            checkMessage.textContent = err;
+            return;
+          }
+          if (!data.verified) {
+            checkMessage.textContent = data.message || "Not verified yet.";
+            return;
+          }
+          if (timer) clearInterval(timer);
+          hide(challengePanel);
+          showClaimForm(data.nt_username);
+        });
+      });
+
+      function showClaimForm(ntUsername) {
+        TypeTrack.getSession(function (session) {
+          TypeTrack.getMyLink(session.user.id, function (err, link) {
+            TypeTrack.getRacerById(link.nt_user_id, function (err2, racer) {
+              var teamTag = racer && racer.team_tag;
+              TypeTrack.withClient(function (sb) {
+                (teamTag ? sb.from("teams").select("captain_nt_user_id").eq("tag", teamTag).maybeSingle() : Promise.resolve({ data: null })).then(function (res) {
+                  var captainId = res.data && res.data.captain_nt_user_id;
+                  TypeTrack.resolveTeamRole(teamTag, link.nt_user_id, captainId, function (err3, role) {
+                    var intro = document.getElementById("claim-intro");
+                    var nameField = document.getElementById("claim-username");
+                    if (role === "captain" || role === "officer") {
+                      intro.textContent = "Verified as " + ntUsername + " (" + role + "). Pick a password to finish setting up your account - you'll sign in with your Nitro Type name.";
+                      hide(nameField);
+                      nameField.removeAttribute("required");
+                    } else {
+                      intro.textContent = "Verified as " + ntUsername + "! Pick a username and password to finish setting up your account.";
+                      show(nameField);
+                      nameField.setAttribute("required", "required");
+                    }
+                    show(claimForm);
+                    claimForm.setAttribute("data-nt-user-id", link.nt_user_id);
+                    claimForm.setAttribute("data-role", role);
+                  });
+                });
+              });
+            });
+          });
+        });
+      }
+
+      claimForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var errorEl = claimForm.querySelector(".form-error");
         hide(errorEl);
-        hide(noteEl);
-        if (!email || password.length < 6) {
-          errorEl.textContent = "Enter an email and a password of at least 6 characters.";
+        var ntUserId = claimForm.getAttribute("data-nt-user-id");
+        var role = claimForm.getAttribute("data-role");
+        var password = claimForm.password.value;
+        var chosenUsername = claimForm.username.value.trim();
+        if ((role === "member") && !chosenUsername) {
+          errorEl.textContent = "Pick a username.";
           show(errorEl);
           return;
         }
-        TypeTrack.signUp(email, password, function (err, data) {
+        TypeTrack.claimAccount(ntUserId, password, function (err) {
           if (err) {
             errorEl.textContent = err;
             show(errorEl);
             return;
           }
-          if (data.session) {
-            renderSignedIn(data.session);
-            return;
+          function done() {
+            TypeTrack.getSession(function (session) {
+              renderAlreadySignedIn(session);
+            });
           }
-          noteEl.textContent = "Account created — check your email to confirm, then sign in.";
-          show(noteEl);
+          if (role === "member") {
+            TypeTrack.getSession(function (session) {
+              TypeTrack.setChosenUsername(session.user.id, chosenUsername, function (err2) {
+                if (err2) {
+                  errorEl.textContent = err2;
+                  show(errorEl);
+                  return;
+                }
+                done();
+              });
+            });
+          } else {
+            done();
+          }
         });
       });
 
@@ -568,6 +672,6 @@
     })();
     </script>
 </main>
-<footer class="site">Generated 2026-10-24T00:27:52.632Z</footer>
+<footer class="site">Generated 2026-10-24T00:34:33.843Z</footer>
 </body>
 </html>

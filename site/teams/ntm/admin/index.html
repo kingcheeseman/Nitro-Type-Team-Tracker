@@ -454,7 +454,7 @@
     <nav class="team-sidebar">
       <a class="nav-item" href="../"><span class="nav-icon">👥</span>Roster</a><a class="nav-item" href="../events/"><span class="nav-icon">📅</span>Events</a><a class="nav-item" href="../activity/"><span class="nav-icon">📈</span>Activity<span class="soon-tag">Soon</span></a><a class="nav-item" href="../tournaments/"><span class="nav-icon">🏆</span>Tournaments<span class="soon-tag">Soon</span></a><a class="nav-item" href="../trackers/"><span class="nav-icon">📌</span>Trackers</a><a class="nav-item" href="../notifications/"><span class="nav-icon">🔔</span>Notifications</a>
       <div class="nav-section-label">Manage</div>
-      <a class="nav-item active" href="../admin/"><span class="nav-icon">⚙️</span>Team Admin<span class="soon-tag">Soon</span></a>
+      <a class="nav-item active" href="../admin/"><span class="nav-icon">⚙️</span>Team Admin</a>
     </nav>
       <div class="team-content">
     <div class="hero" style="background:#8750a0;color:#ffffff">
@@ -463,12 +463,26 @@
       <div class="sub">
         Captain: Vielle · 44 racers tracked · last synced 10/24/2026, 12:01:38 AM</div>
     </div>
-    <div class="empty" style="padding:48px 28px;">
-      <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px;">Coming soon</div>
-      <div>The Team Admin section isn't built yet — only Roster is live right now.</div>
+    <div data-admin-panel data-team-tag="NTM" data-captain-nt-user-id="128611">
+      <h2 style="margin:28px 0 14px;">Team Admin</h2>
+      <div data-admin-gate style="color:var(--muted);font-size:13.5px;">Checking your access…</div>
+      <div data-admin-content style="display:none;">
+        <p class="meta-row" data-admin-role-note></p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Officer</th><th></th></tr></thead>
+            <tbody data-admin-officer-rows><tr><td colspan="2" style="color:var(--muted);">No officers appointed yet.</td></tr></tbody>
+          </table>
+        </div>
+        <form data-admin-appoint-form style="display:none;margin-top:14px;gap:8px;max-width:420px;">
+          <select class="form-input" name="nt_user_id" style="flex:1;"><option value="">Mr_Star</option><option value="">★BlackStar★</option><option value="">⚔️Viking⚔️</option><option value="">Aiden Schumacher</option><option value="">AlyxSSBM</option><option value="">angelo</option><option value="">aototom</option><option value="">BritishMexico</option><option value="">bruhdooh</option><option value="">Chuchi</option><option value="">Dan 32K</option><option value="">DRS#4867</option><option value="">DUBSZ NTT</option><option value="">Kurohitsugi</option><option value="">Liqud_Force</option><option value="">Louish</option><option value="">Maple Syrup</option><option value="">Monkey D. Luffy</option><option value="">MysteryTypist</option><option value="">MysticLegendx</option><option value="">Nedjeljko</option><option value="">odin    </option><option value="">Ondader</option><option value="">pashkhan</option><option value="">pugtaka</option><option value="">Qwerty</option><option value="">Recontinued</option><option value="">riddle</option><option value="">riptide</option><option value="">Roberto</option><option value="">sageost</option><option value="">Semper Citius</option><option value="">Skittles Typer</option><option value="">skyleaf❀</option><option value="">solicitary</option><option value="">Stretch</option><option value="">TemporaryPlan</option><option value="">tieneken</option><option value="">Tummie</option><option value="">Vielle</option><option value="">Volhosis</option><option value="">westcoast</option><option value="">Zizzler</option><option value="">мρн300</option></select>
+          <button type="submit" class="btn-primary">Make officer</button>
+        </form>
+        <div data-admin-error class="form-error" style="display:none;margin-top:10px;"></div>
+      </div>
     </div></div>
     </div>
 </main>
-<footer class="site">Generated 2026-10-24T00:27:47.971Z</footer>
+<footer class="site">Generated 2026-10-24T00:34:21.431Z</footer>
 </body>
 </html>
