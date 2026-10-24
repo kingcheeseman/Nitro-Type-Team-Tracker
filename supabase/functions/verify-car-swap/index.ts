@@ -125,6 +125,7 @@ Deno.serve(async (req: Request) => {
     try {
       members = await fetchTeamMembers(racer.team_tag);
     } catch (err) {
+      console.error("fetchTeamMembers failed (start):", err && (err as Error).message);
       return json({ error: "Couldn't reach Nitro Type right now - try again shortly." }, 502);
     }
     const baselineCarId = findMemberCarId(members, racer.nt_user_id);
@@ -176,7 +177,8 @@ Deno.serve(async (req: Request) => {
     let members: any[];
     try {
       members = await fetchTeamMembers(racer.team_tag);
-    } catch {
+    } catch (err) {
+      console.error("fetchTeamMembers failed (check):", err && (err as Error).message);
       return json({ error: "Couldn't reach Nitro Type right now - try again shortly." }, 502);
     }
     const currentCarId = findMemberCarId(members, challenge.nt_user_id);
